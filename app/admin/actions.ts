@@ -527,3 +527,49 @@ export async function uploadAboutImage(formData: FormData) {
   revalidatePath("/admin/settings");
   return { success: true };
 }
+
+export async function deleteAboutImage(imageUrl: string) {
+  try {
+    const existing = await prisma.siteSettings.findFirst();
+    if (existing) {
+      await prisma.siteSettings.update({
+        where: { id: existing.id },
+        data: { aboutImage: null },
+      });
+    }
+    const bucketName = process.env.SUPABASE_BUCKET_NAME || 'assets';
+    const publicUrlPrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/`;
+    const pathToRemove = imageUrl.startsWith(publicUrlPrefix) ? imageUrl.replace(publicUrlPrefix, '') : null;
+    if (pathToRemove) {
+      await supabase.storage.from(bucketName).remove([pathToRemove]);
+    }
+  } catch (e) {
+    console.error("Delete About Image Error:", e);
+  }
+  revalidatePath("/");
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/admin/settings");
+}
+
+export async function deleteQRCode(qrImageUrl: string) {
+  try {
+    const existing = await prisma.siteSettings.findFirst();
+    if (existing) {
+      await prisma.siteSettings.update({
+        where: { id: existing.id },
+        data: { qrImageUrl: null },
+      });
+    }
+    const bucketName = process.env.SUPABASE_BUCKET_NAME || 'assets';
+    const publicUrlPrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/`;
+    const pathToRemove = qrImageUrl.startsWith(publicUrlPrefix) ? qrImageUrl.replace(publicUrlPrefix, '') : null;
+    if (pathToRemove) {
+      await supabase.storage.from(bucketName).remove([pathToRemove]);
+    }
+  } catch (e) {
+    console.error("Delete QR Code Error:", e);
+  }
+  revalidatePath("/");
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/admin/settings");
+}

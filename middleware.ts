@@ -1,5 +1,7 @@
-export { default } from "next-auth/middleware";
+import middleware from "next-auth/middleware";
+
+export default middleware;
 
 export const config = {
-  matcher: ["/admin/dashboard/:path*"],
+  matcher: ["/admin/dashboard/:path*", "/admin/settings/:path*"],
 };

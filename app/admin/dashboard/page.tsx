@@ -9,7 +9,7 @@ import {
   uploadHeroBackground, setHeroBackgroundActive, deleteHeroBackground,
   uploadQRCode,
   addGuideline, deleteGuideline,
-  uploadAboutImage,
+  uploadAboutImage, deleteAboutImage, deleteQRCode,
 } from "../actions";
 
 
@@ -226,7 +226,7 @@ export default async function AdminDashboard() {
         <p className="text-sm text-gray-500 mb-6">Upload the UPI QR code PNG that appears on the donation section of the website. (Max 5MB, PNG/JPG)</p>
         <div className="flex flex-col md:flex-row gap-8 items-start">
           {/* Upload form */}
-          <form action={uploadQRCode} className="flex gap-3 items-start flex-1">
+          <form action={async (formData) => { "use server"; await uploadQRCode(formData); }} className="flex gap-3 items-start flex-1">
             <input
               name="qr"
               type="file"
@@ -239,14 +239,21 @@ export default async function AdminDashboard() {
           {/* Live preview */}
           <div className="flex flex-col items-center gap-2">
             <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Current QR</p>
-            <div className="w-36 h-36 border-2 border-dashed border-orange-200 rounded-2xl overflow-hidden bg-orange-50 flex items-center justify-center">
+            <div className="w-36 h-36 border-2 border-dashed border-orange-200 rounded-2xl overflow-hidden bg-orange-50 flex items-center justify-center relative group">
               {siteSettings?.qrImageUrl ? (
-                /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={siteSettings.qrImageUrl}
-                  alt="Current QR Code"
-                  className="w-full h-full object-contain"
-                />
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={siteSettings.qrImageUrl}
+                    alt="Current QR Code"
+                    className="w-full h-full object-contain"
+                  />
+                  <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <form action={async () => { "use server"; if(siteSettings.qrImageUrl) await deleteQRCode(siteSettings.qrImageUrl); }}>
+                       <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-red-600 transition-colors">Delete QR</button>
+                    </form>
+                  </div>
+                </>
               ) : (
                 <p className="text-xs text-gray-400 text-center px-2">No QR uploaded yet</p>
               )}
@@ -311,7 +318,7 @@ export default async function AdminDashboard() {
       <section className={sectionCls}>
         <h2 className="text-xl font-bold text-gray-900 mb-2">About Section Image</h2>
         <p className="text-sm text-gray-500 mb-6">Upload the image displayed in the About section of the homepage.</p>
-        <form action={uploadAboutImage} className="flex gap-4 items-center">
+        <form action={async (formData) => { "use server"; await uploadAboutImage(formData); }} className="flex gap-4 items-center">
           <div className="flex-1">
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">New Image (WebP/JPG/PNG)</label>
             <input type="file" name="image" accept="image/*" required className="w-full p-2 rounded-xl border border-gray-200 bg-white" />
@@ -319,9 +326,16 @@ export default async function AdminDashboard() {
           <button type="submit" className={`${btnCls} mt-5`}>Upload Image</button>
         </form>
         {siteSettings?.aboutImage && (
-          <div className="mt-6">
+          <div className="mt-6 inline-block">
             <p className="text-xs font-bold text-gray-500 uppercase mb-2">Current Image:</p>
-            <img src={siteSettings.aboutImage} alt="About Section" className="h-40 rounded-xl object-cover shadow-sm" />
+            <div className="relative group inline-block rounded-xl overflow-hidden shadow-sm">
+              <img src={siteSettings.aboutImage} alt="About Section" className="h-40 object-cover" />
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <form action={async () => { "use server"; if(siteSettings.aboutImage) await deleteAboutImage(siteSettings.aboutImage); }}>
+                  <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-red-600 transition-colors">Delete Image</button>
+                </form>
+              </div>
+            </div>
           </div>
         )}
       </section>
