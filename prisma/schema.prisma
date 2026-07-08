@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model GalleryImage {
+  id        Int      @id @default(autoincrement())
+  url       String
+  altText   String?
+  createdAt DateTime @default(now())
+}
+
+model Timing {
+  id          Int      @id @default(autoincrement())
+  title       String
+  time        String
+  description String?
+  orderIndex  Int      @default(0)
+}
+
+model Aarti {
+  id        Int      @id @default(autoincrement())
+  title     String
+  audioUrl  String
+  createdAt DateTime @default(now())
+}
+
+model Guideline {
+  id         Int      @id @default(autoincrement())
+  text       String
+  orderIndex Int      @default(0)
+}
+
+model Notice {
+  id        Int      @id @default(autoincrement())
+  title     String
+  subtitle  String?
+  date      DateTime?
+  createdAt DateTime @default(now())
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  date        DateTime
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model Expense {
+  id        Int      @id @default(autoincrement())
+  date      DateTime
+  category  String
+  amount    Float
+  remark    String?
+  createdAt DateTime @default(now())
+}
+
+model Transaction {
+  id          Int      @id @default(autoincrement())
+  date        DateTime
+  amount      Float
+  type        String   // e.g., "DONATION", "MAINTENANCE"
+  description String?
+  createdAt   DateTime @default(now())
+}
+
+model AdminUser {
+  id           Int      @id @default(autoincrement())
+  username     String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+}
+
+model Donor {
+  id        Int      @id @default(autoincrement())
+  name      String
+  amount    Float
+  date      DateTime
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model HeroBackground {
+  id        Int      @id @default(autoincrement())
+  url       String
+  mobileUrl String?
+  tabletUrl String?
+  isActive  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model SiteSettings {
+  id          Int      @id @default(autoincrement())
+  heroTitle   String   @default("Hanuman Mandir")
+  heroSubtitle String  @default("हनुमान मंदिर")
+  heroQuote   String   @default("ॐ जय बजरंग बली ॐ")
+  heroLocation String  @default("दरेकरवाडी, धवळपुरी, परनेर, अहिल्यानगर")
+  aboutImage  String?
+  qrImageUrl  String?
+  ogImageUrl  String?
+  updatedAt   DateTime @updatedAt
+}
+
+model ThemeSettings {
+  id              Int      @id @default(autoincrement())
+  primaryColor    String   @default("#ea580c") // orange-600
+  secondaryColor  String   @default("#d97706") // amber-600
+  backgroundColor String   @default("#0f0805") // dark warm
+  textColor       String   @default("#ffffff")
+  updatedAt       DateTime @updatedAt
+}
+
+model AnimationSettings {
+  id               Int      @id @default(autoincrement())
+  enableAnimations Boolean  @default(true)
+  speedMultiplier  Float    @default(1.0)
+  enableParticles  Boolean  @default(true)
+  enableFlowers    Boolean  @default(true)
+  enableFog        Boolean  @default(true)
+  enableParallax   Boolean  @default(true)
+  enableGlow       Boolean  @default(true)
+  updatedAt        DateTime @updatedAt
+}
+
+model SeoSettings {
+  id              Int      @id @default(autoincrement())
+  metaTitle       String   @default("Hanuman Mandir")
+  metaDescription String   @default("Welcome to Hanuman Mandir")
+  keywords        String   @default("hanuman, mandir, temple")
+  updatedAt       DateTime @updatedAt
+}
