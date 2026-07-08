@@ -273,7 +273,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             transition={{ duration: 1.2 / speed, delay: 0.5 / speed, ease: [0.16, 1, 0.3, 1] }}
             className="text-xl md:text-2xl text-amber-50 font-bold bg-black/30 px-6 py-2.5 rounded-full border border-orange-400/20 shadow-lg backdrop-blur-md"
           >
-            {siteSettings?.heroLocation || "दरेकरवाडी, ढवळपुरी, पारनेर, अहिल्यानगर"}
+            {siteSettings?.heroLocation || "दरेकरवाडी,ढवळपुरी,पारनेर,अहिल्यानगर"}
           </motion.p>
 
           <motion.div

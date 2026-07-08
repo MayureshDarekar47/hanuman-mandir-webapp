@@ -10,6 +10,7 @@ import {
   uploadQRCode,
   addGuideline, deleteGuideline,
   uploadAboutImage, deleteAboutImage, deleteQRCode,
+  addTiming, deleteTiming,
 } from "../actions";
 
 
@@ -18,7 +19,7 @@ const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-x
 const sectionCls = "bg-white p-8 rounded-2xl shadow-sm border border-gray-100";
 
 export default async function AdminDashboard() {
-  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings] = await Promise.all([
+  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings] = await Promise.all([
     prisma.notice.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.event.findMany({ orderBy: { date: "asc" } }).catch(() => []),
     prisma.expense.findMany({ orderBy: { date: "desc" } }).catch(() => []),
@@ -28,6 +29,7 @@ export default async function AdminDashboard() {
     prisma.heroBackground.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.guideline.findMany({ orderBy: { orderIndex: "asc" } }).catch(() => []),
     prisma.siteSettings.findFirst().catch(() => null),
+    prisma.timing.findMany({ orderBy: { orderIndex: "asc" } }).catch(() => []),
   ]);
 
 
@@ -285,6 +287,32 @@ export default async function AdminDashboard() {
             </li>
           )) : (
             <li className="py-6 text-center text-gray-400 text-sm">No guidelines added yet.</li>
+          )}
+        </ul>
+      </section>
+
+      {/* ── Temple Timings ── */}
+      <section className={sectionCls}>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">Manage Temple Timings</h2>
+        <form action={addTiming} className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-6">
+          <input name="title" required placeholder="Title (e.g. Kakad Aarti)" className={inputCls} />
+          <input name="time" required placeholder="Time (e.g. 5:30 AM)" className={inputCls} />
+          <input name="description" placeholder="Description (optional)" className={inputCls} />
+          <button type="submit" className={`${btnCls} md:col-span-3`}>Add Timing</button>
+        </form>
+        <ul className="space-y-2">
+          {timings.length > 0 ? timings.map((t) => (
+            <li key={t.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100">
+              <div>
+                <p className="font-bold text-gray-900 text-sm">{t.title} <span className="text-orange-500 ml-2">({t.time})</span></p>
+                {t.description && <p className="text-xs text-gray-500 mt-0.5">{t.description}</p>}
+              </div>
+              <form action={async () => { "use server"; await deleteTiming(t.id); }}>
+                <button type="submit" className="text-red-400 hover:text-red-600 text-xs font-bold">Delete</button>
+              </form>
+            </li>
+          )) : (
+            <li className="py-6 text-center text-gray-400 text-sm">No timings added yet.</li>
           )}
         </ul>
       </section>

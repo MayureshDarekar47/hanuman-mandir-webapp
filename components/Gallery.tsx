@@ -14,12 +14,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
     setCurrentIndex((prev) => (prev + dir + images.length) % images.length);
   }, [images.length]);
 
-  // Auto-play every 5 seconds
-  useEffect(() => {
-    if (images.length < 2) return;
-    const timer = setInterval(() => navigate(1), 5000);
-    return () => clearInterval(timer);
-  }, [navigate, images.length]);
+  // Auto-play removed so images only change on user interaction
 
   const goTo = (idx: number) => {
     setDirection(idx > currentIndex ? 1 : -1);

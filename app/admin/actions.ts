@@ -573,3 +573,29 @@ export async function deleteQRCode(qrImageUrl: string) {
   revalidatePath("/admin/dashboard");
   revalidatePath("/admin/settings");
 }
+
+// ── Temple Timings ──────────────────────────────────────────────
+export async function addTiming(formData: FormData) {
+  const title = formData.get("title") as string;
+  const time = formData.get("time") as string;
+  const description = formData.get("description") as string;
+  if (!title?.trim() || !time?.trim()) return;
+
+  const count = await prisma.timing.count().catch(() => 0);
+  await prisma.timing.create({
+    data: { 
+      title: title.trim(), 
+      time: time.trim(), 
+      description: description?.trim() || null, 
+      orderIndex: count 
+    },
+  });
+  revalidatePath("/");
+  revalidatePath("/admin/dashboard");
+}
+
+export async function deleteTiming(id: number) {
+  await prisma.timing.delete({ where: { id } });
+  revalidatePath("/");
+  revalidatePath("/admin/dashboard");
+}
