@@ -654,11 +654,17 @@ export async function addPaymentMethod(formData: FormData) {
   const payeeName = formData.get("payeeName") as string;
   const paymentNote = formData.get("paymentNote") as string;
 
-  await prisma.paymentMethod.create({
-    data: { upiId, payeeName, paymentNote },
-  });
-  revalidatePath("/admin/payments");
-  revalidatePath("/");
+  try {
+    await prisma.paymentMethod.create({
+      data: { upiId, payeeName, paymentNote },
+    });
+    revalidatePath("/admin/dashboard");
+    revalidatePath("/");
+    return { success: true };
+  } catch (e: any) {
+    if (e.code === 'P2002') return { error: "This UPI ID is already registered." };
+    return { error: "Failed to add payment method." };
+  }
 }
 
 export async function updatePaymentMethod(id: number, formData: FormData) {
@@ -666,12 +672,18 @@ export async function updatePaymentMethod(id: number, formData: FormData) {
   const payeeName = formData.get("payeeName") as string;
   const paymentNote = formData.get("paymentNote") as string;
 
-  await prisma.paymentMethod.update({
-    where: { id },
-    data: { upiId, payeeName, paymentNote },
-  });
-  revalidatePath("/admin/payments");
-  revalidatePath("/");
+  try {
+    await prisma.paymentMethod.update({
+      where: { id },
+      data: { upiId, payeeName, paymentNote },
+    });
+    revalidatePath("/admin/dashboard");
+    revalidatePath("/");
+    return { success: true };
+  } catch (e: any) {
+    if (e.code === 'P2002') return { error: "This UPI ID is already registered." };
+    return { error: "Failed to save changes." };
+  }
 }
 
 export async function deletePaymentMethod(id: number) {

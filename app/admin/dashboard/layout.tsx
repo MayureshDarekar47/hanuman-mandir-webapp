@@ -4,7 +4,6 @@ import SignOutButton from "@/components/SignOutButton";
 
 const mainNavItems = [
   { href: "/admin/dashboard", label: "📊", text: "Dashboard" },
-  { href: "/admin/payments", label: "💳", text: "Payment & QR" },
   { href: "/donors", label: "❤️", text: "Donors" },
   { href: "/expenses", label: "📋", text: "Seva Records" },
 ];

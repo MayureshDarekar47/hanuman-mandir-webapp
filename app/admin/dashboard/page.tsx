@@ -20,13 +20,14 @@ import MultiAartiUploadForm from "@/components/admin/MultiAartiUploadForm";
 import GalleryUploadForm from "@/components/admin/GalleryUploadForm";
 import FileUploadWithProgress from "@/components/admin/FileUploadWithProgress";
 import DocumentList from "@/components/admin/DocumentList";
+import PaymentManager from "@/components/admin/PaymentManager";
 
 const inputCls = "flex-1 min-w-0 p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm w-full";
 const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap";
 const sectionCls = "bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100";
 
 export default async function AdminDashboard() {
-  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents] = await Promise.all([
+  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents, paymentMethods] = await Promise.all([
     prisma.notice.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.event.findMany({ orderBy: { date: "asc" } }).catch(() => []),
     prisma.expense.findMany({ orderBy: { date: "desc" } }).catch(() => []),
@@ -38,6 +39,7 @@ export default async function AdminDashboard() {
     prisma.siteSettings.findFirst().catch(() => null),
     prisma.timing.findMany({ orderBy: { orderIndex: "asc" } }).catch(() => []),
     prisma.document.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
+    prisma.paymentMethod.findMany({ orderBy: { createdAt: "asc" } }).catch(() => []),
   ]);
 
   const totalDonated = donors.reduce((s, d) => s + d.amount, 0);
@@ -338,39 +340,16 @@ export default async function AdminDashboard() {
         </div>
       </section>
 
-      {/* ── QR Code Upload ── */}
+      {/* ── UPI Payments & QR Code ── */}
       <section className={sectionCls}>
-        <h2 className="text-xl font-bold text-gray-900 mb-2">Donation QR Code</h2>
-        <p className="text-sm text-gray-500 mb-6">Upload the UPI QR code PNG that appears on the donation section. (Max 5MB, PNG/JPG)</p>
-        <div className="flex flex-col md:flex-row gap-8 items-start">
-          <div className="flex-1">
-            <form action={async (formData) => { "use server"; await uploadQRCode(formData); }} className="flex flex-col sm:flex-row gap-3 items-start">
-              <input
-                name="qr" type="file" accept="image/png,image/jpeg,image/webp" required
-                className={`${inputCls} file:mr-3 file:py-1.5 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-orange-100 file:text-orange-700 hover:file:bg-orange-200`}
-              />
-              <button type="submit" className={btnCls}>Upload QR</button>
-            </form>
-          </div>
-          <div className="flex flex-col items-center gap-2">
-            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Current QR</p>
-            <div className="w-36 h-36 border-2 border-dashed border-orange-200 rounded-2xl overflow-hidden bg-orange-50 flex items-center justify-center relative group">
-              {siteSettings?.qrImageUrl ? (
-                <>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={siteSettings.qrImageUrl} alt="Current QR Code" className="w-full h-full object-contain" />
-                  <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                    <form action={async () => { "use server"; if (siteSettings.qrImageUrl) await deleteQRCode(siteSettings.qrImageUrl); }}>
-                      <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md hover:bg-red-600">Delete QR</button>
-                    </form>
-                  </div>
-                </>
-              ) : (
-                <p className="text-xs text-gray-400 text-center px-2">No QR uploaded yet</p>
-              )}
-            </div>
-          </div>
-        </div>
+        <PaymentManager methods={paymentMethods.map(m => ({
+          id: m.id,
+          upiId: m.upiId,
+          payeeName: m.payeeName,
+          paymentNote: m.paymentNote,
+          qrImageUrl: m.qrImageUrl,
+          isActive: m.isActive
+        }))} />
       </section>
 
       {/* ── Guidelines ── */}

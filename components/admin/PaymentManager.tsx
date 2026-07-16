@@ -67,9 +67,13 @@ function PaymentRow({
     fd.append("payeeName", payeeName.trim());
     fd.append("paymentNote", paymentNote.trim());
     startTransition(async () => {
-      await updatePaymentMethod(method.id, fd);
-      setSaveSuccess(true);
-      setTimeout(() => setSaveSuccess(false), 2500);
+      const res = await updatePaymentMethod(method.id, fd);
+      if (res?.error) {
+        setError(res.error);
+      } else {
+        setSaveSuccess(true);
+        setTimeout(() => setSaveSuccess(false), 2500);
+      }
     });
   };
 
@@ -279,8 +283,12 @@ function AddPaymentForm({ onCancel }: { onCancel: () => void }) {
       return;
     }
     startTransition(async () => {
-      await addPaymentMethod(fd);
-      onCancel();
+      const res = await addPaymentMethod(fd);
+      if (res?.error) {
+        setError(res.error);
+      } else {
+        onCancel();
+      }
     });
   };
 
