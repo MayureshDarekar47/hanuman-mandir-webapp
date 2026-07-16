@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
+import { revalidatePath } from "next/cache";
 import * as XLSX from "xlsx";
 
 // Helper: parse CSV text into donor records
@@ -119,6 +120,8 @@ export async function POST(req: NextRequest) {
         await prisma.document.create({
           data: { title: file.name, url: urlData.publicUrl, year: parsedYear, type: "DONOR" }
         });
+        revalidatePath("/donors");
+        revalidatePath("/");
         return NextResponse.json({
           success: true,
           type: "pdf-parsed",
@@ -131,6 +134,8 @@ export async function POST(req: NextRequest) {
       await prisma.document.create({
         data: { title: file.name, url: urlData.publicUrl, year: parsedYear, type: "DONOR" }
       });
+      revalidatePath("/donors");
+      revalidatePath("/");
       return NextResponse.json({
         success: true,
         type: "pdf-download",
@@ -152,6 +157,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "No valid rows found in Excel file. Check column format: Name, Amount, Date (dd/mm/yyyy), Note" }, { status: 400 });
       }
       await prisma.donor.createMany({ data: records });
+      revalidatePath("/donors");
+      revalidatePath("/");
       return NextResponse.json({
         success: true,
         type: "excel",
@@ -173,6 +180,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "No valid rows found in CSV. Check column format: Name, Amount, Date (dd/mm/yyyy), Note" }, { status: 400 });
       }
       await prisma.donor.createMany({ data: records });
+      revalidatePath("/donors");
+      revalidatePath("/");
       return NextResponse.json({
         success: true,
         type: "csv",

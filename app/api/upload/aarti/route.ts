@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: NextRequest) {
   try {
@@ -69,6 +70,12 @@ export async function POST(req: NextRequest) {
     }
 
     const successCount = results.filter(r => r.success).length;
+    
+    if (successCount > 0) {
+      revalidatePath("/");
+      revalidatePath("/admin/dashboard");
+    }
+
     return NextResponse.json({
       success: successCount > 0,
       total: index,

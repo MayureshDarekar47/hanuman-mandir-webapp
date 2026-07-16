@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
+import { revalidatePath } from "next/cache";
 
 async function deleteHeroBgRecord(id: number, url: string, mobileUrl?: string | null) {
   try {
@@ -58,6 +59,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    revalidatePath("/");
+    
     return NextResponse.json({ success: true, url: urlData.publicUrl });
   } catch (err: any) {
     console.error("[hero-bg upload]", err);

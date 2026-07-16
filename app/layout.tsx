@@ -91,7 +91,7 @@ export async function generateMetadata(): Promise<Metadata> {
       // Content language
       'content-language': 'en-IN, mr-IN',
       // Apple mobile web app
-      'apple-mobile-web-app-capable': 'yes',
+      'mobile-web-app-capable': 'yes',
       'apple-mobile-web-app-status-bar-style': 'default',
       'apple-mobile-web-app-title': 'Hanuman Mandir',
       // MS Tile
@@ -102,9 +102,8 @@ export async function generateMetadata(): Promise<Metadata> {
     icons: {
       icon: [
         { url: '/favicon.ico' },
-        { url: '/assets/icon-192.png', sizes: '192x192', type: 'image/png' },
       ],
-      apple: [{ url: '/assets/icon-192.png', sizes: '192x192' }],
+      apple: [{ url: '/favicon.ico' }],
     },
   };
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { supabase } from "@/lib/supabase";
+import { revalidatePath } from "next/cache";
 
 export async function POST(req: NextRequest) {
   try {
@@ -37,6 +38,9 @@ export async function POST(req: NextRequest) {
     await prisma.galleryImage.create({
       data: { url: urlData.publicUrl, altText: file.name },
     });
+
+    revalidatePath("/gallery");
+    revalidatePath("/");
 
     return NextResponse.json({ success: true, url: urlData.publicUrl });
 

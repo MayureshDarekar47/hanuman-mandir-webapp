@@ -74,7 +74,7 @@ export default async function DonorsPage() {
           <p className="text-white/80 text-sm font-semibold uppercase tracking-widest mb-2">
             Total Donations
           </p>
-          <p className="text-3xl sm:text-4xl font-black">
+          <p suppressHydrationWarning className="text-3xl sm:text-4xl font-black">
             ₹{totalDonated.toLocaleString("en-IN")}
           </p>
         </div>
@@ -110,13 +110,13 @@ export default async function DonorsPage() {
                       </span>
                       <div>
                         <p className="font-semibold text-gray-900 leading-tight">{d.name}</p>
-                        <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
+                        <p suppressHydrationWarning className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
                           <Calendar size={12} className="text-orange-400" />
                           {new Date(d.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                         </p>
                       </div>
                     </div>
-                    <span className="inline-flex items-center gap-1 font-bold text-green-700 bg-green-50 px-2 py-1 rounded-full text-sm">
+                    <span suppressHydrationWarning className="inline-flex items-center gap-1 font-bold text-green-700 bg-green-50 px-2 py-1 rounded-full text-sm">
                       <IndianRupee size={12} />
                       {d.amount.toLocaleString("en-IN")}
                     </span>
@@ -162,13 +162,13 @@ export default async function DonorsPage() {
                         </span>
                       </td>
                       <td className="py-4 px-6 text-sm text-gray-500">
-                        <span className="inline-flex items-center gap-1.5">
+                        <span suppressHydrationWarning className="inline-flex items-center gap-1.5">
                           <Calendar size={12} className="text-orange-400 flex-shrink-0" />
                           {new Date(d.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                         </span>
                       </td>
                       <td className="py-4 px-6">
-                        <span className="inline-flex items-center gap-1 font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full text-sm">
+                        <span suppressHydrationWarning className="inline-flex items-center gap-1 font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full text-sm">
                           <IndianRupee size={12} />
                           {d.amount.toLocaleString("en-IN")}
                         </span>

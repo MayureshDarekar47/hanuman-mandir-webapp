@@ -72,7 +72,7 @@ export default async function ExpensesPage() {
       {/* Total */}
       <div className="mb-8 p-4 sm:p-6 bg-gradient-to-r from-orange-600 to-amber-500 rounded-2xl text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 shadow-xl">
         <span className="font-bold text-lg">Total Expenditure:</span>
-        <span className="text-2xl sm:text-3xl font-black">
+        <span suppressHydrationWarning className="text-2xl sm:text-3xl font-black">
           ₹{totalExpense.toLocaleString("en-IN")}
         </span>
       </div>
@@ -94,11 +94,11 @@ export default async function ExpensesPage() {
                   <div className="flex justify-between items-start">
                     <div>
                       <p className="font-semibold text-gray-900 leading-tight">{exp.category}</p>
-                      <p className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
+                      <p suppressHydrationWarning className="text-xs text-gray-500 mt-0.5 flex items-center gap-1">
                         {new Date(exp.date).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
                       </p>
                     </div>
-                    <span className="inline-flex items-center gap-1 font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full text-sm">
+                    <span suppressHydrationWarning className="inline-flex items-center gap-1 font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full text-sm">
                       ₹{exp.amount.toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -132,7 +132,7 @@ export default async function ExpensesPage() {
                 {expenses.length > 0 ? (
                   expenses.map((exp) => (
                     <tr key={exp.id} className="hover:bg-orange-50/40 transition-colors">
-                      <td className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
+                      <td suppressHydrationWarning className="py-4 px-6 text-sm text-gray-500 whitespace-nowrap">
                         {new Date(exp.date).toLocaleDateString("en-IN", {
                           day: "numeric",
                           month: "short",
@@ -141,7 +141,7 @@ export default async function ExpensesPage() {
                       </td>
                       <td className="py-4 px-6 font-semibold text-gray-900">{exp.category}</td>
                       <td className="py-4 px-6">
-                        <span className="inline-flex items-center gap-1 font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full text-sm">
+                        <span suppressHydrationWarning className="inline-flex items-center gap-1 font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full text-sm">
                           ₹{exp.amount.toLocaleString("en-IN")}
                         </span>
                       </td>

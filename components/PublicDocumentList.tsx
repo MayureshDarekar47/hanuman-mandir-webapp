@@ -86,7 +86,7 @@ export default function PublicDocumentList({ documents, title }: { documents: Do
                 {doc.title}
               </h3>
               
-              <div className="text-sm text-gray-500 flex items-center gap-2 mb-6 mt-auto">
+              <div suppressHydrationWarning className="text-sm text-gray-500 flex items-center gap-2 mb-6 mt-auto">
                 <Calendar size={14} className="text-gray-400" />
                 Uploaded: {new Date(doc.createdAt).toLocaleDateString("en-IN", { dateStyle: "medium" })}
               </div>
