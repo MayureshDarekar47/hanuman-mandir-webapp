@@ -103,7 +103,7 @@ model SiteSettings {
   heroTitle   String   @default("Hanuman Mandir")
   heroSubtitle String  @default("हनुमान मंदिर")
   heroQuote   String   @default("ॐ जय बजरंग बली ॐ")
-  heroLocation String  @default("दरेकरवाडी, धवळपुरी, परनेर, अहिल्यानगर")
+  heroLocation String  @default("दरेकरवाडी, ढवळपुरी, पारनेर, अहिल्यानगर")
   aboutImage  String?
   qrImageUrl  String?
   ogImageUrl  String?
@@ -148,4 +148,15 @@ model Document {
   year      Int?
   type      String   // "DONOR" or "SEVA"
   createdAt DateTime @default(now())
+}
+
+model PaymentMethod {
+  id          Int      @id @default(autoincrement())
+  upiId       String   @unique
+  payeeName   String?
+  paymentNote String?
+  qrImageUrl  String?
+  isActive    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

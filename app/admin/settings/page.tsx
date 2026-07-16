@@ -1,9 +1,8 @@
 export const dynamic = 'force-dynamic';
 
 import { prisma } from "@/lib/db";
-import { updateSiteSettings, updateThemeSettings, updateAnimationSettings, updateSeoSettings, updatePaymentSettings } from "../actions";
+import { updateSiteSettings, updateThemeSettings, updateAnimationSettings, updateSeoSettings } from "../actions";
 import ChangeCredentialsForm from "./ChangeCredentialsForm";
-import { getPaymentSettings } from "@/lib/payment";
 
 const inputCls = "w-full p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm mb-3";
 const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm";
@@ -11,15 +10,12 @@ const sectionCls = "bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb
 
 export default async function SettingsPage() {
   const [site, theme, anim, seo, admin] = await Promise.all([
-    prisma.siteSettings.findFirst(),
-    prisma.themeSettings.findFirst(),
-    prisma.animationSettings.findFirst(),
-    prisma.seoSettings.findFirst(),
-    prisma.adminUser.findFirst(),
+    prisma.siteSettings.findFirst().catch(() => null),
+    prisma.themeSettings.findFirst().catch(() => null),
+    prisma.animationSettings.findFirst().catch(() => null),
+    prisma.seoSettings.findFirst().catch(() => null),
+    prisma.adminUser.findFirst().catch(() => null),
   ]);
-
-  const paymentConfig = getPaymentSettings();
-
 
   return (
     <div className="space-y-10 pb-10">
@@ -47,31 +43,28 @@ export default async function SettingsPage() {
           </div>
           <div>
             <label className="text-xs font-bold text-gray-500 uppercase">Location</label>
-            <input name="heroLocation" defaultValue={site?.heroLocation || "दरेकरवाडी, धवळपुरी, परनेर, अहिल्यानगर"} required className={inputCls} />
+            <input name="heroLocation" defaultValue={site?.heroLocation || "दरेकरवाडी, ढवळपुरी, पारनेर, अहिल्यानगर"} required className={inputCls} />
           </div>
           <button type="submit" className={`${btnCls} md:col-span-2`}>Save Site Settings</button>
         </form>
       </section>
 
-      {/* UPI Payment Settings */}
+      {/* UPI Payment Settings → moved to dedicated page */}
       <section className={sectionCls}>
-        <h2 className="text-xl font-bold text-gray-900 mb-6">UPI Payment Configuration</h2>
-        <form action={updatePaymentSettings} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="md:col-span-2">
-            <label className="text-xs font-bold text-gray-500 uppercase">UPI ID (VPA)</label>
-            <input name="upiId" defaultValue={paymentConfig.upiId} placeholder="e.g., hanumanmandir@sbi" className={inputCls} />
-            <p className="text-xs text-gray-400 mt-1">This UPI ID is used for the 'Pay Now' button deep link on mobile devices.</p>
-          </div>
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <label className="text-xs font-bold text-gray-500 uppercase">Payee Name</label>
-            <input name="upiName" defaultValue={paymentConfig.upiName} placeholder="Hanuman Mandir" className={inputCls} />
+            <h2 className="text-xl font-bold text-gray-900 mb-1">UPI Payment &amp; QR Code</h2>
+            <p className="text-gray-500 text-sm">
+              Manage UPI IDs, QR codes, payee names, and active payment methods from the dedicated Payment Settings page.
+            </p>
           </div>
-          <div>
-            <label className="text-xs font-bold text-gray-500 uppercase">Default Payment Note</label>
-            <input name="upiNote" defaultValue={paymentConfig.upiNote} placeholder="Temple Donation" className={inputCls} />
-          </div>
-          <button type="submit" className={`${btnCls} md:col-span-2`}>Save UPI Settings</button>
-        </form>
+          <a
+            href="/admin/payments"
+            className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap"
+          >
+            💳 Manage Payments →
+          </a>
+        </div>
       </section>
 
       {/* Theme Settings */}
@@ -116,7 +109,7 @@ export default async function SettingsPage() {
         <h2 className="text-xl font-bold text-gray-900 mb-6">Animation Controls</h2>
         <form action={updateAnimationSettings} className="space-y-4">
           <input type="hidden" name="id" value={anim?.id || 0} />
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <label className="flex items-center gap-3 cursor-pointer">
               <input type="checkbox" name="enableAnimations" defaultChecked={anim?.enableAnimations ?? true} className="w-5 h-5 text-orange-600 rounded border-gray-300" />

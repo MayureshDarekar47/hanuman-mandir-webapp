@@ -19,7 +19,7 @@ export default async function Home() {
     prisma.animationSettings.findFirst().catch(() => null),
   ]);
   const galleryImages = galleryData.map(g => g.url);
-  const payment = getPaymentSettings();
+  const payment = await getPaymentSettings();
 
   return (
     <main className="flex min-h-screen flex-col w-full">
@@ -37,7 +37,7 @@ export default async function Home() {
       <Guidelines />
       <Notices />
       <Donation 
-        qrUrl={site?.qrImageUrl || undefined} 
+        qrUrl={payment.qrImageUrl || site?.qrImageUrl || undefined} 
         upiId={payment.upiId}
         upiName={payment.upiName}
         upiNote={payment.upiNote}

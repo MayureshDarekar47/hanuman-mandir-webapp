@@ -343,19 +343,8 @@ export async function updateSiteSettings(formData: FormData) {
   revalidatePath("/admin/settings");
 }
 
-export async function updatePaymentSettings(formData: FormData) {
-  const { savePaymentSettings } = await import('@/lib/payment');
-  
-  const data = {
-    upiId: formData.get("upiId") as string || "",
-    upiName: formData.get("upiName") as string || "Hanuman Mandir",
-    upiNote: formData.get("upiNote") as string || "Temple Donation",
-  };
-  
-  savePaymentSettings(data);
-  revalidatePath("/");
-  revalidatePath("/admin/settings");
-}
+
+
 
 export async function updateThemeSettings(formData: FormData) {
   const id = parseInt(formData.get("id") as string) || 0;
@@ -658,4 +647,90 @@ export async function deleteDocument(id: number) {
   revalidatePath("/admin/dashboard");
   revalidatePath("/donors");
   revalidatePath("/expenses");
+}
+
+export async function addPaymentMethod(formData: FormData) {
+  const upiId = formData.get("upiId") as string;
+  const payeeName = formData.get("payeeName") as string;
+  const paymentNote = formData.get("paymentNote") as string;
+
+  await prisma.paymentMethod.create({
+    data: { upiId, payeeName, paymentNote },
+  });
+  revalidatePath("/admin/payments");
+  revalidatePath("/");
+}
+
+export async function updatePaymentMethod(id: number, formData: FormData) {
+  const upiId = formData.get("upiId") as string;
+  const payeeName = formData.get("payeeName") as string;
+  const paymentNote = formData.get("paymentNote") as string;
+
+  await prisma.paymentMethod.update({
+    where: { id },
+    data: { upiId, payeeName, paymentNote },
+  });
+  revalidatePath("/admin/payments");
+  revalidatePath("/");
+}
+
+export async function deletePaymentMethod(id: number) {
+  const method = await prisma.paymentMethod.findUnique({ where: { id } });
+  if (method?.qrImageUrl) {
+    const bucketName = process.env.SUPABASE_BUCKET_NAME || 'assets';
+    const publicUrlPrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/`;
+    if (method.qrImageUrl.startsWith(publicUrlPrefix)) {
+      const pathToRemove = method.qrImageUrl.replace(publicUrlPrefix, '');
+      await supabase.storage.from(bucketName).remove([pathToRemove]);
+    }
+  }
+
+  await prisma.paymentMethod.delete({ where: { id } });
+  revalidatePath("/admin/payments");
+  revalidatePath("/");
+}
+
+export async function setPaymentMethodActive(id: number) {
+  await prisma.paymentMethod.updateMany({ data: { isActive: false } });
+  await prisma.paymentMethod.update({
+    where: { id },
+    data: { isActive: true },
+  });
+  revalidatePath("/admin/payments");
+  revalidatePath("/");
+}
+
+export async function uploadPaymentQr(id: number, formData: FormData) {
+  const file = formData.get("image") as File;
+  if (!file || file.size === 0) return;
+  
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+  const filename = `${Date.now()}_qr_${safeName}`;
+  const bucketName = process.env.SUPABASE_BUCKET_NAME || 'assets';
+  
+  const { error } = await supabase.storage.from(bucketName).upload(`qrcodes/${filename}`, buffer, {
+    contentType: file.type,
+    upsert: false,
+  });
+  if (error) throw error;
+  
+  const { data: publicUrlData } = supabase.storage.from(bucketName).getPublicUrl(`qrcodes/${filename}`);
+  
+  const method = await prisma.paymentMethod.findUnique({ where: { id } });
+  if (method?.qrImageUrl) {
+    const publicUrlPrefix = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${bucketName}/`;
+    if (method.qrImageUrl.startsWith(publicUrlPrefix)) {
+      const pathToRemove = method.qrImageUrl.replace(publicUrlPrefix, '');
+      await supabase.storage.from(bucketName).remove([pathToRemove]);
+    }
+  }
+
+  await prisma.paymentMethod.update({
+    where: { id },
+    data: { qrImageUrl: publicUrlData.publicUrl },
+  });
+  
+  revalidatePath("/admin/payments");
+  revalidatePath("/");
 }

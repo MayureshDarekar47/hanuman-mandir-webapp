@@ -10,18 +10,18 @@ export default function Donation({
   upiName,
   upiNote,
 }: { 
-  qrUrl?: string;
-  upiId?: string;
-  upiName?: string;
-  upiNote?: string;
+  qrUrl?: string | null;
+  upiId?: string | null;
+  upiName?: string | null;
+  upiNote?: string | null;
 }) {
   const [showModal, setShowModal] = useState(false);
-  const defaultName = upiName || "Hanuman Mandir";
-  const defaultNote = upiNote || "Temple Donation";
+  const displayName = upiName || "Hanuman Mandir";
+  const displayNote = upiNote || "Temple Donation";
   
-  // Standard UPI deep link format
+  // Standard UPI deep link — only built when an active UPI ID exists in the database
   const upiDeepLink = upiId 
-    ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(defaultName)}&tn=${encodeURIComponent(defaultNote)}`
+    ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}`
     : null;
 
 
@@ -89,13 +89,14 @@ export default function Donation({
                       </div>
                     )}
                   </div>
-                  <p className="font-bold text-gray-800 text-xl text-center">{defaultName}</p>
+                  <p className="font-bold text-gray-800 text-xl text-center">{displayName}</p>
                   <p className="text-gray-400 text-sm mt-1 mb-2">UPI / GPay / PhonePe</p>
 
-                  {upiDeepLink && (
+                  {upiId ? (
                     <div className="w-full mt-4 flex flex-col items-center">
+                      <p className="text-xs text-gray-400 mb-2 font-mono">{upiId}</p>
                       <a
-                        href={upiDeepLink}
+                        href={upiDeepLink!}
                         onClick={(e) => {
                           const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
                             || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1)
@@ -111,6 +112,11 @@ export default function Donation({
                         <Shield size={18} />
                         Pay Now with UPI
                       </a>
+                    </div>
+                  ) : (
+                    <div className="w-full mt-4 text-center">
+                      <p className="text-sm text-gray-400 italic">Payment not configured yet.</p>
+                      <p className="text-xs text-gray-400 mt-1">Admin: Add a UPI ID in the Payment Settings.</p>
                     </div>
                   )}
                 </div>

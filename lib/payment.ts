@@ -1,40 +1,30 @@
-import fs from 'fs';
-import path from 'path';
-
-const paymentFile = path.join(process.cwd(), 'data', 'payment.json');
+import { prisma } from "./db";
 
 export type PaymentSettings = {
-  upiId: string;
-  upiName: string;
-  upiNote: string;
+  upiId: string | null;
+  upiName: string | null;
+  upiNote: string | null;
+  qrImageUrl: string | null;
 };
 
-const defaultSettings: PaymentSettings = {
-  upiId: "9145685349@ybl",
-  upiName: "Bhikaji Darekar",
-  upiNote: "Temple Donation"
-};
-
-export function getPaymentSettings(): PaymentSettings {
+export async function getPaymentSettings(): Promise<PaymentSettings> {
   try {
-    if (fs.existsSync(paymentFile)) {
-      const data = fs.readFileSync(paymentFile, 'utf8');
-      return JSON.parse(data);
+    const activePayment = await prisma.paymentMethod.findFirst({
+      where: { isActive: true },
+    });
+
+    if (activePayment) {
+      return {
+        upiId: activePayment.upiId,
+        upiName: activePayment.payeeName ?? null,
+        upiNote: activePayment.paymentNote ?? null,
+        qrImageUrl: activePayment.qrImageUrl ?? null,
+      };
     }
   } catch (e) {
-    console.error("Error reading payment settings", e);
+    console.error("Error reading payment settings from database", e);
   }
-  return defaultSettings;
-}
 
-export function savePaymentSettings(settings: PaymentSettings) {
-  try {
-    const dir = path.dirname(paymentFile);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
-    }
-    fs.writeFileSync(paymentFile, JSON.stringify(settings, null, 2), 'utf8');
-  } catch (e) {
-    console.error("Error saving payment settings", e);
-  }
+  // No active payment method found — return nulls so public site shows nothing
+  return { upiId: null, upiName: null, upiNote: null, qrImageUrl: null };
 }
