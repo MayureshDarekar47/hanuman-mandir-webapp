@@ -49,23 +49,7 @@ export default async function SettingsPage() {
         </form>
       </section>
 
-      {/* UPI Payment Settings → moved to dedicated page */}
-      <section className={sectionCls}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-xl font-bold text-gray-900 mb-1">UPI Payment &amp; QR Code</h2>
-            <p className="text-gray-500 text-sm">
-              Manage UPI IDs, QR codes, payee names, and active payment methods from the dedicated Payment Settings page.
-            </p>
-          </div>
-          <a
-            href="/admin/payments"
-            className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap"
-          >
-            💳 Manage Payments →
-          </a>
-        </div>
-      </section>
+
 
       {/* Theme Settings */}
       <section className={sectionCls}>

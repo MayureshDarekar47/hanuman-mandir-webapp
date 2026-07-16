@@ -7,9 +7,7 @@ import { prisma } from "@/lib/db";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hanumanmandir.org';
 
 export const viewport: Viewport = {
-  width: 1024,
-  initialScale: 0.1, // Allows zooming out completely
-  maximumScale: 5,
+  width: 1280,
 };
 
 export async function generateMetadata(): Promise<Metadata> {

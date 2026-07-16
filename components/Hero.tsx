@@ -54,17 +54,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
   return (
     <section aria-label="Hero Section" className="relative min-h-[600px] h-[700px] 2xl:h-[800px] w-full flex items-center justify-center overflow-hidden bg-[#0f0805]" id="home">
 
-      {/* SVG Filters for Heat Haze */}
-      {enableFog && (
-        <svg width="0" height="0" className="absolute pointer-events-none" aria-hidden="true">
-          <filter id="heatHaze">
-            <feTurbulence type="fractalNoise" baseFrequency="0.015 0.02" numOctaves="2" result="noise">
-              <animate attributeName="baseFrequency" values="0.015 0.02;0.02 0.015;0.015 0.02" dur={`${20 / speed}s`} repeatCount="indefinite" />
-            </feTurbulence>
-            <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
-          </filter>
-        </svg>
-      )}
+      {/* Heat Haze disabled for performance */}
 
       {/* 1. Base Image with Parallax, Slow Ken Burns & Cinematic Filters */}
       <motion.div
@@ -79,11 +69,10 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
         transition={{ duration: 60 / speed, repeat: Infinity, ease: "easeInOut" }}
       />
 
-      {/* 2. Soft Heat Haze Overlay */}
+      {/* Soft Heat Haze Overlay (Simplified for performance) */}
       {enableFog && (
         <div
-          className="absolute inset-0 z-10 pointer-events-none backdrop-blur-[1px]"
-          style={{ filter: "url(#heatHaze)", opacity: 0.8 }}
+          className="absolute inset-0 z-10 pointer-events-none opacity-40 bg-orange-900/10 mix-blend-overlay"
           aria-hidden="true"
         />
       )}
@@ -136,12 +125,11 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
       {enableFog && (
         <>
           <motion.div
-            className="absolute bottom-0 left-[-20%] right-[-20%] h-3/5 z-10 pointer-events-none opacity-40 mix-blend-screen"
+            className="absolute bottom-0 left-[-20%] right-[-20%] h-3/5 z-10 pointer-events-none opacity-30 mix-blend-screen"
             style={{
-              background: "radial-gradient(ellipse at 50% 100%, rgba(255,230,200,0.2), transparent 70%)",
-              filter: "blur(40px)"
+              background: "radial-gradient(ellipse at 50% 100%, rgba(255,230,200,0.15), transparent 70%)",
             }}
-            animate={animEnabled ? { x: ["-5%", "5%", "-5%"], opacity: [0.3, 0.5, 0.3] } : {}}
+            animate={animEnabled ? { x: ["-2%", "2%", "-2%"], opacity: [0.2, 0.4, 0.2] } : {}}
             transition={{ duration: 25 / speed, repeat: Infinity, ease: "easeInOut" }}
             aria-hidden="true"
           />
@@ -172,7 +160,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
       {/* 9. Floating dust particles & Glowing particles */}
       {mounted && (
         <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden" aria-hidden="true">
-          {enableParticles && Array.from({ length: 40 }).map((_, i) => (
+          {enableParticles && Array.from({ length: 15 }).map((_, i) => (
             <motion.div
               key={`dust-${i}`}
               className="absolute rounded-full bg-white shadow-[0_0_8px_2px_rgba(255,220,120,0.6)]"
@@ -198,13 +186,13 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
           ))}
 
           {/* Floating Marigold & Rose Petals */}
-          {enableFlowers && Array.from({ length: 25 }).map((_, i) => {
+          {enableFlowers && Array.from({ length: 12 }).map((_, i) => {
             const isMarigold = Math.random() > 0.4;
             const size = Math.random() * 8 + 6;
             return (
               <motion.div
                 key={`petal-${i}`}
-                className="absolute shadow-sm backdrop-blur-[0.5px]"
+                className="absolute shadow-sm"
                 style={{
                   width: size + "px",
                   height: size * 0.8 + "px",
@@ -292,17 +280,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
         </motion.div>
       </article>
 
-      {/* 11. Subtle Scroll Indicator */}
-      <motion.div
-        animate={animEnabled ? { y: [0, 10, 0] } : {}}
-        transition={{ duration: 3 / speed, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-8 z-30 flex flex-col items-center text-amber-500/80"
-        aria-hidden="true"
-      >
-        <div className="w-6 h-10 border-[1.5px] border-amber-500/40 rounded-full flex items-start justify-center p-1 bg-black/30 backdrop-blur-md shadow-lg">
-          <div className="w-1.5 h-2.5 bg-amber-500/80 rounded-full" />
-        </div>
-      </motion.div>
+
     </section>
   );
 }
