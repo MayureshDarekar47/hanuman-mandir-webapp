@@ -52,7 +52,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
   const activeImage = (isMobile && mobileBgUrl) ? mobileBgUrl : (bgUrl || defaultBg);
 
   return (
-    <section aria-label="Hero Section" className="relative h-screen w-full flex items-center justify-center overflow-hidden bg-[#0f0805]" id="home">
+    <section aria-label="Hero Section" className="relative min-h-[600px] h-[700px] 2xl:h-[800px] w-full flex items-center justify-center overflow-hidden bg-[#0f0805]" id="home">
 
       {/* SVG Filters for Heat Haze */}
       {enableFog && (
@@ -243,7 +243,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-6 flex gap-6 text-amber-400 text-3xl font-black drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]"
+            className="mb-4 sm:mb-6 flex gap-4 sm:gap-6 text-amber-400 text-2xl sm:text-3xl font-black drop-shadow-[0_2px_15px_rgba(0,0,0,0.8)]"
             aria-label="Sanskrit Quote"
           >
             <span>{siteSettings?.heroQuote || "ॐ जय बजरंग बली ॐ"}</span>
@@ -253,7 +253,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 30, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1.4 / speed, delay: 0.2 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="text-5xl md:text-8xl font-black text-white tracking-tight mb-4 drop-shadow-[0_5px_25px_rgba(0,0,0,0.8)]"
+            className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tight mb-4 drop-shadow-[0_5px_25px_rgba(0,0,0,0.8)]"
           >
             {siteSettings?.heroTitle || "Hanuman Mandir"}
           </motion.h1>
@@ -262,7 +262,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 / speed, delay: 0.35 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="text-3xl md:text-5xl font-extrabold text-orange-400 mb-6 drop-shadow-[0_3px_15px_rgba(0,0,0,0.7)]"
+            className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-orange-400 mb-6 drop-shadow-[0_3px_15px_rgba(0,0,0,0.7)]"
           >
             {siteSettings?.heroSubtitle || "हनुमान मंदिर"}
           </motion.h2>
@@ -271,7 +271,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 / speed, delay: 0.5 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="text-xl md:text-2xl text-amber-50 font-bold bg-black/30 px-6 py-2.5 rounded-full border border-orange-400/20 shadow-lg backdrop-blur-md"
+            className="text-base sm:text-xl md:text-2xl text-amber-50 font-bold bg-black/30 px-4 sm:px-6 py-2.5 rounded-full border border-orange-400/20 shadow-lg backdrop-blur-md break-words whitespace-normal text-center max-w-[90vw]"
           >
             {siteSettings?.heroLocation || "दरेकरवाडी,ढवळपुरी,पारनेर,अहिल्यानगर"}
           </motion.p>
@@ -280,7 +280,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 / speed, delay: 0.7 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-12 flex flex-col md:flex-row gap-5"
+            className="mt-8 sm:mt-12 flex flex-col sm:flex-row gap-4 sm:gap-5 items-center justify-center w-full"
           >
             <a href="#about" aria-label="Explore Temple" className="px-8 py-4 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-full shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_35px_rgba(234,88,12,0.5)] hover:-translate-y-1 transition-all duration-300 ring-1 ring-orange-400/50">
               Explore Temple

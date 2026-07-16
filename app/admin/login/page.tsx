@@ -38,7 +38,7 @@ export default function LoginPage() {
           <div className="w-16 h-16 bg-temple-saffron/10 rounded-full flex items-center justify-center mb-4">
             <Lock className="text-temple-saffron" size={32} />
           </div>
-          <h2 className="text-3xl font-bold">Admin Login</h2>
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Login</h2>
           <p className="text-gray-500 mt-2 text-center text-sm">Sign in to manage temple data</p>
         </div>
 
@@ -50,24 +50,24 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-sm font-medium mb-2">Username</label>
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-300">Username</label>
             <input 
               type="text" 
               required
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-temple-saffron transition-all"
+              className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-temple-saffron transition-all"
               placeholder="Enter username"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium mb-2">Password</label>
+            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-300">Password</label>
             <input 
               type="password" 
               required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent focus:outline-none focus:ring-2 focus:ring-temple-saffron transition-all"
+              className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-temple-saffron transition-all"
               placeholder="Enter password"
             />
           </div>

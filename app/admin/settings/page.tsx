@@ -1,8 +1,9 @@
 export const dynamic = 'force-dynamic';
 
 import { prisma } from "@/lib/db";
-import { updateSiteSettings, updateThemeSettings, updateAnimationSettings, updateSeoSettings } from "../actions";
+import { updateSiteSettings, updateThemeSettings, updateAnimationSettings, updateSeoSettings, updatePaymentSettings } from "../actions";
 import ChangeCredentialsForm from "./ChangeCredentialsForm";
+import { getPaymentSettings } from "@/lib/payment";
 
 const inputCls = "w-full p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm mb-3";
 const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm";
@@ -16,6 +17,8 @@ export default async function SettingsPage() {
     prisma.seoSettings.findFirst(),
     prisma.adminUser.findFirst(),
   ]);
+
+  const paymentConfig = getPaymentSettings();
 
 
   return (
@@ -50,7 +53,26 @@ export default async function SettingsPage() {
         </form>
       </section>
 
-
+      {/* UPI Payment Settings */}
+      <section className={sectionCls}>
+        <h2 className="text-xl font-bold text-gray-900 mb-6">UPI Payment Configuration</h2>
+        <form action={updatePaymentSettings} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="md:col-span-2">
+            <label className="text-xs font-bold text-gray-500 uppercase">UPI ID (VPA)</label>
+            <input name="upiId" defaultValue={paymentConfig.upiId} placeholder="e.g., hanumanmandir@sbi" className={inputCls} />
+            <p className="text-xs text-gray-400 mt-1">This UPI ID is used for the 'Pay Now' button deep link on mobile devices.</p>
+          </div>
+          <div>
+            <label className="text-xs font-bold text-gray-500 uppercase">Payee Name</label>
+            <input name="upiName" defaultValue={paymentConfig.upiName} placeholder="Hanuman Mandir" className={inputCls} />
+          </div>
+          <div>
+            <label className="text-xs font-bold text-gray-500 uppercase">Default Payment Note</label>
+            <input name="upiNote" defaultValue={paymentConfig.upiNote} placeholder="Temple Donation" className={inputCls} />
+          </div>
+          <button type="submit" className={`${btnCls} md:col-span-2`}>Save UPI Settings</button>
+        </form>
+      </section>
 
       {/* Theme Settings */}
       <section className={sectionCls}>

@@ -90,14 +90,14 @@ export default function AartiPlayer({ tracks }: { tracks: Track[] }) {
         {/* Header */}
         <header className="text-center mb-10">
           <p className="text-orange-600 font-semibold tracking-wider uppercase mb-2 text-sm">Sacred Audio</p>
-          <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
             <Music2 className="text-amber-500" size={36} aria-hidden="true" /> Aarti & Bhajans
           </h2>
         </header>
 
         {/* Player Card */}
         <div className="bg-gradient-to-br from-orange-600 via-orange-500 to-amber-500 p-1 rounded-3xl shadow-2xl">
-          <div className="bg-white rounded-[22px] p-8">
+          <div className="bg-white rounded-[22px] p-5 sm:p-8">
             {/* Now playing */}
             <AnimatePresence mode="wait">
               <motion.div

@@ -8,8 +8,8 @@ export default async function Notices() {
     <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto" id="notice" aria-label="Notice Board Announcements">
       <header className="text-center mb-12">
         <p className="text-orange-600 font-semibold tracking-wider uppercase mb-2">Announcements</p>
-        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-4">
-          <Bell className="text-amber-500" size={36} aria-hidden="true" /> Notice Board
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-3">
+          <Bell className="text-amber-500 flex-shrink-0" size={30} aria-hidden="true" /> Notice Board
         </h2>
       </header>
 

@@ -17,8 +17,8 @@ export default async function Events() {
     <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="events" aria-label="Temple Events and Festivals">
       <header className="text-center mb-12">
         <p className="text-orange-600 font-semibold tracking-wider uppercase mb-2">Temple Calendar</p>
-        <h2 className="text-3xl md:text-5xl font-bold flex items-center justify-center gap-4">
-          <CalendarDays className="text-amber-500" size={40} aria-hidden="true" /> Events & Festivals
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold flex items-center justify-center gap-3">
+          <CalendarDays className="text-amber-500 flex-shrink-0" size={32} aria-hidden="true" /> Events &amp; Festivals
         </h2>
         <p className="text-gray-500 max-w-2xl mx-auto mt-4">
           Browse our month-by-month calendar for upcoming village festivals and temple ceremonies. Days with events are marked with an orange dot — click to see details.

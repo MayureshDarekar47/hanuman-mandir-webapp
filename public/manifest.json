@@ -1,0 +1,28 @@
+{
+  "name": "Hanuman Mandir Darekarwadi",
+  "short_name": "Hanuman Mandir",
+  "description": "Official website of Hanuman Mandir, Darekarwadi — temple timings, events, gallery, and online donations.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f0805",
+  "theme_color": "#ea580c",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["religion", "lifestyle", "education"],
+  "lang": "en-IN",
+  "dir": "ltr",
+  "scope": "/"
+}

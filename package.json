@@ -16,17 +16,22 @@
   "dependencies": {
     "@prisma/client": "^5.0.0",
     "@supabase/supabase-js": "^2.110.0",
+    "@types/pdf-parse": "^1.1.5",
     "bcryptjs": "^2.4.3",
     "caniuse-lite": "^1.0.30001800",
     "clsx": "^2.1.0",
     "framer-motion": "^11.0.0",
+    "jimp": "^1.6.1",
+    "jsqr": "^1.4.0",
     "lucide-react": "^1.23.0",
     "next": "^16.2.10",
     "next-auth": "^4.24.7",
+    "pdf-parse": "^2.4.5",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "sharp": "^0.35.3",
-    "tailwind-merge": "^2.2.0"
+    "tailwind-merge": "^2.2.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.6",

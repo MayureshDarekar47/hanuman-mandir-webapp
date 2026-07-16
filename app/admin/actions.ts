@@ -50,6 +50,12 @@ export async function deleteExpense(id: number) {
   revalidatePath("/admin/dashboard");
 }
 
+export async function deleteAllExpenses() {
+  await prisma.expense.deleteMany({});
+  revalidatePath("/expenses");
+  revalidatePath("/admin/dashboard");
+}
+
 export async function uploadGalleryImage(formData: FormData) {
   const file = formData.get("image") as File;
   if (!file || file.size === 0) return;
@@ -119,6 +125,13 @@ export async function deleteDonor(id: number) {
   revalidatePath("/donors");
   revalidatePath("/admin/dashboard");
 }
+
+export async function deleteAllDonors() {
+  await prisma.donor.deleteMany({});
+  revalidatePath("/donors");
+  revalidatePath("/admin/dashboard");
+}
+
 
 export async function importDonorsFromCSV(formData: FormData) {
   const file = formData.get("csv") as File;
@@ -326,6 +339,20 @@ export async function updateSiteSettings(formData: FormData) {
     update: data,
   });
   
+  revalidatePath("/");
+  revalidatePath("/admin/settings");
+}
+
+export async function updatePaymentSettings(formData: FormData) {
+  const { savePaymentSettings } = await import('@/lib/payment');
+  
+  const data = {
+    upiId: formData.get("upiId") as string || "",
+    upiName: formData.get("upiName") as string || "Hanuman Mandir",
+    upiNote: formData.get("upiNote") as string || "Temple Donation",
+  };
+  
+  savePaymentSettings(data);
   revalidatePath("/");
   revalidatePath("/admin/settings");
 }
@@ -598,4 +625,37 @@ export async function deleteTiming(id: number) {
   await prisma.timing.delete({ where: { id } });
   revalidatePath("/");
   revalidatePath("/admin/dashboard");
+}
+// ── Document Actions (PDFs) ──────────────────────────────────
+export async function updateDocumentYear(id: number, year: number | null) {
+  await prisma.document.update({
+    where: { id },
+    data: { year }
+  });
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/donors");
+  revalidatePath("/expenses");
+}
+
+export async function deleteDocument(id: number) {
+  const doc = await prisma.document.findUnique({ where: { id } });
+  if (!doc) return;
+  await prisma.document.delete({ where: { id } });
+  
+  // Optionally, extract path from URL and remove from Supabase
+  try {
+    const urlParts = doc.url.split("/");
+    const bucketAndPath = urlParts.slice(urlParts.findIndex(p => p === "public") + 1);
+    if (bucketAndPath.length >= 2) {
+      const bucketName = bucketAndPath[0];
+      const pathToRemove = bucketAndPath.slice(1).join("/");
+      await supabase.storage.from(bucketName).remove([pathToRemove]);
+    }
+  } catch (e) {
+    console.error("Failed to delete document from Supabase:", e);
+  }
+
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/donors");
+  revalidatePath("/expenses");
 }

@@ -1,10 +1,16 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import "./globals.css";
 import { prisma } from "@/lib/db";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hanumanmandir.org';
+
+export const viewport: Viewport = {
+  width: 1024,
+  initialScale: 0.1, // Allows zooming out completely
+  maximumScale: 5,
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const [seo, activeBg] = await Promise.all([
@@ -13,6 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
   ]);
   const title = seo?.metaTitle || "Hanuman Mandir Darekarwadi | श्री हनुमान मंदिर";
   const description = seo?.metaDescription || "Official website of Hanuman Mandir, Darekarwadi (Dhavalpuri), Parner, Ahilyanagar. View daily aarti timings, upcoming events, temple notices, photo gallery, and make secure online donations to support temple seva.";
+  const keywords = seo?.keywords || "Hanuman Mandir, Darekarwadi, Dhavalpuri, Parner, Ahilyanagar, Maharashtra temple, Hanuman temple, Aarti timings, temple events, online donation, हनुमान मंदिर, श्री हनुमान मंदिर, बजरंग बली, दरेकरवाडी, ढवळपुरी, पारनेर, अहिल्यानगर";
   const ogImageUrl = activeBg?.url || `${BASE_URL}/assets/cinematic_temple_bg.png`;
   
   return {
@@ -22,12 +29,18 @@ export async function generateMetadata(): Promise<Metadata> {
       template: `%s | Hanuman Mandir Darekarwadi`,
     },
     description,
-    keywords: seo?.keywords || "Hanuman Mandir, Darekarwadi, Dhavalpuri, Parner, Ahilyanagar, Maharashtra temple, Hanuman temple, Aarti timings, temple events, online donation, श्री हनुमान मंदिर, बजरंग बली",
-    authors: [{ name: "Hanuman Mandir Darekarwadi" }],
+    keywords,
+    authors: [{ name: "Hanuman Mandir Darekarwadi", url: BASE_URL }],
     creator: "Hanuman Mandir Darekarwadi",
     publisher: "Hanuman Mandir Darekarwadi",
+    category: "religion",
+    classification: "Hindu Temple",
     alternates: {
       canonical: '/',
+      languages: {
+        'en-IN': `${BASE_URL}/`,
+        'mr-IN': `${BASE_URL}/`,
+      },
     },
     openGraph: {
       title,
@@ -42,6 +55,7 @@ export async function generateMetadata(): Promise<Metadata> {
           width: 1200,
           height: 630,
           alt: "Hanuman Mandir Darekarwadi — श्री हनुमान मंदिर, दरेकरवाडी",
+          type: "image/jpeg",
         }
       ]
     },
@@ -49,21 +63,52 @@ export async function generateMetadata(): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
-      images: [ogImageUrl],
+      images: [{ url: ogImageUrl, alt: "Hanuman Mandir Darekarwadi" }],
     },
     robots: {
       index: true,
       follow: true,
+      nocache: false,
       googleBot: {
         index: true,
         follow: true,
+        noimageindex: false,
         'max-video-preview': -1,
         'max-image-preview': 'large',
         'max-snippet': -1,
       },
     },
+    verification: {
+      // Add Google Search Console verification token here when available
+      // google: 'your-google-verification-token',
+    },
+    other: {
+      // Geographic meta tags — extremely helpful for local SEO
+      'geo.region': 'IN-MH',
+      'geo.placename': 'Darekarwadi, Parner, Ahilyanagar, Maharashtra',
+      'geo.position': '19.0000;74.5000', // approximate — update with exact coordinates
+      'ICBM': '19.0000, 74.5000',
+      // Content language
+      'content-language': 'en-IN, mr-IN',
+      // Apple mobile web app
+      'apple-mobile-web-app-capable': 'yes',
+      'apple-mobile-web-app-status-bar-style': 'default',
+      'apple-mobile-web-app-title': 'Hanuman Mandir',
+      // MS Tile
+      'msapplication-TileColor': '#ea580c',
+      'msapplication-config': '/browserconfig.xml',
+    },
+    manifest: '/manifest.json',
+    icons: {
+      icon: [
+        { url: '/favicon.ico' },
+        { url: '/assets/icon-192.png', sizes: '192x192', type: 'image/png' },
+      ],
+      apple: [{ url: '/assets/icon-192.png', sizes: '192x192' }],
+    },
   };
 }
+
 
 export default async function RootLayout({
   children,
@@ -81,37 +126,62 @@ export default async function RootLayout({
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "HinduTemple",
+        "@type": ["HinduTemple", "ReligiousOrganization", "LocalBusiness"],
         "@id": `${BASE_URL}/#temple`,
         "name": "Hanuman Mandir, Darekarwadi",
-        "alternateName": "श्री हनुमान मंदिर, दरेकरवाडी",
-        "description": "A historic and deeply revered Hanuman Mandir located in Darekarwadi, Dhavalpuri, Parner. A spiritual hub for daily prayers, aarti, community events, and festivals serving generations of devotees.",
+        "alternateName": ["श्री हनुमान मंदिर, दरेकरवाडी", "Shri Hanuman Mandir Darekarwadi", "हनुमान मंदिर"],
+        "description": "A historic and deeply revered Hanuman Mandir located in Darekarwadi, Dhavalpuri, Parner, Ahilyanagar. A spiritual hub for daily prayers, aarti, community events, and festivals serving generations of devotees. Donations accepted via UPI.",
         "url": BASE_URL,
+        "telephone": "",
+        "priceRange": "Free",
+        "currenciesAccepted": "INR",
+        "paymentAccepted": "UPI, Cash",
         "address": {
           "@type": "PostalAddress",
-          "streetAddress": "Darekarwadi",
-          "addressLocality": "Dhavalpuri, Parner",
-          "addressRegion": "Ahilyanagar, Maharashtra",
+          "streetAddress": "Darekarwadi, Dhavalpuri",
+          "addressLocality": "Parner",
+          "addressRegion": "Ahilyanagar",
           "postalCode": "414103",
-          "addressCountry": "IN"
+          "addressCountry": "IN",
+          "addressCountryName": "India"
+        },
+        "geo": {
+          "@type": "GeoCoordinates",
+          "latitude": "19.0000",
+          "longitude": "74.5000"
         },
         "image": `${BASE_URL}/assets/cinematic_temple_bg.png`,
+        "logo": `${BASE_URL}/assets/icon-192.png`,
         "openingHoursSpecification": [
           {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
             "opens": "05:30",
-            "closes": "12:00"
+            "closes": "12:00",
+            "name": "Morning Aarti & Darshan"
           },
           {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
             "opens": "17:00",
-            "closes": "21:00"
+            "closes": "21:00",
+            "name": "Evening Aarti & Darshan"
           }
         ],
         "hasMap": `${BASE_URL}/#map`,
-        "sameAs": []
+        "sameAs": [],
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Parner, Ahilyanagar, Maharashtra, India"
+        },
+        "knowsAbout": ["Hinduism", "Hanuman Puja", "Aarti", "Bhajan", "Temple Events"],
+        "foundingDate": "1900",
+        "slogan": "जय बजरंग बली",
+        "potentialAction": {
+          "@type": "DonateAction",
+          "target": `${BASE_URL}/#donation`,
+          "name": "Donate to Hanuman Mandir"
+        }
       },
       {
         "@type": "WebSite",
@@ -119,16 +189,61 @@ export default async function RootLayout({
         "name": "Hanuman Mandir Darekarwadi",
         "url": BASE_URL,
         "description": "Official website of Hanuman Mandir, Darekarwadi — temple timings, events, gallery and online donations.",
-        "inLanguage": "en-IN"
+        "inLanguage": ["en-IN", "mr-IN"],
+        "publisher": {
+          "@id": `${BASE_URL}/#temple`
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": `${BASE_URL}/?q={search_term_string}`
+          },
+          "query-input": "required name=search_term_string"
+        }
       },
       {
         "@type": "BreadcrumbList",
         "itemListElement": [
+          { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
+          { "@type": "ListItem", "position": 2, "name": "Donors", "item": `${BASE_URL}/donors` },
+          { "@type": "ListItem", "position": 3, "name": "Seva Records", "item": `${BASE_URL}/expenses` }
+        ]
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
           {
-            "@type": "ListItem",
-            "position": 1,
-            "name": "Home",
-            "item": BASE_URL
+            "@type": "Question",
+            "name": "What are the timings of Hanuman Mandir Darekarwadi?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Hanuman Mandir, Darekarwadi is open for darshan from 5:30 AM to 12:00 PM in the morning and 5:00 PM to 9:00 PM in the evening, every day of the week."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "How can I donate to Hanuman Mandir Darekarwadi?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "You can donate via UPI by scanning the QR code on the Donation section of our website. All donation records are publicly available for transparency."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Where is Hanuman Mandir Darekarwadi located?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Hanuman Mandir is located at Darekarwadi, Dhavalpuri, Taluka Parner, District Ahilyanagar (formerly Ahmednagar), Maharashtra — PIN 414103."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Can I listen to Aarti online?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes! You can listen to Hanuman Chalisa, Aarti and other devotional bhajans directly on our website in the Aarti section."
+            }
           }
         ]
       }
@@ -154,7 +269,7 @@ export default async function RootLayout({
           }
         `}} />
       </head>
-      <body className="bg-background text-foreground antialiased">
+      <body className="bg-background text-foreground antialiased overflow-x-hidden">
         <Navbar />
         {children}
         <Footer />

@@ -54,12 +54,13 @@ model Event {
 }
 
 model Expense {
-  id        Int      @id @default(autoincrement())
-  date      DateTime
-  category  String
-  amount    Float
-  remark    String?
-  createdAt DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  date          DateTime
+  category      String
+  amount        Float
+  remark        String?
+  familyMembers Int?     @default(1)
+  createdAt     DateTime @default(now())
 }
 
 model Transaction {
@@ -79,12 +80,13 @@ model AdminUser {
 }
 
 model Donor {
-  id        Int      @id @default(autoincrement())
-  name      String
-  amount    Float
-  date      DateTime
-  note      String?
-  createdAt DateTime @default(now())
+  id            Int      @id @default(autoincrement())
+  name          String
+  amount        Float
+  date          DateTime
+  note          String?
+  familyMembers Int?     @default(1)
+  createdAt     DateTime @default(now())
 }
 
 model HeroBackground {
@@ -105,6 +107,8 @@ model SiteSettings {
   aboutImage  String?
   qrImageUrl  String?
   ogImageUrl  String?
+  donorsPdfUrl String?
+  sevaPdfUrl   String?
   updatedAt   DateTime @updatedAt
 }
 
@@ -135,4 +139,13 @@ model SeoSettings {
   metaDescription String   @default("Welcome to Hanuman Mandir")
   keywords        String   @default("hanuman, mandir, temple")
   updatedAt       DateTime @updatedAt
+}
+
+model Document {
+  id        Int      @id @default(autoincrement())
+  title     String
+  url       String
+  year      Int?
+  type      String   // "DONOR" or "SEVA"
+  createdAt DateTime @default(now())
 }

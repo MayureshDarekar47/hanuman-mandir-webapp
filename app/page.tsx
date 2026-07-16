@@ -9,6 +9,7 @@ import Events from "@/components/Events";
 import Donation from "@/components/Donation";
 import Map from "@/components/Map";
 import { prisma } from "@/lib/db";
+import { getPaymentSettings } from "@/lib/payment";
 
 export default async function Home() {
   const [galleryData, activeBg, site, anim] = await Promise.all([
@@ -18,6 +19,7 @@ export default async function Home() {
     prisma.animationSettings.findFirst().catch(() => null),
   ]);
   const galleryImages = galleryData.map(g => g.url);
+  const payment = getPaymentSettings();
 
   return (
     <main className="flex min-h-screen flex-col w-full">
@@ -34,7 +36,12 @@ export default async function Home() {
       <Events />
       <Guidelines />
       <Notices />
-      <Donation qrUrl={site?.qrImageUrl || undefined} />
+      <Donation 
+        qrUrl={site?.qrImageUrl || undefined} 
+        upiId={payment.upiId}
+        upiName={payment.upiName}
+        upiNote={payment.upiNote}
+      />
       <Map />
     </main>
   );
