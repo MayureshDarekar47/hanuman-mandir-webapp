@@ -77,8 +77,7 @@ export async function generateMetadata(): Promise<Metadata> {
       },
     },
     verification: {
-      // Add Google Search Console verification token here when available
-      // google: 'your-google-verification-token',
+      google: 'kMP7cTSmpX7T',
     },
     other: {
       // Geographic meta tags — extremely helpful for local SEO
