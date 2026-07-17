@@ -6,6 +6,9 @@ interface SongRow {
   id: string;
   title: string;
   subtitle: string;
+  seoTitle: string;
+  focusKeyword: string;
+  metaDescription: string;
   file: File | null;
   progress: number;
   status: "idle" | "uploading" | "success" | "error";
@@ -22,7 +25,7 @@ function uid() {
 
 export default function MultiAartiUploadForm({ onSuccess }: Props) {
   const [songs, setSongs] = useState<SongRow[]>([
-    { id: uid(), title: "", subtitle: "", file: null, progress: 0, status: "idle" },
+    { id: uid(), title: "", subtitle: "", seoTitle: "", focusKeyword: "", metaDescription: "", file: null, progress: 0, status: "idle" },
   ]);
   const [uploading, setUploading] = useState(false);
   const [overallResult, setOverallResult] = useState<{
@@ -33,7 +36,7 @@ export default function MultiAartiUploadForm({ onSuccess }: Props) {
   const fileRefs = useRef<Record<string, HTMLInputElement | null>>({});
 
   const addSong = () => {
-    setSongs(prev => [...prev, { id: uid(), title: "", subtitle: "", file: null, progress: 0, status: "idle" }]);
+    setSongs(prev => [...prev, { id: uid(), title: "", subtitle: "", seoTitle: "", focusKeyword: "", metaDescription: "", file: null, progress: 0, status: "idle" }]);
   };
 
   const removeSong = (id: string) => {
@@ -66,80 +69,86 @@ export default function MultiAartiUploadForm({ onSuccess }: Props) {
         : s
     ));
 
-    const formData = new FormData();
-    validSongs.forEach((song, i) => {
-      formData.append(`song_${i}_title`, song.title.trim());
-      formData.append(`song_${i}_subtitle`, song.subtitle.trim());
-      formData.append(`song_${i}_file`, song.file!);
-    });
-
-    return new Promise<void>((resolve) => {
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/upload/aarti");
-
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          const pct = Math.round((e.loaded / e.total) * 100);
-          // Update all uploading songs with same progress
-          setSongs(prev => prev.map(s =>
-            s.status === "uploading" ? { ...s, progress: pct } : s
-          ));
-        }
-      };
-
-      xhr.onload = () => {
-        try {
-          const data = JSON.parse(xhr.responseText);
-          if (xhr.status >= 200 && xhr.status < 300 && data.results) {
-            // Map results back to songs
-            setSongs(prev => {
-              const validIdx = prev.reduce<number[]>((acc, s, i) => {
-                if (s.title.trim() && s.file) acc.push(i);
-                return acc;
-              }, []);
-              const next = [...prev];
-              data.results.forEach((r: any, i: number) => {
-                const idx = validIdx[i];
-                if (idx !== undefined) {
-                  next[idx] = {
-                    ...next[idx],
-                    status: r.success ? "success" : "error",
-                    progress: r.success ? 100 : 0,
-                    error: r.error,
-                  };
-                }
-              });
-              return next;
-            });
-            setOverallResult({ success: data.uploaded, failed: data.failed, total: data.total });
-            onSuccess?.();
-            if (data.uploaded > 0) {
-              setTimeout(() => window.location.reload(), 1800);
-            }
-          } else {
-            setSongs(prev => prev.map(s =>
-              s.status === "uploading" ? { ...s, status: "error", progress: 0, error: data.error || "Upload failed" } : s
-            ));
+    const finalResults = await Promise.all(validSongs.map(async (song) => {
+      try {
+        // 1. Get presigned URL
+        const presignRes = await fetch("/api/upload/aarti/presign", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ filename: song.file!.name })
+        });
+        const presignData = await presignRes.json();
+        if (!presignRes.ok) throw new Error(presignData.error || "Failed to get upload URL");
+        
+        const { signedUrl, token, publicUrl } = presignData;
+        
+        // 2. Upload to Supabase Storage directly via XHR
+        await new Promise<void>((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          xhr.open("PUT", signedUrl);
+          xhr.setRequestHeader("Authorization", `Bearer ${token}`);
+          
+          if (song.file!.type) {
+            xhr.setRequestHeader("Content-Type", song.file!.type);
           }
-        } catch {
-          setSongs(prev => prev.map(s =>
-            s.status === "uploading" ? { ...s, status: "error", progress: 0, error: "Server error" } : s
-          ));
+          
+          xhr.upload.onprogress = (e) => {
+            if (e.lengthComputable) {
+              const pct = Math.round((e.loaded / e.total) * 100);
+              updateSong(song.id, { progress: pct });
+            }
+          };
+          xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+              resolve();
+            } else {
+              reject(new Error(`Direct upload failed: ${xhr.statusText}`));
+            }
+          };
+          xhr.onerror = () => reject(new Error("Network error during direct upload"));
+          xhr.send(song.file);
+        });
+
+        return { songId: song.id, success: true, title: song.title.trim(), subtitle: song.subtitle.trim(), audioUrl: publicUrl, seoTitle: song.seoTitle.trim() || null, focusKeyword: song.focusKeyword.trim() || null, metaDescription: song.metaDescription.trim() || null };
+      } catch (err: any) {
+        updateSong(song.id, { status: "error", error: err.message, progress: 0 });
+        return { songId: song.id, success: false, error: err.message };
+      }
+    }));
+
+    const successfulUploads = finalResults.filter(r => r.success);
+    let metadataSaved = 0;
+
+    if (successfulUploads.length > 0) {
+      try {
+        // 3. Save metadata via /api/upload/aarti
+        const metaRes = await fetch("/api/upload/aarti", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ songs: successfulUploads })
+        });
+        const metaData = await metaRes.json();
+        
+        if (metaRes.ok && metaData.success) {
+          successfulUploads.forEach(r => updateSong(r.songId!, { status: "success", progress: 100 }));
+          metadataSaved = successfulUploads.length;
+        } else {
+          successfulUploads.forEach(r => updateSong(r.songId!, { status: "error", error: metaData.error || "Failed to save metadata", progress: 0 }));
         }
-        setUploading(false);
-        resolve();
-      };
+      } catch (err: any) {
+        successfulUploads.forEach(r => updateSong(r.songId!, { status: "error", error: "Failed to connect to server", progress: 0 }));
+      }
+    }
 
-      xhr.onerror = () => {
-        setSongs(prev => prev.map(s =>
-          s.status === "uploading" ? { ...s, status: "error", progress: 0, error: "Network error" } : s
-        ));
-        setUploading(false);
-        resolve();
-      };
-
-      xhr.send(formData);
-    });
+    const totalFailed = validSongs.length - metadataSaved;
+    setOverallResult({ success: metadataSaved, failed: totalFailed, total: validSongs.length });
+    
+    if (metadataSaved > 0) {
+      onSuccess?.();
+      setTimeout(() => window.location.reload(), 1800);
+    }
+    
+    setUploading(false);
   };
 
   return (
@@ -207,6 +216,37 @@ export default function MultiAartiUploadForm({ onSuccess }: Props) {
                     📁 {song.file.name} ({(song.file.size / 1024 / 1024).toFixed(1)} MB)
                   </p>
                 )}
+              </div>
+              <div className="sm:col-span-2">
+                <details className="text-sm">
+                  <summary className="cursor-pointer text-orange-600 font-semibold mb-2 select-none">SEO Settings (Optional)</summary>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 p-3 bg-orange-50/60 rounded-xl border border-orange-100 mt-2">
+                    <input
+                      type="text"
+                      placeholder="SEO Title"
+                      value={song.seoTitle}
+                      onChange={e => updateSong(song.id, { seoTitle: e.target.value })}
+                      disabled={uploading || song.status === "success"}
+                      className="p-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white disabled:bg-gray-50"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Focus Keyword"
+                      value={song.focusKeyword}
+                      onChange={e => updateSong(song.id, { focusKeyword: e.target.value })}
+                      disabled={uploading || song.status === "success"}
+                      className="p-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white disabled:bg-gray-50"
+                    />
+                    <textarea
+                      placeholder="Meta Description"
+                      value={song.metaDescription}
+                      onChange={e => updateSong(song.id, { metaDescription: e.target.value })}
+                      disabled={uploading || song.status === "success"}
+                      rows={2}
+                      className="sm:col-span-2 p-2 rounded-lg border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400 bg-white disabled:bg-gray-50 resize-none"
+                    />
+                  </div>
+                </details>
               </div>
             </div>
 

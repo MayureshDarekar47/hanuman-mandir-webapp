@@ -9,10 +9,17 @@ datasource db {
 }
 
 model GalleryImage {
-  id        Int      @id @default(autoincrement())
-  url       String
-  altText   String?
-  createdAt DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  url             String
+  altText         String?
+  seoTitle        String?
+  metaDescription String?
+  focusKeyword    String?
+  canonicalUrl    String?
+  ogImage         String?
+  robots          String?
+  schemaType      String?  @default("ImageObject")
+  createdAt       DateTime @default(now())
 }
 
 model Timing {
@@ -25,10 +32,17 @@ model Timing {
 }
 
 model Aarti {
-  id        Int      @id @default(autoincrement())
-  title     String
-  audioUrl  String
-  createdAt DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  title           String
+  audioUrl        String
+  seoTitle        String?
+  metaDescription String?
+  focusKeyword    String?
+  canonicalUrl    String?
+  ogImage         String?
+  robots          String?
+  schemaType      String?  @default("MusicRecording")
+  createdAt       DateTime @default(now())
 }
 
 model Guideline {
@@ -38,19 +52,33 @@ model Guideline {
 }
 
 model Notice {
-  id        Int      @id @default(autoincrement())
-  title     String
-  subtitle  String?
-  date      DateTime?
-  createdAt DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  title           String
+  subtitle        String?
+  date            DateTime?
+  seoTitle        String?
+  metaDescription String?
+  focusKeyword    String?
+  canonicalUrl    String?
+  ogImage         String?
+  robots          String?
+  schemaType      String?  @default("NewsArticle")
+  createdAt       DateTime @default(now())
 }
 
 model Event {
-  id          Int      @id @default(autoincrement())
-  title       String
-  date        DateTime
-  description String?
-  createdAt   DateTime @default(now())
+  id              Int      @id @default(autoincrement())
+  title           String
+  date            DateTime
+  description     String?
+  seoTitle        String?
+  metaDescription String?
+  focusKeyword    String?
+  canonicalUrl    String?
+  ogImage         String?
+  robots          String?
+  schemaType      String?  @default("Event")
+  createdAt       DateTime @default(now())
 }
 
 model Expense {
@@ -135,9 +163,14 @@ model AnimationSettings {
 
 model SeoSettings {
   id              Int      @id @default(autoincrement())
-  metaTitle       String   @default("Hanuman Mandir")
-  metaDescription String   @default("Welcome to Hanuman Mandir")
-  keywords        String   @default("hanuman, mandir, temple")
+  metaTitle       String   @default("Hanuman Mandir Darekarwadi")
+  metaDescription String   @default("Welcome to Hanuman Mandir, Darekarwadi")
+  keywords        String   @default("hanuman, mandir, temple, darekarwadi")
+  focusKeyword    String?
+  canonicalUrl    String?
+  ogImage         String?
+  robots          String?
+  schemaType      String?  @default("HinduTemple")
   updatedAt       DateTime @updatedAt
 }
 

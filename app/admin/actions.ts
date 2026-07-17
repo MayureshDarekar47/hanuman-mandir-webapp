@@ -8,7 +8,19 @@ import bcrypt from "bcryptjs";
 export async function addNotice(formData: FormData) {
   const title = formData.get("title") as string;
   const subtitle = formData.get("subtitle") as string;
-  await prisma.notice.create({ data: { title, subtitle } });
+  const seoTitle = formData.get("seoTitle") as string;
+  const metaDescription = formData.get("metaDescription") as string;
+  const focusKeyword = formData.get("focusKeyword") as string;
+  
+  await prisma.notice.create({ 
+    data: { 
+      title, 
+      subtitle,
+      seoTitle: seoTitle || null,
+      metaDescription: metaDescription || null,
+      focusKeyword: focusKeyword || null,
+    } 
+  });
   revalidatePath("/");
   revalidatePath("/admin/dashboard");
 }
@@ -23,7 +35,20 @@ export async function addEvent(formData: FormData) {
   const title = formData.get("title") as string;
   const dateStr = formData.get("date") as string;
   const description = formData.get("description") as string;
-  await prisma.event.create({ data: { title, description, date: new Date(dateStr) } });
+  const seoTitle = formData.get("seoTitle") as string;
+  const metaDescription = formData.get("metaDescription") as string;
+  const focusKeyword = formData.get("focusKeyword") as string;
+
+  await prisma.event.create({ 
+    data: { 
+      title, 
+      description, 
+      date: new Date(dateStr),
+      seoTitle: seoTitle || null,
+      metaDescription: metaDescription || null,
+      focusKeyword: focusKeyword || null,
+    } 
+  });
   revalidatePath("/");
   revalidatePath("/admin/dashboard");
 }

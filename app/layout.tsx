@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 import "./globals.css";
 import { prisma } from "@/lib/db";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hanumanmandir.org';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hanuman-mandir-darekarwadi.vercel.app';
 
 export const viewport: Viewport = {
   width: 1280,
@@ -203,8 +203,15 @@ export default async function RootLayout({
         "@type": "BreadcrumbList",
         "itemListElement": [
           { "@type": "ListItem", "position": 1, "name": "Home", "item": BASE_URL },
-          { "@type": "ListItem", "position": 2, "name": "Donors", "item": `${BASE_URL}/donors` },
-          { "@type": "ListItem", "position": 3, "name": "Seva Records", "item": `${BASE_URL}/expenses` }
+          { "@type": "ListItem", "position": 2, "name": "About", "item": `${BASE_URL}/about` },
+          { "@type": "ListItem", "position": 3, "name": "Gallery", "item": `${BASE_URL}/gallery` },
+          { "@type": "ListItem", "position": 4, "name": "Events", "item": `${BASE_URL}/events` },
+          { "@type": "ListItem", "position": 5, "name": "Aarti", "item": `${BASE_URL}/aarti` },
+          { "@type": "ListItem", "position": 6, "name": "Timings", "item": `${BASE_URL}/timings` },
+          { "@type": "ListItem", "position": 7, "name": "Donate", "item": `${BASE_URL}/donation` },
+          { "@type": "ListItem", "position": 8, "name": "Donors", "item": `${BASE_URL}/donors` },
+          { "@type": "ListItem", "position": 9, "name": "Seva Records", "item": `${BASE_URL}/expenses` },
+          { "@type": "ListItem", "position": 10, "name": "Contact", "item": `${BASE_URL}/contact` }
         ]
       },
       {
@@ -253,6 +260,7 @@ export default async function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+        <link rel="alternate" type="application/rss+xml" title="Hanuman Mandir Updates" href={`${BASE_URL}/feed.xml`} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

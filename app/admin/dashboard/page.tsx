@@ -175,10 +175,20 @@ export default async function AdminDashboard() {
       {/* ── Notices ── */}
       <section className={sectionCls}>
         <h2 className="text-xl font-bold text-gray-900 mb-6">Manage Notices</h2>
-        <form action={addNotice} className="flex flex-col sm:flex-row gap-3 mb-5">
-          <input name="title" required placeholder="Notice Title" className={inputCls} />
-          <input name="subtitle" placeholder="Subtitle (optional)" className={inputCls} />
-          <button type="submit" className={btnCls}>Add</button>
+        <form action={addNotice} className="flex flex-col gap-3 mb-5">
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input name="title" required placeholder="Notice Title" className={inputCls} />
+            <input name="subtitle" placeholder="Subtitle (optional)" className={inputCls} />
+            <button type="submit" className={btnCls}>Add</button>
+          </div>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-orange-600 font-semibold mb-2">Advanced SEO (Optional)</summary>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-orange-50/50 rounded-xl border border-orange-100">
+              <input name="seoTitle" placeholder="SEO Title" className={inputCls} />
+              <input name="focusKeyword" placeholder="Focus Keyword" className={inputCls} />
+              <textarea name="metaDescription" placeholder="Meta Description" className={`${inputCls} sm:col-span-2`} rows={2} />
+            </div>
+          </details>
         </form>
         <ul className="space-y-2">
           {notices.map(n => (
@@ -198,11 +208,21 @@ export default async function AdminDashboard() {
       {/* ── Events ── */}
       <section className={sectionCls}>
         <h2 className="text-xl font-bold text-gray-900 mb-6">Manage Events</h2>
-        <form action={addEvent} className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
-          <input name="title" required placeholder="Event Title" className={inputCls} />
-          <input name="date" type="date" required className={inputCls} />
-          <input name="description" placeholder="Description" className={`${inputCls} flex-none sm:col-span-2`} />
-          <button type="submit" className={btnCls}>Add Event</button>
+        <form action={addEvent} className="flex flex-col gap-3 mb-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <input name="title" required placeholder="Event Title" className={inputCls} />
+            <input name="date" type="date" required className={inputCls} />
+            <input name="description" placeholder="Description" className={`${inputCls} flex-none sm:col-span-2`} />
+            <button type="submit" className={`${btnCls} sm:col-span-2`}>Add Event</button>
+          </div>
+          <details className="text-sm">
+            <summary className="cursor-pointer text-orange-600 font-semibold mb-2">Advanced SEO (Optional)</summary>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-4 bg-orange-50/50 rounded-xl border border-orange-100">
+              <input name="seoTitle" placeholder="SEO Title" className={inputCls} />
+              <input name="focusKeyword" placeholder="Focus Keyword" className={inputCls} />
+              <textarea name="metaDescription" placeholder="Meta Description" className={`${inputCls} sm:col-span-2`} rows={2} />
+            </div>
+          </details>
         </form>
         <ul className="space-y-2">
           {events.map(e => (

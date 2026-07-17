@@ -1,76 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { supabase } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
+    const session = await getServerSession(authOptions);
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    // Collect all songs: song_0_title, song_0_subtitle, song_0_file, song_1_title, ...
+    const body = await req.json();
+    const { songs } = body;
+
+    if (!songs || !Array.isArray(songs) || songs.length === 0) {
+      return NextResponse.json({ error: "No songs provided" }, { status: 400 });
+    }
+
     const results: { title: string; success: boolean; error?: string; url?: string }[] = [];
+    let successCount = 0;
 
-    let index = 0;
-    while (true) {
-      const title = formData.get(`song_${index}_title`) as string | null;
-      const subtitle = formData.get(`song_${index}_subtitle`) as string | null;
-      const file = formData.get(`song_${index}_file`) as File | null;
-
-      // Stop when no more songs
-      if (!title && !file) break;
-
-      if (!title || !file || file.size === 0) {
-        results.push({ title: title || `Song ${index + 1}`, success: false, error: "Missing title or audio file" });
-        index++;
-        continue;
-      }
-
-      if (file.size > 30 * 1024 * 1024) {
-        results.push({ title, success: false, error: "File exceeds 30MB limit" });
-        index++;
+    for (let i = 0; i < songs.length; i++) {
+      const song = songs[i];
+      
+      if (!song.title || !song.audioUrl) {
+        results.push({ title: song.title || `Song ${i + 1}`, success: false, error: "Missing title or audioUrl" });
         continue;
       }
 
       try {
-        const buffer = Buffer.from(await file.arrayBuffer());
-        const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
-        const filename = `aarti-${Date.now()}-${index}_${safeName}`;
-        const bucketName = process.env.SUPABASE_BUCKET_NAME || "assets";
-
-        const { error: uploadError } = await supabase.storage
-          .from(bucketName)
-          .upload(filename, buffer, { contentType: file.type || "audio/mpeg", upsert: false });
-
-        if (uploadError) {
-          results.push({ title, success: false, error: `Storage error: ${uploadError.message}` });
-          index++;
-          continue;
-        }
-
-        const { data: urlData } = supabase.storage.from(bucketName).getPublicUrl(filename);
-
         await prisma.aarti.create({
           data: {
-            title: title.trim(),
-            audioUrl: urlData.publicUrl,
-            createdAt: new Date(Date.now() + index * 1000), // stagger so ordering works
+            title: song.title.trim(),
+            audioUrl: song.audioUrl,
+            seoTitle: song.seoTitle || null,
+            focusKeyword: song.focusKeyword || null,
+            metaDescription: song.metaDescription || null,
+            createdAt: new Date(Date.now() + i * 1000), // stagger so ordering works
           },
         });
-
-        results.push({ title, success: true, url: urlData.publicUrl });
+        
+        results.push({ title: song.title, success: true, url: song.audioUrl });
+        successCount++;
       } catch (err: any) {
-        results.push({ title, success: false, error: err?.message || "Upload failed" });
+        results.push({ title: song.title, success: false, error: err?.message || "Database insert failed" });
       }
-
-      index++;
     }
 
-    if (index === 0) {
-      return NextResponse.json({ error: "No songs provided" }, { status: 400 });
-    }
-
-    const successCount = results.filter(r => r.success).length;
-    
     if (successCount > 0) {
       revalidatePath("/");
       revalidatePath("/admin/dashboard");
@@ -78,14 +55,14 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({
       success: successCount > 0,
-      total: index,
+      total: songs.length,
       uploaded: successCount,
-      failed: index - successCount,
+      failed: songs.length - successCount,
       results,
     });
 
   } catch (err: any) {
-    console.error("[aarti multi-upload]", err);
-    return NextResponse.json({ error: err?.message || "Upload failed" }, { status: 500 });
+    console.error("[aarti metadata save]", err);
+    return NextResponse.json({ error: err?.message || "Internal server error" }, { status: 500 });
   }
 }
