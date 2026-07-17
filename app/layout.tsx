@@ -8,6 +8,10 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hanuman-mandir-dar
 
 export const viewport: Viewport = {
   width: 1280,
+  initialScale: 1,
+  minimumScale: 0.1,
+  maximumScale: 5,
+  userScalable: true,
 };
 
 export async function generateMetadata(): Promise<Metadata> {
