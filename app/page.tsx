@@ -10,6 +10,7 @@ import Donation from "@/components/Donation";
 import Map from "@/components/Map";
 import { prisma } from "@/lib/db";
 import { getPaymentSettings } from "@/lib/payment";
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export default async function Home() {
   const [galleryData, activeBg, site, anim] = await Promise.all([
@@ -43,6 +44,7 @@ export default async function Home() {
         upiNote={payment.upiNote}
       />
       <Map />
+      <SpeedInsights />
     </main>
   );
 }
