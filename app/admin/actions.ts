@@ -771,3 +771,29 @@ export async function uploadPaymentQr(id: number, formData: FormData) {
   revalidatePath("/admin/payments");
   revalidatePath("/");
 }
+
+// ── Balance Entry Actions ──────────────────────────────────────
+export async function addBalanceEntry(formData: FormData) {
+  const yearStr = formData.get("year") as string;
+  const amountStr = formData.get("amount") as string;
+  const note = formData.get("note") as string;
+
+  const year = parseInt(yearStr);
+  const amount = parseFloat(amountStr);
+
+  if (isNaN(year) || year < 1900 || year > 2100) return;
+  if (isNaN(amount)) return;
+
+  await prisma.balanceEntry.create({
+    data: { year, amount, note: note?.trim() || null },
+  });
+
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/accounts");
+}
+
+export async function deleteBalanceEntry(id: number) {
+  await prisma.balanceEntry.delete({ where: { id } });
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/accounts");
+}

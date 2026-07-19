@@ -26,7 +26,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
 
   return (
     <section
-      className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto"
+      className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto"
       id="gallery"
       aria-label="Photo Gallery"
     >
@@ -51,11 +51,10 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
         <>
           {/* ── Main Carousel ─────────────────────────────────────── */}
           <div
-            className="relative w-full rounded-3xl overflow-hidden shadow-2xl group"
+            className="relative w-full rounded-3xl overflow-hidden shadow-2xl group aspect-[4/3] sm:aspect-video bg-black"
             role="region"
             aria-roledescription="carousel"
             aria-label="Temple Images Carousel"
-            style={{ height: "clamp(240px, 55vw, 680px)" }}
           >
             <AnimatePresence mode="wait" custom={direction}>
               <motion.div
@@ -77,13 +76,13 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                   loading={currentIndex === 0 ? "eager" : "lazy"}
                 />
                 {/* gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
               </motion.div>
             </AnimatePresence>
 
             {/* Caption */}
             <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 z-10">
-              <p className="text-white/60 text-xs uppercase tracking-widest">
+              <p className="text-white/60 text-xs uppercase tracking-widest font-bold">
                 {currentIndex + 1} / {images.length}
               </p>
             </div>
@@ -94,17 +93,17 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                 <button
                   onClick={() => navigate(-1)}
                   aria-label="Previous image"
-                  className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-full bg-black/50 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-lg"
+                  className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 p-2 sm:p-4 rounded-full bg-black/40 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-lg"
                 >
-                  <ChevronLeft size={22} aria-hidden="true" />
+                  <ChevronLeft size={24} aria-hidden="true" />
                 </button>
 
                 <button
                   onClick={() => navigate(1)}
                   aria-label="Next image"
-                  className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2 sm:p-3 rounded-full bg-black/50 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-lg"
+                  className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 p-2 sm:p-4 rounded-full bg-black/40 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-lg"
                 >
-                  <ChevronRight size={22} aria-hidden="true" />
+                  <ChevronRight size={24} aria-hidden="true" />
                 </button>
               </>
             )}
@@ -125,8 +124,8 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                     onClick={() => goTo(idx)}
                     className={`h-2 rounded-full transition-all duration-300 ${
                       idx === currentIndex
-                        ? "bg-temple-gold w-5 sm:w-6"
-                        : "bg-white/50 hover:bg-white/80 w-2"
+                        ? "bg-temple-gold w-6 sm:w-8"
+                        : "bg-white/50 hover:bg-white/90 w-2"
                     }`}
                   />
                 ))}
@@ -137,7 +136,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
           {/* ── Thumbnail Strip ────────────────────────────────────── */}
           {images.length > 1 && (
             <div
-              className="mt-3 sm:mt-4 flex gap-2 sm:gap-3 overflow-x-auto pb-2 scroll-smooth"
+              className="mt-4 sm:mt-5 flex gap-2 sm:gap-4 overflow-x-auto pb-2 scroll-smooth"
               role="listbox"
               aria-label="Image thumbnails"
               style={{ scrollbarWidth: "none" }}
@@ -152,15 +151,15 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                   className={`relative flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 focus:outline-none ${
                     idx === currentIndex
                       ? "ring-2 ring-temple-gold ring-offset-2 ring-offset-transparent scale-105"
-                      : "opacity-60 hover:opacity-90"
+                      : "opacity-50 hover:opacity-100"
                   }`}
-                  style={{ width: "72px", height: "50px" }}
+                  style={{ width: "96px", height: "64px" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={src}
                     alt={`Thumbnail ${idx + 1}`}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-cover"
                     loading="lazy"
                   />
                 </button>

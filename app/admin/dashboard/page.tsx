@@ -13,6 +13,7 @@ import {
   addGuideline, deleteGuideline,
   uploadAboutImage, deleteAboutImage, deleteQRCode,
   addTiming, deleteTiming,
+  addBalanceEntry, deleteBalanceEntry,
 } from "../actions";
 import DonorUploadForm from "@/components/admin/DonorUploadForm";
 import SevaUploadForm from "@/components/admin/SevaUploadForm";
@@ -27,7 +28,7 @@ const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-x
 const sectionCls = "bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100";
 
 export default async function AdminDashboard() {
-  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents, paymentMethods] = await Promise.all([
+  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents, paymentMethods, balanceEntries] = await Promise.all([
     prisma.notice.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.event.findMany({ orderBy: { date: "asc" } }).catch(() => []),
     prisma.expense.findMany({ orderBy: { date: "desc" } }).catch(() => []),
@@ -40,10 +41,13 @@ export default async function AdminDashboard() {
     prisma.timing.findMany({ orderBy: { orderIndex: "asc" } }).catch(() => []),
     prisma.document.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.paymentMethod.findMany({ orderBy: { createdAt: "asc" } }).catch(() => []),
+    prisma.balanceEntry.findMany({ orderBy: { year: "desc" } }).catch(() => []),
   ]);
 
   const totalDonated = donors.reduce((s, d) => s + d.amount, 0);
   const totalExpenses = expenses.reduce((s, e) => s + e.amount, 0);
+  const totalManualBalance = balanceEntries.reduce((s, b) => s + b.amount, 0);
+  const remainingBalance = totalDonated - totalExpenses + totalManualBalance;
 
   return (
     <div className="space-y-8 pb-10">
@@ -58,12 +62,17 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Stats overview */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
         {[
           { label: "Notices", value: notices.length, color: "bg-blue-50 text-blue-700" },
           { label: "Events", value: events.length, color: "bg-purple-50 text-purple-700" },
           { label: "Expenses", value: `₹${totalExpenses.toLocaleString("en-IN")}`, color: "bg-red-50 text-red-700" },
           { label: "Donations", value: `₹${totalDonated.toLocaleString("en-IN")}`, color: "bg-green-50 text-green-700" },
+          {
+            label: "Balance",
+            value: `${remainingBalance < 0 ? "-" : ""}₹${Math.abs(remainingBalance).toLocaleString("en-IN")}`,
+            color: remainingBalance < 0 ? "bg-red-100 text-red-800" : remainingBalance === 0 ? "bg-gray-50 text-gray-700" : "bg-emerald-50 text-emerald-800",
+          },
         ].map(s => (
           <div key={s.label} className={`${s.color} rounded-2xl p-4 sm:p-5`}>
             <p className="text-xs font-bold uppercase tracking-wider opacity-70">{s.label}</p>
@@ -335,6 +344,85 @@ export default async function AdminDashboard() {
               </tbody>
             </table>
           </div>
+        </div>
+      </section>
+
+      {/* ── Balance Management ── */}
+      <section className={sectionCls}>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-1">Manage Balance</h2>
+          <p className="text-sm text-gray-500">Add manual balance entries year-wise. Values can be positive, zero, or negative.</p>
+        </div>
+
+        {/* Current Balance Summary */}
+        <div className={`mb-6 p-4 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 ${
+          remainingBalance < 0 ? "bg-red-50 border border-red-200" : "bg-emerald-50 border border-emerald-200"
+        }`}>
+          <span className={`font-bold text-base ${remainingBalance < 0 ? "text-red-700" : "text-emerald-700"}`}>
+            Current Remaining Balance:
+          </span>
+          <span className={`text-2xl font-black ${remainingBalance < 0 ? "text-red-700" : "text-emerald-700"}`}>
+            {remainingBalance < 0 ? "-" : ""}₹{Math.abs(remainingBalance).toLocaleString("en-IN")}
+          </span>
+        </div>
+
+        {/* Add Entry Form */}
+        <div className="mb-6">
+          <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Add Balance Entry</h3>
+          <form action={addBalanceEntry} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <input
+              name="year"
+              type="number"
+              required
+              placeholder="Year (e.g. 2024)"
+              min={1900}
+              max={2100}
+              className={inputCls}
+            />
+            <input
+              name="amount"
+              type="number"
+              step="0.01"
+              required
+              placeholder="Amount (₹) — can be negative"
+              className={inputCls}
+            />
+            <input
+              name="note"
+              placeholder="Note (optional)"
+              className={inputCls}
+            />
+            <button type="submit" className={`${btnCls} col-span-full sm:col-span-1`}>+ Add Entry</button>
+          </form>
+          <p className="text-xs text-gray-400 mt-2">💡 Tip: Enter a negative amount to deduct from balance, positive to add.</p>
+        </div>
+
+        {/* Balance Entries List */}
+        <div className="border-t border-gray-100 pt-6">
+          {balanceEntries.length > 0 ? (
+            <div className="space-y-2">
+              {balanceEntries.map(b => (
+                <div key={b.id} className="flex justify-between items-center p-4 bg-gray-50 rounded-xl border border-gray-100 gap-3">
+                  <div className="min-w-0">
+                    <p className="font-bold text-gray-900 text-sm">Year: {b.year}</p>
+                    {b.note && <p className="text-xs text-gray-500 mt-0.5 truncate">{b.note}</p>}
+                  </div>
+                  <div className="flex items-center gap-4 flex-shrink-0">
+                    <span className={`font-black text-base ${
+                      b.amount < 0 ? "text-red-600" : b.amount === 0 ? "text-gray-500" : "text-emerald-700"
+                    }`}>
+                      {b.amount < 0 ? "-" : b.amount > 0 ? "+" : ""}₹{Math.abs(b.amount).toLocaleString("en-IN")}
+                    </span>
+                    <form action={async () => { "use server"; await deleteBalanceEntry(b.id); }}>
+                      <button type="submit" className="text-red-400 hover:text-red-600 text-xs font-bold">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="py-6 text-center text-gray-400 text-sm">No manual balance entries yet.</p>
+          )}
         </div>
       </section>
 

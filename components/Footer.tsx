@@ -10,7 +10,7 @@ export default function Footer() {
           <a href="#donation" className="hover:text-orange-400 transition-colors">Donate</a>
           <a href="/admin/login" className="hover:text-orange-400 transition-colors">Admin</a>
         </div>
-        <p className="text-xs text-stone-500 mt-4">© {new Date().getFullYear()} Hanuman Mandir, Darekarwadi. All rights reserved.</p>
+        <p className="text-xs text-stone-500 mt-4">© {new Date().getFullYear()} Developed by Mayuresh Darekar.</p>
       </div>
     </footer>
   );

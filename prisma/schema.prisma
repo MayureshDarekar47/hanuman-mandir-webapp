@@ -193,3 +193,11 @@ model PaymentMethod {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
+
+model BalanceEntry {
+  id        Int      @id @default(autoincrement())
+  year      Int      // e.g. 2024
+  amount    Float    // can be positive, zero, or negative
+  note      String?
+  createdAt DateTime @default(now())
+}

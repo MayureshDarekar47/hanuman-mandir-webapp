@@ -10,8 +10,7 @@ const navLinks = [
   { href: "/#timings", label: "Timings" },
   { href: "/#aarti", label: "Aarti" },
   { href: "/#events", label: "Events" },
-  { href: "/expenses", label: "Seva Record" },
-  { href: "/donors", label: "Donors" },
+  { href: "/accounts", label: "Accounts" },
 ];
 
 export default function Navbar() {
