@@ -22,13 +22,15 @@ import GalleryUploadForm from "@/components/admin/GalleryUploadForm";
 import FileUploadWithProgress from "@/components/admin/FileUploadWithProgress";
 import DocumentList from "@/components/admin/DocumentList";
 import PaymentManager from "@/components/admin/PaymentManager";
+import MahaprasadForm from "@/components/admin/MahaprasadForm";
+import MahaprasadUploadForm from "@/components/admin/MahaprasadUploadForm";
 
 const inputCls = "flex-1 min-w-0 p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm w-full";
 const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap";
 const sectionCls = "bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100";
 
 export default async function AdminDashboard() {
-  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents, paymentMethods, balanceEntries] = await Promise.all([
+  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents, paymentMethods, balanceEntries, mahaprasadItems] = await Promise.all([
     prisma.notice.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.event.findMany({ orderBy: { date: "asc" } }).catch(() => []),
     prisma.expense.findMany({ orderBy: { date: "desc" } }).catch(() => []),
@@ -42,6 +44,7 @@ export default async function AdminDashboard() {
     prisma.document.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.paymentMethod.findMany({ orderBy: { createdAt: "asc" } }).catch(() => []),
     prisma.balanceEntry.findMany({ orderBy: { year: "desc" } }).catch(() => []),
+    prisma.mahaprasadItem.findMany({ orderBy: { orderIndex: "asc" } }).catch(() => []),
   ]);
 
   const totalDonated = donors.reduce((s, d) => s + d.amount, 0);
@@ -246,6 +249,25 @@ export default async function AdminDashboard() {
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* ── Mahaprasad Menu ── */}
+      <section className={sectionCls}>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900 mb-1">Manage Mahaprasad</h2>
+            <p className="text-sm text-gray-500">Add Mahaprasad entries and upload related documents.</p>
+          </div>
+        </div>
+        <MahaprasadForm items={mahaprasadItems} />
+        <div className="mt-6 border-t border-gray-100 pt-6">
+          <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Bulk Import Mahaprasad</h3>
+          <MahaprasadUploadForm />
+        </div>
+        <div className="mt-6 border-t border-gray-100 pt-6">
+          <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Mahaprasad Documents</h3>
+          <DocumentList documents={documents as any[]} type="MAHAPRASAD" />
+        </div>
       </section>
 
       {/* ── Expenses ── */}

@@ -201,3 +201,14 @@ model BalanceEntry {
   note      String?
   createdAt DateTime @default(now())
 }
+
+model MahaprasadItem {
+  id          Int      @id @default(autoincrement())
+  name        String
+  description String?
+  date        DateTime?
+  startTime   String?
+  endTime     String?
+  orderIndex  Int      @default(0)
+  createdAt   DateTime @default(now())
+}

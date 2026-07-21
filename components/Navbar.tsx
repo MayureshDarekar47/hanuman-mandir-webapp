@@ -10,6 +10,7 @@ const navLinks = [
   { href: "/#timings", label: "Timings" },
   { href: "/#aarti", label: "Aarti" },
   { href: "/#events", label: "Events" },
+  { href: "/mahaprasad", label: "Mahaprasad" },
   { href: "/accounts", label: "Accounts" },
 ];
 
