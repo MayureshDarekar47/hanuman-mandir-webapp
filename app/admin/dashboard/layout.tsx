@@ -37,7 +37,17 @@ const NavLink = ({ href, label, text, mobile = false }: { href: string; label: s
   </Link>
 );
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const session = await getServerSession(authOptions);
+  console.log("=== DASHBOARD LAYOUT SESSION CHECK ===", session);
+  if (!session) {
+    redirect("/admin/login");
+  }
+
   const allMobileItems = [...mainNavItems, { href: "/admin/settings", label: "⚙️", text: "Settings" }, { href: "/", label: "🏠", text: "Back to Site" }];
 
   return (

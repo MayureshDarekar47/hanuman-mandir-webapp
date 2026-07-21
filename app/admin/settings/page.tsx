@@ -8,7 +8,16 @@ const inputCls = "w-full p-3 rounded-xl border border-gray-200 bg-white focus:ou
 const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm";
 const sectionCls = "bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb-8";
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { redirect } from "next/navigation";
+
 export default async function SettingsPage() {
+  const session = await getServerSession(authOptions);
+  if (!session) {
+    redirect("/admin/login");
+  }
+
   const [site, theme, anim, seo, admin] = await Promise.all([
     prisma.siteSettings.findFirst().catch(() => null),
     prisma.themeSettings.findFirst().catch(() => null),

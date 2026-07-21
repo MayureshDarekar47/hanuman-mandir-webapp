@@ -16,6 +16,7 @@ export default function Donation({
   upiNote?: string | null;
 }) {
   const [showModal, setShowModal] = useState(false);
+  const [amount, setAmount] = useState("");
   const displayName = upiName || "Hanuman Mandir";
   const displayNote = upiNote || "Temple Donation";
   
@@ -90,13 +91,61 @@ export default function Donation({
                     )}
                   </div>
                   <p className="font-bold text-gray-800 text-xl text-center">{displayName}</p>
-                  <p className="text-gray-400 text-sm mt-1 mb-2">UPI / GPay / PhonePe</p>
+                  <p className="text-gray-400 text-sm mt-1 mb-2">Support via any UPI App</p>
 
                   {upiId ? (
                     <div className="w-full mt-4 flex flex-col items-center">
-                      <p className="text-xs text-gray-400 mb-2 font-mono">{upiId}</p>
+                      <p className="text-xs text-gray-400 mb-4 font-mono bg-gray-50 px-3 py-1 rounded-md border border-gray-100">{upiId}</p>
+                      
+                      <div className="w-full mb-4">
+                        <label htmlFor="donation-amount" className="sr-only">Donation Amount</label>
+                        <div className="relative">
+                          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span className="text-gray-500 font-bold">₹</span>
+                          </div>
+                          <input
+                            type="number"
+                            id="donation-amount"
+                            min="1"
+                            placeholder="Enter amount (Optional)"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            className="block w-full pl-8 pr-3 py-3 border border-orange-200 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Mobile Payment Buttons - Explicit Apps */}
+                      <div className="grid grid-cols-2 gap-2 w-full mb-3 md:hidden">
+                        <a
+                          href={`paytmmp://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}&cu=INR${amount ? `&am=${amount}` : ""}`}
+                          className="bg-[#002970] text-white font-bold py-2.5 px-2 rounded-xl text-center text-xs shadow-sm active:scale-95 transition-transform"
+                        >
+                          Paytm
+                        </a>
+                        <a
+                          href={`phonepe://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}&cu=INR${amount ? `&am=${amount}` : ""}`}
+                          className="bg-[#5f259f] text-white font-bold py-2.5 px-2 rounded-xl text-center text-xs shadow-sm active:scale-95 transition-transform"
+                        >
+                          PhonePe
+                        </a>
+                        <a
+                          href={`gpay://upi/pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}&cu=INR${amount ? `&am=${amount}` : ""}`}
+                          className="bg-white text-gray-800 border border-gray-200 font-bold py-2.5 px-2 rounded-xl text-center text-xs shadow-sm active:scale-95 transition-transform flex items-center justify-center gap-1"
+                        >
+                          <span className="text-blue-500">G</span><span className="text-red-500">P</span><span className="text-yellow-500">a</span><span className="text-green-500">y</span>
+                        </a>
+                        <a
+                          href={`bhim://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}&cu=INR${amount ? `&am=${amount}` : ""}`}
+                          className="bg-[#FF7A00] text-white font-bold py-2.5 px-2 rounded-xl text-center text-xs shadow-sm active:scale-95 transition-transform"
+                        >
+                          BHIM
+                        </a>
+                      </div>
+
+                      {/* Generic / Default Button */}
                       <a
-                        href={upiDeepLink!}
+                        href={upiId ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}&cu=INR${amount ? `&am=${amount}` : ""}` : "#"}
                         onClick={(e) => {
                           const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
                             || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1)
@@ -110,7 +159,8 @@ export default function Donation({
                         className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white font-bold py-3.5 px-6 rounded-xl text-center shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2"
                       >
                         <Shield size={18} />
-                        Pay Now with UPI
+                        <span className="md:hidden">Other UPI Apps</span>
+                        <span className="hidden md:inline">Pay Now with UPI</span>
                       </a>
                     </div>
                   ) : (
