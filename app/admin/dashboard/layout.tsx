@@ -4,6 +4,7 @@ import SignOutButton from "@/components/SignOutButton";
 
 const mainNavItems = [
   { href: "/admin/dashboard", label: "📊", text: "Dashboard" },
+  { href: "/admin/dashboard#whatsapp-settings", label: "💬", text: "WhatsApp Settings" },
   { href: "/admin/dashboard#manage-donors", label: "❤️", text: "Manage Donors" },
   { href: "/admin/dashboard#manage-notices", label: "📢", text: "Manage Notices" },
   { href: "/admin/dashboard#manage-events", label: "📅", text: "Manage Events" },

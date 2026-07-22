@@ -367,8 +367,25 @@ export async function updateSiteSettings(formData: FormData) {
   revalidatePath("/admin/settings");
 }
 
+export async function updateWhatsappSettings(formData: FormData) {
+  const whatsappNumber = (formData.get("whatsappNumber") as string || "").replace(/\D/g, "");
+  const whatsappMessage = formData.get("whatsappMessage") as string;
 
+  const data = {
+    whatsappNumber: whatsappNumber || null,
+    whatsappMessage: whatsappMessage || null,
+  };
 
+  const existing = await prisma.siteSettings.findFirst();
+  if (existing) {
+    await prisma.siteSettings.update({ where: { id: existing.id }, data });
+  } else {
+    await prisma.siteSettings.create({ data });
+  }
+
+  revalidatePath("/");
+  revalidatePath("/admin/settings");
+}
 
 export async function updateThemeSettings(formData: FormData) {
   const data = {

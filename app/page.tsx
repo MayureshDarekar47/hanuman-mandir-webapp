@@ -11,7 +11,7 @@ import { prisma } from "@/lib/db";
 import { getPaymentSettings } from "@/lib/payment";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   const [galleryData, activeBg, site, anim] = await Promise.all([
@@ -42,6 +42,8 @@ export default async function Home() {
         upiId={payment.upiId}
         upiName={payment.upiName}
         upiNote={payment.upiNote}
+        whatsappNumber={site?.whatsappNumber || "919999999999"}
+        whatsappMessage={site?.whatsappMessage || undefined}
       />
       <Map />
       <SpeedInsights />
