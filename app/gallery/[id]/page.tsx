@@ -54,7 +54,7 @@ export default async function GalleryItemPage({ params }: Props) {
   };
 
   return (
-    <main className="min-h-screen py-24 px-4 flex flex-col items-center">
+    <main className="min-h-screen py-16 sm:py-24 px-4 flex flex-col items-center">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

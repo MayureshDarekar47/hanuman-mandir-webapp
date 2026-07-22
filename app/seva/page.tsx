@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Seva Records | Hanuman Mandir Darekarwadi',
@@ -17,9 +18,9 @@ export default function SevaPage() {
         <p className="text-lg text-gray-300 mb-8">
           The records of monthly expenses and community service (Seva) are maintained by the temple trust. Please visit the Expenses section for a detailed breakdown.
         </p>
-        <a href="/expenses" className="inline-block bg-temple-saffron text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition-colors">
+        <Link href="/expenses" className="inline-block bg-temple-saffron text-white px-8 py-3 rounded-full font-medium hover:bg-orange-600 transition-colors">
           View Detailed Expenses
-        </a>
+        </Link>
       </div>
     </main>
   );

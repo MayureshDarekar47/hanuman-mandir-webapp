@@ -2,7 +2,6 @@ import Hero from "@/components/Hero";
 import About from "@/components/About";
 import Timings from "@/components/Timings";
 import Guidelines from "@/components/Guidelines";
-import Notices from "@/components/Notices";
 import Gallery from "@/components/Gallery";
 import Aarti from "@/components/Aarti";
 import Events from "@/components/Events";
@@ -36,7 +35,6 @@ export default async function Home() {
       <Aarti />
       <Events />
       <Guidelines />
-      <Notices />
       <Donation 
         qrUrl={payment.qrImageUrl || site?.qrImageUrl || undefined} 
         upiId={payment.upiId}

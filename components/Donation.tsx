@@ -4,12 +4,12 @@ import { QrCode, Heart, Shield, FileText } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
-export default function Donation({ 
+export default function Donation({
   qrUrl,
   upiId,
   upiName,
   upiNote,
-}: { 
+}: {
   qrUrl?: string | null;
   upiId?: string | null;
   upiName?: string | null;
@@ -19,9 +19,9 @@ export default function Donation({
   const [amount, setAmount] = useState("");
   const displayName = upiName || "Hanuman Mandir";
   const displayNote = upiNote || "Temple Donation";
-  
+
   // Standard UPI deep link — only built when an active UPI ID exists in the database
-  const upiDeepLink = upiId 
+  const upiDeepLink = upiId
     ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}`
     : null;
 
@@ -29,26 +29,30 @@ export default function Donation({
 
   return (
     <>
-      <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="donation" aria-label="Donation and Seva">
+      <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="donation" aria-label="Donation and Seva">
+        <header className="text-center mb-4 sm:mb-12">
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-3">
+            <Heart className="text-orange-500 flex-shrink-0" size={32} aria-hidden="true" /> Donation
+          </h2>
+        </header>
         <div className="bg-gradient-to-br from-orange-600 via-orange-500 to-amber-500 rounded-3xl p-1 shadow-2xl">
           <div className="bg-white rounded-[22px] overflow-hidden">
             <div className="grid grid-cols-1 lg:grid-cols-2">
               {/* Left: Info */}
               <article className="p-6 sm:p-10 md:p-14">
                 <header>
-                  <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
+                  <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-sm font-semibold mb-2">
                     <Heart size={14} fill="currentColor" aria-hidden="true" /> Support The Temple
                   </div>
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
-                    Make a<br />
+                  <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-2 leading-tight">
                     <span className="text-orange-600">Seva Donation</span>
                   </h2>
                 </header>
-                <p className="text-gray-500 text-lg mb-8 leading-relaxed">
+                <p className="text-gray-500 text-lg mb-1 sm:mb-8 leading-relaxed">
                   Your generous contribution helps maintain the temple, light the daily diyas, and support village events. Every rupee counts as seva.
                 </p>
 
-                <ul className="space-y-3 mb-8" aria-label="Donation Benefits">
+                <ul className="space-y-3 mb-1 sm:mb-8" aria-label="Donation Benefits">
                   {[
                     { icon: Shield, text: "Secure UPI Transfer" },
                     { icon: FileText, text: "Transparent records published publicly" },
@@ -73,10 +77,9 @@ export default function Donation({
               </article>
 
               {/* Right: QR */}
-              <aside className="bg-orange-50 flex flex-col items-center justify-center p-6 sm:p-10 md:p-14" aria-label="QR Code for Donation">
-                <p className="text-gray-500 text-sm font-semibold uppercase tracking-widest mb-6">Scan to Donate</p>
-                <div className="bg-white p-6 sm:p-8 rounded-3xl shadow-xl border border-orange-100 flex flex-col items-center w-full max-w-sm">
-                  <div className="w-44 sm:w-52 h-44 sm:h-52 bg-gray-50 rounded-2xl flex items-center justify-center border-2 border-dashed border-orange-200 overflow-hidden relative mb-5">
+              <aside className="bg-orange-50 flex flex-col items-center justify-center p-2 sm:p-10 md:p-14" aria-label="QR Code for Donation">
+                <div className="bg-white p-4 sm:p-8 rounded-3xl shadow-xl border border-orange-100 flex flex-col items-center w-full max-w-sm">
+                  <div className="w-40 sm:w-52 h-40 sm:h-52 bg-gray-50 rounded-2xl flex items-center justify-center border-2 border-dashed border-orange-200 overflow-hidden relative mb-3">
                     {qrUrl ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
@@ -86,18 +89,17 @@ export default function Donation({
                       />
                     ) : (
                       <div className="absolute inset-0 flex items-center justify-center z-0">
-                        <QrCode size={64} className="text-orange-200" aria-hidden="true" />
+                        <QrCode size={56} className="text-orange-200" aria-hidden="true" />
                       </div>
                     )}
                   </div>
-                  <p className="font-bold text-gray-800 text-xl text-center">{displayName}</p>
-                  <p className="text-gray-400 text-sm mt-1 mb-2">Support via any UPI App</p>
+                  <p className="font-bold text-gray-800 text-lg sm:text-xl text-center">{displayName}</p>
 
                   {upiId ? (
-                    <div className="w-full mt-4 flex flex-col items-center">
-                      <p className="text-xs text-gray-400 mb-4 font-mono bg-gray-50 px-3 py-1 rounded-md border border-gray-100">{upiId}</p>
-                      
-                      <div className="w-full mb-4">
+                    <div className="w-full mt-2 flex flex-col items-center">
+                      <p className="text-[10px] sm:text-xs text-gray-400 mb-3 font-mono bg-gray-50 px-2 py-1 sm:px-3 sm:py-1 rounded-md border border-gray-100">{upiId}</p>
+
+                      <div className="w-full mb-3">
                         <label htmlFor="donation-amount" className="sr-only">Donation Amount</label>
                         <div className="relative">
                           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -147,10 +149,10 @@ export default function Donation({
                       <a
                         href={upiId ? `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}&cu=INR${amount ? `&am=${amount}` : ""}` : "#"}
                         onClick={(e) => {
-                          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                          const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
                             || (navigator.maxTouchPoints && navigator.maxTouchPoints > 1)
                             || window.screen.width <= 768;
-                          
+
                           if (!isMobile) {
                             e.preventDefault();
                             setShowModal(true);

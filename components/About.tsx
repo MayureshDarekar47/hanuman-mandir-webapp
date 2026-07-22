@@ -13,8 +13,8 @@ const info = [
 
 export default function About({ imageUrl }: { imageUrl?: string }) {
   return (
-    <section className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="about" aria-label="About the Temple">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+    <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="about" aria-label="About the Temple">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
         {/* Text side */}
         <motion.article
           initial={{ opacity: 0, x: -30 }}
@@ -23,17 +23,17 @@ export default function About({ imageUrl }: { imageUrl?: string }) {
           transition={{ duration: 0.7 }}
         >
           <header>
-            <p className="text-orange-600 font-semibold tracking-wider uppercase mb-2 text-sm">About Temple</p>
-            <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 mb-6 leading-tight">
+            
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
               A Sacred Place of<br />
               <span className="text-orange-600">Devotion &amp; Community</span>
             </h2>
           </header>
-          <p className="text-gray-500 mb-8 text-base sm:text-lg leading-relaxed">
+          <p className="text-gray-500 mb-5 text-base sm:text-lg leading-relaxed">
             Hanuman Mandir at Darekarwadi is the spiritual heart of our village. Dedicated to Lord Hanuman, it has been a place of daily prayers, community gatherings, and festivals for generations of devotees.
           </p>
 
-          <aside className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 gap-3 sm:gap-4" aria-label="Temple Details">
+          <aside className="grid grid-cols-2 gap-3 sm:gap-4" aria-label="Temple Details">
             {info.map((item, i) => (
               <motion.div
                 key={item.label}
@@ -59,7 +59,7 @@ export default function About({ imageUrl }: { imageUrl?: string }) {
           className="relative mt-8 lg:mt-0"
         >
           <div className="absolute -top-4 -left-4 w-full h-full rounded-3xl bg-orange-100 z-0" aria-hidden="true" />
-          <div className="relative rounded-3xl overflow-hidden shadow-2xl h-64 sm:h-80 lg:h-[480px] z-10 w-full bg-[#0f0805]/5">
+          <div className="relative rounded-3xl overflow-hidden shadow-2xl aspect-[4/3] sm:aspect-video lg:h-[480px] z-10 w-full bg-[#0f0805]/5">
             {imageUrl ? (
               /* Dynamic Supabase image — use native img tag to bypass Next.js hostname restrictions */
               // eslint-disable-next-line @next/next/no-img-element

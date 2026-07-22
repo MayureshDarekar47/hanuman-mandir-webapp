@@ -27,11 +27,11 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-6xl z-50 bg-white/90 backdrop-blur-md border border-orange-200 shadow-lg rounded-full">
+    <nav className="fixed top-2 sm:top-4 left-1/2 -translate-x-1/2 w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] max-w-6xl z-50 bg-white/90 backdrop-blur-md border border-orange-200 shadow-lg rounded-full">
       <div className="px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-14 sm:h-16">
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group min-w-0">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-600 to-amber-500 flex items-center justify-center text-white font-black text-lg shadow-md group-hover:scale-110 transition-transform flex-shrink-0">ॐ</div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gradient-to-br from-orange-600 to-amber-500 flex items-center justify-center text-white font-black text-sm sm:text-lg shadow-md group-hover:scale-110 transition-transform flex-shrink-0">ॐ</div>
             <div className="flex flex-col min-w-0">
               <span className="font-bold text-sm sm:text-base tracking-wide text-gray-900 truncate">Hanuman Mandir</span>
               <span className="text-[10px] sm:text-xs text-gray-400 truncate">Darekarwadi</span>
@@ -64,7 +64,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="md:hidden bg-white border-t border-orange-100 shadow-xl absolute top-[72px] left-0 w-full py-4 px-6 flex flex-col gap-1 rounded-b-3xl">
+        <div className="md:hidden bg-white border-t border-orange-100 shadow-xl absolute top-[60px] sm:top-[72px] left-0 w-full py-4 px-6 flex flex-col gap-1 rounded-b-3xl">
           {navLinks.map(l => (
             <Link
               key={l.href}

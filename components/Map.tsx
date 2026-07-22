@@ -3,17 +3,17 @@ import { motion } from "framer-motion";
 
 export default function Map() {
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="map" aria-label="Temple Location Map">
+    <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="map" aria-label="Temple Location Map">
       <motion.header 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.8 }}
-        className="text-center mb-12"
+        className="text-center mb-2 sm:mb-12"
       >
         <p className="text-temple-saffron font-semibold tracking-wider uppercase mb-2">Google Map</p>
         <h2 className="text-3xl md:text-5xl font-bold mb-4">Temple Location</h2>
-        <address className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-8 not-italic">
+        <address className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-1 sm:mb-8 not-italic">
           Address: Hanuman Mandir, Darekarwadi, Dhavalpuri, Taluka Parner, Dist. Ahilyanagar, Maharashtra - 414103
         </address>
         

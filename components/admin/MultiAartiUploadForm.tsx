@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { Plus, Trash2, Music2, Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface SongRow {
   id: string;
@@ -24,6 +25,7 @@ function uid() {
 }
 
 export default function MultiAartiUploadForm({ onSuccess }: Props) {
+  const router = useRouter();
   const [songs, setSongs] = useState<SongRow[]>([
     { id: uid(), title: "", subtitle: "", seoTitle: "", focusKeyword: "", metaDescription: "", file: null, progress: 0, status: "idle" },
   ]);
@@ -145,7 +147,7 @@ export default function MultiAartiUploadForm({ onSuccess }: Props) {
     
     if (metadataSaved > 0) {
       onSuccess?.();
-      setTimeout(() => window.location.reload(), 1800);
+      router.refresh();
     }
     
     setUploading(false);

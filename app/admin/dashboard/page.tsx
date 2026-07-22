@@ -1,5 +1,7 @@
 export const dynamic = 'force-dynamic';
 
+import Link from "next/link";
+
 import { prisma } from "@/lib/db";
 import {
   addNotice, deleteNotice,
@@ -59,9 +61,9 @@ export default async function AdminDashboard() {
           <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900">Dashboard</h1>
           <p className="text-gray-500 mt-1 text-sm">Manage all temple content from here.</p>
         </div>
-        <a href="/admin/settings" className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm flex items-center gap-2 border border-gray-200 flex-shrink-0">
+        <Link href="/admin/settings" className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm flex items-center gap-2 border border-gray-200 flex-shrink-0">
           ⚙️ Settings
-        </a>
+        </Link>
       </div>
 
       {/* Stats overview */}

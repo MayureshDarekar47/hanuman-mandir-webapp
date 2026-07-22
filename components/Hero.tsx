@@ -52,13 +52,13 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
   const activeImage = (isMobile && mobileBgUrl) ? mobileBgUrl : (bgUrl || defaultBg);
 
   return (
-    <section aria-label="Hero Section" className="relative min-h-[600px] h-[700px] 2xl:h-[800px] w-full flex items-center justify-center overflow-hidden bg-[#0f0805]" id="home">
+    <section aria-label="Hero Section" className="relative min-h-[450px] sm:min-h-[500px] lg:min-h-[700px] 2xl:min-h-[800px] w-full flex items-center justify-center overflow-hidden bg-[#0f0805]" id="home">
 
       {/* Heat Haze disabled for performance */}
 
       {/* 1. Base Image with Parallax, Slow Ken Burns & Cinematic Filters */}
       <motion.div
-        className="absolute inset-[-5%] w-[110%] h-[110%] bg-cover bg-center z-0 origin-center"
+        className="absolute inset-0 w-full h-full bg-cover bg-center z-0 origin-center scale-[1.05]"
         style={{
           backgroundImage: `url('${activeImage}')`,
           filter: "contrast(1.1) sepia(0.15) saturate(0.95)",
@@ -224,7 +224,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
       {/* 10. Foreground Content */}
       <article className="relative z-30 w-full">
         <motion.div
-          className="text-center px-4 flex flex-col items-center mt-10"
+          className="text-center px-4 flex flex-col items-center mt-20 sm:mt-10"
           style={{ x: contentX, y: contentY }}
         >
           <motion.div
@@ -241,7 +241,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 30, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 1.4 / speed, delay: 0.2 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="text-4xl sm:text-6xl md:text-8xl font-black text-white tracking-tight mb-4 drop-shadow-[0_5px_25px_rgba(0,0,0,0.8)]"
+            className="text-3xl sm:text-6xl md:text-8xl font-black text-white tracking-tight mb-4 drop-shadow-[0_5px_25px_rgba(0,0,0,0.8)]"
           >
             {siteSettings?.heroTitle || "Hanuman Mandir"}
           </motion.h1>
@@ -250,7 +250,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 / speed, delay: 0.35 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-orange-400 mb-6 drop-shadow-[0_3px_15px_rgba(0,0,0,0.7)]"
+            className="text-xl sm:text-3xl md:text-5xl font-extrabold text-orange-400 mb-6 drop-shadow-[0_3px_15px_rgba(0,0,0,0.7)]"
           >
             {siteSettings?.heroSubtitle || "हनुमान मंदिर"}
           </motion.h2>
@@ -268,12 +268,12 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2 / speed, delay: 0.7 / speed, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-8 sm:mt-12 flex flex-col sm:flex-row gap-4 sm:gap-5 items-center justify-center w-full"
+            className="mt-8 sm:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-5 items-center justify-center w-[85%] sm:w-full mx-auto"
           >
-            <a href="#about" aria-label="Explore Temple" className="px-8 py-4 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-full shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_35px_rgba(234,88,12,0.5)] hover:-translate-y-1 transition-all duration-300 ring-1 ring-orange-400/50">
+            <a href="#about" aria-label="Explore Temple" className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-full shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_35px_rgba(234,88,12,0.5)] hover:-translate-y-1 transition-all duration-300 ring-1 ring-orange-400/50">
               Explore Temple
             </a>
-            <a href="#donation" aria-label="Donate Now" className="px-8 py-4 bg-black/40 hover:bg-black/60 text-white font-bold rounded-full border border-orange-400/40 shadow-lg backdrop-blur-md hover:-translate-y-1 transition-all duration-300">
+            <a href="#donation" aria-label="Donate Now" className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base bg-black/40 hover:bg-black/60 text-white font-bold rounded-full border border-orange-400/40 shadow-lg backdrop-blur-md hover:-translate-y-1 transition-all duration-300">
               Donate Now
             </a>
           </motion.div>

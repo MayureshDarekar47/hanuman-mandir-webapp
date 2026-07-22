@@ -49,12 +49,12 @@ export default function EventCalendar({ events }: { events: Event[] }) {
   return (
     <div className="bg-white rounded-3xl shadow-xl border border-orange-100 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-8 py-6 bg-gradient-to-r from-orange-600 to-amber-500 text-white">
+      <div className="flex items-center justify-between px-4 py-3 sm:px-8 sm:py-6 bg-gradient-to-r from-orange-600 to-amber-500 text-white">
         <button onClick={prevMonth} className="p-2 rounded-full hover:bg-white/20 transition">
           <ChevronLeft size={24} />
         </button>
         <div className="text-center">
-          <h3 className="text-2xl font-bold tracking-wide">{monthNames[viewMonth]}</h3>
+          <h3 className="text-xl sm:text-2xl font-bold tracking-wide">{monthNames[viewMonth]}</h3>
           <p className="text-white/80 text-sm">{viewYear}</p>
         </div>
         <button onClick={nextMonth} className="p-2 rounded-full hover:bg-white/20 transition">
@@ -74,18 +74,18 @@ export default function EventCalendar({ events }: { events: Event[] }) {
       {/* Calendar grid */}
       <div className="grid grid-cols-7">
         {allCells.map((day, idx) => {
-          if (!day) return <div key={`blank-${idx}`} className="h-16 border-b border-r border-gray-50" />;
+          if (!day) return <div key={`blank-${idx}`} className="h-10 sm:h-16 border-b border-r border-gray-50" />;
           const isToday = day === today.getDate() && viewMonth === today.getMonth() && viewYear === today.getFullYear();
           const hasEvents = !!eventsByDay[day];
           return (
             <button
               key={day}
               onClick={() => hasEvents ? setSelected(eventsByDay[day]) : setSelected(null)}
-              className={`h-16 flex flex-col items-center justify-center gap-1 border-b border-r border-gray-50 transition-all relative
+              className={`h-10 sm:h-16 flex flex-col items-center justify-center sm:gap-1 border-b border-r border-gray-50 transition-all relative
                 ${isToday ? "bg-orange-50" : "hover:bg-amber-50"}
                 ${hasEvents ? "cursor-pointer" : "cursor-default"}`}
             >
-              <span className={`w-8 h-8 flex items-center justify-center rounded-full text-sm font-semibold
+              <span className={`w-7 h-7 sm:w-8 sm:h-8 flex items-center justify-center rounded-full text-xs sm:text-sm font-semibold
                 ${isToday ? "bg-orange-600 text-white" : "text-gray-700"}`}>
                 {day}
               </span>

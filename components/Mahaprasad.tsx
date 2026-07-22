@@ -27,7 +27,7 @@ export default async function Mahaprasad() {
       <div className="absolute top-0 right-0 w-64 h-64 bg-orange-100 rounded-full blur-3xl opacity-50 -z-10 transform translate-x-1/2 -translate-y-1/2"></div>
       
       {/* Top actions */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4 z-10 relative">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-1 sm:mb-8 gap-4 z-10 relative">
         <div className="inline-flex items-center gap-2 bg-orange-100 text-orange-700 px-4 py-1.5 rounded-full text-sm font-semibold border border-orange-200">
           <Utensils size={16} /> Mahaprasad
         </div>
@@ -43,7 +43,7 @@ export default async function Mahaprasad() {
         </div>
       </div>
 
-      <div className="text-center mb-12 relative">
+      <div className="text-center mb-2 sm:mb-12 relative">
         <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
           Today's <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">Bhojan</span>
         </h2>

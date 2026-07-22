@@ -15,7 +15,7 @@ export default async function AboutPage() {
   const site = await prisma.siteSettings.findFirst().catch(() => null);
 
   return (
-    <main className="min-h-screen py-24 flex flex-col items-center">
+    <main className="min-h-screen py-16 sm:py-24 flex flex-col items-center">
       <About imageUrl={site?.aboutImage || undefined} />
     </main>
   );

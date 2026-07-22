@@ -7,9 +7,8 @@ import { prisma } from "@/lib/db";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://hanuman-mandir-darekarwadi.vercel.app';
 
 export const viewport: Viewport = {
-  width: 1280,
+  width: "device-width",
   initialScale: 1,
-  minimumScale: 0.1,
   maximumScale: 5,
   userScalable: true,
 };
@@ -264,7 +263,7 @@ export default async function RootLayout({
   };
 
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-x-hidden">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

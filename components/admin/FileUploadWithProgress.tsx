@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { Upload } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   endpoint: string; // API route
@@ -19,6 +20,7 @@ export default function FileUploadWithProgress({
   label = "Upload File",
   onSuccess,
 }: Props) {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [progress, setProgress] = useState(0);
   const [status, setStatus] = useState<"idle" | "uploading" | "success" | "error">("idle");
@@ -65,7 +67,7 @@ export default function FileUploadWithProgress({
           setFile(null);
           if (fileRef.current) fileRef.current.value = "";
           onSuccess?.();
-          setTimeout(() => window.location.reload(), 1500);
+          router.refresh();
         } else {
           setStatus("error");
           setMessage(data.error || "Upload failed");

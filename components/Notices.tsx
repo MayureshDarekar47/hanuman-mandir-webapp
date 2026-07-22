@@ -5,9 +5,9 @@ export default async function Notices() {
   const notices = await prisma.notice.findMany({ orderBy: { createdAt: 'desc' }, take: 5 }).catch(() => []);
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto" id="notice" aria-label="Notice Board Announcements">
-      <header className="text-center mb-12">
-        <p className="text-orange-600 font-semibold tracking-wider uppercase mb-2">Announcements</p>
+    <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="notice" aria-label="Notice Board Announcements">
+      <header className="text-center mb-2 sm:mb-12">
+        
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-3">
           <Bell className="text-amber-500 flex-shrink-0" size={30} aria-hidden="true" /> Notice Board
         </h2>
@@ -25,9 +25,9 @@ export default async function Notices() {
             </li>
           ))
         ) : (
-          <li className="text-center p-10 bg-orange-50 border border-orange-100 rounded-2xl text-gray-500" aria-live="polite">
-            <Bell className="mx-auto mb-3 text-orange-300" size={40} aria-hidden="true" />
-            <p className="font-medium">No new notices at this time.</p>
+          <li className="text-center py-6 px-4 bg-orange-50 border border-orange-100 rounded-2xl text-gray-500" aria-live="polite">
+            <Bell className="mx-auto mb-2 text-orange-300" size={28} aria-hidden="true" />
+            <p className="font-medium text-sm">No new notices at this time.</p>
           </li>
         )}
       </ul>

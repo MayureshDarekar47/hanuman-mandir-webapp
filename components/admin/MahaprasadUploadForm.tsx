@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef } from "react";
+import { useRouter } from "next/navigation";
 
 interface UploadResult {
   progress: number;
@@ -22,6 +23,7 @@ type ParsedPreview = {
 }[];
 
 export default function MahaprasadUploadForm({ onSuccess }: Props) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("CSV");
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<UploadResult>({ progress: 0, status: "idle", message: "" });
@@ -84,7 +86,7 @@ export default function MahaprasadUploadForm({ onSuccess }: Props) {
           onSuccess?.();
           // Reload to show new data only if records were actually imported
           if (data.count && data.count > 0) {
-            setTimeout(() => window.location.reload(), 1500);
+            router.refresh();
           }
         } else {
           setResult({ progress: 0, status: "error", message: data.error || "Upload failed" });

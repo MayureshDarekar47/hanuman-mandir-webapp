@@ -1,12 +1,14 @@
 "use client";
 import { useState, useRef } from "react";
 import { Upload, Image as ImageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface Props {
   onSuccess?: () => void;
 }
 
 export default function GalleryUploadForm({ onSuccess }: Props) {
+  const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
@@ -56,7 +58,7 @@ export default function GalleryUploadForm({ onSuccess }: Props) {
           setPreview(null);
           if (fileRef.current) fileRef.current.value = "";
           onSuccess?.();
-          setTimeout(() => window.location.reload(), 1500);
+          router.refresh();
         } else {
           setStatus("error");
           setMessage(data.error || "Upload failed");

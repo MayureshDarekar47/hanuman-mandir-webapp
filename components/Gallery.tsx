@@ -26,14 +26,11 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
 
   return (
     <section
-      className="py-16 sm:py-24 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto"
+      className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible"
       id="gallery"
       aria-label="Photo Gallery"
     >
-      <header className="text-center mb-10 sm:mb-12">
-        <p className="text-temple-saffron font-semibold tracking-wider uppercase mb-2 text-sm">
-          Photo Gallery
-        </p>
+      <header className="text-center mb-2 sm:mb-12">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">Temple Darshan</h2>
         <p className="text-gray-400 max-w-xl mx-auto text-sm">
           Explore the divine beauty of Hanuman Mandir, Darekarwadi — captured through the lens of our devotees.
@@ -48,15 +45,15 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
           <p className="text-sm text-gray-400">Visit the admin dashboard to upload temple photos.</p>
         </div>
       ) : (
-        <>
+        <div className="w-full overflow-hidden sm:overflow-visible">
           {/* ── Main Carousel ─────────────────────────────────────── */}
           <div
-            className="relative w-full rounded-3xl overflow-hidden shadow-2xl group aspect-[4/3] sm:aspect-video bg-black"
+            className="relative w-full rounded-3xl overflow-hidden shadow-2xl group aspect-video bg-black"
             role="region"
             aria-roledescription="carousel"
             aria-label="Temple Images Carousel"
           >
-            <AnimatePresence mode="wait" custom={direction}>
+            <AnimatePresence initial={false} custom={direction}>
               <motion.div
                 key={currentIndex}
                 custom={direction}
@@ -65,14 +62,25 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                 animate="center"
                 exit="exit"
                 transition={{ duration: 0.45, ease: "easeInOut" }}
-                className="absolute inset-0"
+                className="absolute inset-0 cursor-grab active:cursor-grabbing"
+                drag="x"
+                dragConstraints={{ left: 0, right: 0 }}
+                dragElastic={1}
+                onDragEnd={(e, { offset, velocity }) => {
+                  const swipe = Math.abs(offset.x) * velocity.x;
+                  if (swipe < -10000) {
+                    navigate(1);
+                  } else if (swipe > 10000) {
+                    navigate(-1);
+                  }
+                }}
               >
                 {/* Native img to bypass Next.js remote hostname restrictions for Supabase URLs */}
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={images[currentIndex]}
                   alt={`Hanuman Mandir Darekarwadi — temple view ${currentIndex + 1} of ${images.length}`}
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-contain pointer-events-none"
                   loading={currentIndex === 0 ? "eager" : "lazy"}
                 />
                 {/* gradient overlay */}
@@ -93,7 +101,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                 <button
                   onClick={() => navigate(-1)}
                   aria-label="Previous image"
-                  className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 p-2 sm:p-4 rounded-full bg-black/40 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-lg"
+                  className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-full bg-black/60 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-xl border border-white/10"
                 >
                   <ChevronLeft size={24} aria-hidden="true" />
                 </button>
@@ -101,7 +109,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                 <button
                   onClick={() => navigate(1)}
                   aria-label="Next image"
-                  className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 p-2 sm:p-4 rounded-full bg-black/40 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-lg"
+                  className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-full bg-black/60 text-white hover:bg-temple-saffron transition-all backdrop-blur-md z-10 shadow-xl border border-white/10"
                 >
                   <ChevronRight size={24} aria-hidden="true" />
                 </button>
@@ -136,7 +144,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
           {/* ── Thumbnail Strip ────────────────────────────────────── */}
           {images.length > 1 && (
             <div
-              className="mt-4 sm:mt-5 flex gap-2 sm:gap-4 overflow-x-auto pb-2 scroll-smooth"
+              className="mt-4 sm:mt-5 flex w-full min-w-0 gap-2 sm:gap-4 overflow-x-auto pb-2 scroll-smooth snap-x"
               role="listbox"
               aria-label="Image thumbnails"
               style={{ scrollbarWidth: "none" }}
@@ -153,7 +161,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                       ? "ring-2 ring-temple-gold ring-offset-2 ring-offset-transparent scale-105"
                       : "opacity-50 hover:opacity-100"
                   }`}
-                  style={{ width: "96px", height: "64px" }}
+                  style={{ width: "80px", height: "56px" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
@@ -166,7 +174,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
               ))}
             </div>
           )}
-        </>
+        </div>
       )}
     </section>
   );

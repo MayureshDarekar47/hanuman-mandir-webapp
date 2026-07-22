@@ -14,14 +14,13 @@ export default async function Events() {
   }));
 
   return (
-    <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="events" aria-label="Temple Events and Festivals">
-      <header className="text-center mb-12">
-        <p className="text-orange-600 font-semibold tracking-wider uppercase mb-2">Temple Calendar</p>
+    <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="events" aria-label="Temple Events and Festivals">
+      <header className="text-center mb-2 sm:mb-12">
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold flex items-center justify-center gap-3">
           <CalendarDays className="text-amber-500 flex-shrink-0" size={32} aria-hidden="true" /> Events &amp; Festivals
         </h2>
         <p className="text-gray-500 max-w-2xl mx-auto mt-4">
-          Browse our month-by-month calendar for upcoming village festivals and temple ceremonies. Days with events are marked with an orange dot — click to see details.
+          Annual Kirtan Days Celebration Schedule
         </p>
       </header>
 
@@ -38,21 +37,21 @@ export default async function Events() {
             <ul className="flex flex-col gap-4">
               {events.slice(0, 5).map(event => (
                 <li key={event.id}>
-                  <article className="flex gap-4 items-start bg-white rounded-2xl shadow border border-orange-100 p-4 hover:-translate-y-1 transition-transform">
-                    <div className="flex-shrink-0 bg-orange-600 text-white rounded-xl px-3 py-2 text-center min-w-[56px]" aria-hidden="true">
-                      <p className="text-xs font-bold uppercase">{new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}</p>
-                      <p className="text-2xl font-black leading-tight">{new Date(event.date).getDate()}</p>
+                  <article className="flex gap-3 items-center bg-white rounded-xl shadow border border-orange-100 p-2 sm:p-3 hover:-translate-y-1 transition-transform">
+                    <div className="flex-shrink-0 bg-orange-600 text-white rounded-lg px-2 py-1 text-center min-w-[48px]" aria-hidden="true">
+                      <p className="text-[10px] font-bold uppercase leading-none">{new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}</p>
+                      <p className="text-xl font-black leading-tight mt-0.5">{new Date(event.date).getDate()}</p>
                     </div>
-                    <div>
-                      <h4 className="font-bold text-gray-900">{event.title}</h4>
-                      {event.description && <p className="text-sm text-gray-500 mt-1">{event.description}</p>}
+                    <div className="flex-1">
+                      <h4 className="font-bold text-gray-900 text-sm sm:text-base">{event.title}</h4>
+                      {event.description && <p className="text-xs sm:text-sm text-gray-500 mt-0.5">{event.description}</p>}
                     </div>
                   </article>
                 </li>
               ))}
             </ul>
           ) : (
-            <div className="bg-orange-50 rounded-2xl border border-orange-100 p-6 text-center text-gray-500">
+            <div className="bg-orange-50 rounded-2xl border border-orange-100 py-3 px-4 text-center text-sm text-gray-500">
               No upcoming events scheduled.
             </div>
           )}
