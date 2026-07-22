@@ -10,6 +10,7 @@ interface UploadResult {
 
 interface Props {
   onSuccess?: () => void;
+  children?: React.ReactNode;
 }
 
 const TABS = ["CSV", "Excel", "PDF"] as const;
@@ -22,7 +23,7 @@ type ParsedPreview = {
   remark?: string;
 }[];
 
-export default function SevaUploadForm({ onSuccess }: Props) {
+export default function SevaUploadForm({ onSuccess, children }: Props) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("CSV");
   const [file, setFile] = useState<File | null>(null);
@@ -105,8 +106,9 @@ export default function SevaUploadForm({ onSuccess }: Props) {
 
   return (
     <div className="space-y-5">
-      {/* Tab switcher */}
-      <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit">
+      {/* Top Row: Tabs + Documents */}
+      <div className="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
+        <div className="flex gap-1 bg-gray-100 rounded-xl p-1 w-fit flex-shrink-0">
         {TABS.map((tab) => (
           <button
             key={tab}
@@ -130,6 +132,13 @@ export default function SevaUploadForm({ onSuccess }: Props) {
             {tab}
           </button>
         ))}
+        </div>
+        
+        {children && (
+          <div className="flex-1 flex lg:justify-end min-w-0 w-full overflow-x-auto pb-2 lg:pb-0" style={{ scrollbarWidth: "none" }}>
+            {children}
+          </div>
+        )}
       </div>
 
       {/* Info */}

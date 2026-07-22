@@ -44,6 +44,7 @@ export default function Navbar() {
               <Link
                 key={l.href}
                 href={getLinkHref(l.href)}
+                prefetch={true}
                 className="px-2 py-2 text-sm text-gray-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg font-medium transition-all whitespace-nowrap"
               >
                 {l.label}
@@ -51,6 +52,7 @@ export default function Navbar() {
             ))}
             <Link
               href={getLinkHref("/#donation")}
+              prefetch={true}
               className="ml-3 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600 text-white px-5 py-2 rounded-full font-semibold text-sm transition-all shadow-md hover:shadow-lg"
             >
               Donate ❤️
@@ -82,6 +84,7 @@ export default function Navbar() {
                 <Link
                    key={l.href}
                    href={getLinkHref(l.href)}
+                   prefetch={true}
                    onClick={() => setIsOpen(false)}
                    className="flex items-center gap-3 py-1.5 px-3 text-gray-800 hover:text-orange-600 hover:bg-orange-50/80 rounded-xl font-semibold text-[14px] transition-colors"
                 >
@@ -95,6 +98,7 @@ export default function Navbar() {
             <div className="w-full h-[1px] bg-gray-100 my-2"></div>
             <Link
               href={getLinkHref("/#donation")}
+              prefetch={true}
               onClick={() => setIsOpen(false)}
               className="bg-gradient-to-r from-orange-600 to-amber-500 text-white flex justify-center items-center py-3 px-4 rounded-xl font-bold text-[15px] shadow-lg shadow-orange-500/25 active:scale-[0.98] transition-all"
             >

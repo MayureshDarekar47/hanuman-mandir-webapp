@@ -27,6 +27,9 @@ const formatTime12h = (time: string | null | undefined) => {
 export default function MahaprasadForm({ items }: { items: MahaprasadItemType[] }) {
   const [loading, setLoading] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+
+  const displayedItems = showAll ? items : items.slice(0, 2);
 
   const downloadCSV = () => {
     if (items.length === 0) return;
@@ -79,8 +82,8 @@ export default function MahaprasadForm({ items }: { items: MahaprasadItemType[] 
           </button>
         </div>
       </div>
-      
-      <form 
+
+      <form
         action={async (data) => {
           setLoading(true);
           await addMahaprasadItem(data);
@@ -92,45 +95,45 @@ export default function MahaprasadForm({ items }: { items: MahaprasadItemType[] 
         className="grid grid-cols-1 md:grid-cols-12 gap-4 mb-8"
       >
         <div className="md:col-span-4">
-          <input 
-            name="name" 
-            placeholder="Today's Bhojan" 
-            required 
+          <input
+            name="name"
+            placeholder="Today's Bhojan"
+            required
             className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
           />
         </div>
         <div className="md:col-span-5">
-          <input 
-            name="description" 
-            placeholder="Description (Optional)" 
+          <input
+            name="description"
+            placeholder="Description (Optional)"
             className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
           />
         </div>
         <div className="md:col-span-3">
-          <input 
-            name="date" 
+          <input
+            name="date"
             type="date"
             className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
           />
         </div>
-        
+
         <div className="md:col-span-3">
-          <input 
-            name="startTime" 
+          <input
+            name="startTime"
             type="time"
             className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
           />
         </div>
         <div className="md:col-span-3">
-          <input 
-            name="endTime" 
+          <input
+            name="endTime"
             type="time"
             className="w-full p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm"
           />
         </div>
         <div className="md:col-span-6">
-          <button 
-            type="submit" 
+          <button
+            type="submit"
             disabled={loading}
             className="w-full bg-orange-600 hover:bg-orange-700 text-white p-3 rounded-xl font-bold text-sm transition-colors flex justify-center items-center h-full disabled:opacity-50"
           >
@@ -140,10 +143,8 @@ export default function MahaprasadForm({ items }: { items: MahaprasadItemType[] 
       </form>
 
       <div className="space-y-3">
-        {items.length === 0 ? (
-          <p className="text-gray-400 text-sm italic">No Mahaprasad items added yet.</p>
-        ) : (
-          items.map(item => (
+        {items.length === 0 ? null : (
+          displayedItems.map(item => (
             <div key={item.id} className="flex justify-between items-center p-4 bg-orange-50/50 border border-orange-100 rounded-xl">
               <div>
                 <p className="font-bold text-gray-900">{item.name}</p>
@@ -176,6 +177,18 @@ export default function MahaprasadForm({ items }: { items: MahaprasadItemType[] 
           ))
         )}
       </div>
+
+      {items.length > 2 && (
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            onClick={() => setShowAll(!showAll)}
+            className="text-sm font-bold text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-md hover:shadow-lg transition-all active:scale-95 px-6 py-2.5 rounded-full"
+          >
+            {showAll ? "Show Less" : "Show More"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

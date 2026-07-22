@@ -100,11 +100,10 @@ function PaymentRow({
 
   return (
     <div
-      className={`bg-white rounded-2xl border transition-all ${
-        method.isActive
+      className={`bg-white rounded-2xl border transition-all ${method.isActive
           ? "border-orange-500 ring-2 ring-orange-200 shadow-lg"
           : "border-gray-100 shadow-sm"
-      }`}
+        }`}
     >
       {/* Header bar */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
@@ -112,11 +111,10 @@ function PaymentRow({
           <button
             disabled={isPending || method.isActive}
             onClick={() => onSetActive(method.id)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${
-              method.isActive
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all ${method.isActive
                 ? "bg-orange-600 text-white"
                 : "bg-gray-100 text-gray-600 hover:bg-orange-50 hover:text-orange-700"
-            }`}
+              }`}
           >
             {isPending ? (
               <Loader2 size={14} className="animate-spin" />
@@ -130,7 +128,7 @@ function PaymentRow({
 
           {method.isActive && (
             <span className="text-xs text-orange-600 font-semibold">
-              ← Currently used on public site
+
             </span>
           )}
         </div>
@@ -423,15 +421,7 @@ export default function PaymentManager({ methods }: { methods: PaymentMethod[] }
   return (
     <div className="space-y-5">
       {/* Page header */}
-      <div className="flex items-center justify-between bg-white p-5 rounded-2xl border border-gray-100 shadow-sm">
-        <div>
-          <h2 className="text-lg font-bold text-gray-900">UPI Payment Methods</h2>
-          <p className="text-xs text-gray-500 mt-0.5">
-            {methods.length === 0
-              ? "No UPI IDs added yet — click Add New to get started."
-              : `${methods.length} method${methods.length > 1 ? "s" : ""} configured. Mark one as Active to use it on the public site.`}
-          </p>
-        </div>
+      <div className="flex justify-end">
         <button
           onClick={() => setIsAdding(true)}
           className="flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white px-4 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm"

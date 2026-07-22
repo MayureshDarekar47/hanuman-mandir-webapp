@@ -349,7 +349,6 @@ export async function deleteHeroBackground(id: number, url: string, mobileUrl?: 
 // ── Global CMS Settings Actions ────────────────────────────────
 
 export async function updateSiteSettings(formData: FormData) {
-  const id = parseInt(formData.get("id") as string) || 0;
   const data = {
     heroTitle: formData.get("heroTitle") as string,
     heroSubtitle: formData.get("heroSubtitle") as string,
@@ -357,12 +356,12 @@ export async function updateSiteSettings(formData: FormData) {
     heroLocation: formData.get("heroLocation") as string,
   };
 
-  // Use upsert to avoid duplicate-row race condition
-  await prisma.siteSettings.upsert({
-    where: { id: id > 0 ? id : 0 },
-    create: data,
-    update: data,
-  });
+  const existing = await prisma.siteSettings.findFirst();
+  if (existing) {
+    await prisma.siteSettings.update({ where: { id: existing.id }, data });
+  } else {
+    await prisma.siteSettings.create({ data });
+  }
   
   revalidatePath("/");
   revalidatePath("/admin/settings");
@@ -372,7 +371,6 @@ export async function updateSiteSettings(formData: FormData) {
 
 
 export async function updateThemeSettings(formData: FormData) {
-  const id = parseInt(formData.get("id") as string) || 0;
   const data = {
     primaryColor: formData.get("primaryColor") as string,
     secondaryColor: formData.get("secondaryColor") as string,
@@ -380,15 +378,18 @@ export async function updateThemeSettings(formData: FormData) {
     textColor: formData.get("textColor") as string,
   };
   
-  if (id === 0) await prisma.themeSettings.create({ data });
-  else await prisma.themeSettings.update({ where: { id }, data });
+  const existing = await prisma.themeSettings.findFirst();
+  if (existing) {
+    await prisma.themeSettings.update({ where: { id: existing.id }, data });
+  } else {
+    await prisma.themeSettings.create({ data });
+  }
   
   revalidatePath("/", "layout");
   revalidatePath("/admin/settings");
 }
 
 export async function updateAnimationSettings(formData: FormData) {
-  const id = parseInt(formData.get("id") as string) || 0;
   const data = {
     enableAnimations: formData.get("enableAnimations") === "on",
     enableParticles: formData.get("enableParticles") === "on",
@@ -396,26 +397,37 @@ export async function updateAnimationSettings(formData: FormData) {
     enableFog: formData.get("enableFog") === "on",
     enableParallax: formData.get("enableParallax") === "on",
     enableGlow: formData.get("enableGlow") === "on",
+    enableLeaves: formData.get("enableLeaves") === "on",
+    enableSmoke: formData.get("enableSmoke") === "on",
+    enableSparkles: formData.get("enableSparkles") === "on",
     speedMultiplier: parseFloat(formData.get("speedMultiplier") as string) || 1.0,
+    intensityMultiplier: parseFloat(formData.get("intensityMultiplier") as string) || 1.0,
   };
   
-  if (id === 0) await prisma.animationSettings.create({ data });
-  else await prisma.animationSettings.update({ where: { id }, data });
-  
+  const existing = await prisma.animationSettings.findFirst();
+  if (existing) {
+    await prisma.animationSettings.update({ where: { id: existing.id }, data });
+  } else {
+    await prisma.animationSettings.create({ data });
+  }
+
   revalidatePath("/");
   revalidatePath("/admin/settings");
 }
 
 export async function updateSeoSettings(formData: FormData) {
-  const id = parseInt(formData.get("id") as string) || 0;
   const data = {
     metaTitle: formData.get("metaTitle") as string,
     metaDescription: formData.get("metaDescription") as string,
     keywords: formData.get("keywords") as string,
   };
   
-  if (id === 0) await prisma.seoSettings.create({ data });
-  else await prisma.seoSettings.update({ where: { id }, data });
+  const existing = await prisma.seoSettings.findFirst();
+  if (existing) {
+    await prisma.seoSettings.update({ where: { id: existing.id }, data });
+  } else {
+    await prisma.seoSettings.create({ data });
+  }
   
   revalidatePath("/", "layout");
   revalidatePath("/admin/settings");

@@ -158,6 +158,10 @@ model AnimationSettings {
   enableFog        Boolean  @default(true)
   enableParallax   Boolean  @default(true)
   enableGlow       Boolean  @default(true)
+  enableLeaves     Boolean  @default(false)
+  enableSmoke      Boolean  @default(false)
+  enableSparkles   Boolean  @default(false)
+  intensityMultiplier Float   @default(1.0)
   updatedAt        DateTime @updatedAt
 }
 

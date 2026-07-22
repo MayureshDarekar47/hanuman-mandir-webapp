@@ -43,13 +43,37 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
         </div>
       ) : (
         <div className="w-full overflow-hidden sm:overflow-visible">
-          {/* ── Main Carousel ─────────────────────────────────────── */}
+          {/* ── Main Carousel ──────────────────────────────────────── */}
           <div
-            className="relative w-full rounded-3xl overflow-hidden shadow-2xl group aspect-video bg-black"
-            role="region"
+            className="relative w-full aspect-video rounded-3xl shadow-[0_0_40px_-10px_rgba(220,38,38,0.3)] overflow-hidden group border-2 border-red-200 bg-white"
             aria-roledescription="carousel"
             aria-label="Temple Images Carousel"
           >
+            {/* Left Side Design */}
+            <div 
+              className="absolute inset-y-0 left-0 w-1/3 pointer-events-none"
+              style={{
+                backgroundImage: `url('/assets/red_floral_vines.png')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'left center',
+                WebkitMaskImage: 'linear-gradient(to right, black 0%, black 40%, transparent 100%)',
+                maskImage: 'linear-gradient(to right, black 0%, black 40%, transparent 100%)',
+              }}
+            />
+            {/* Right Side Design (Mirrored exactly to match the left) */}
+            <div 
+              className="absolute inset-y-0 right-0 w-1/3 pointer-events-none"
+              style={{
+                backgroundImage: `url('/assets/red_floral_vines.png')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'left center',
+                transform: 'scaleX(-1)',
+                WebkitMaskImage: 'linear-gradient(to right, black 0%, black 40%, transparent 100%)',
+                maskImage: 'linear-gradient(to right, black 0%, black 40%, transparent 100%)',
+              }}
+            />
+            {/* Very minimal overlay to ensure it remains bright and white */}
+            <div className="absolute inset-0 bg-white/5 pointer-events-none" />
             <AnimatePresence initial={false} custom={direction}>
               <motion.div
                 key={currentIndex}
@@ -77,17 +101,17 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                 <img
                   src={images[currentIndex]}
                   alt={`Hanuman Mandir Darekarwadi — temple view ${currentIndex + 1} of ${images.length}`}
-                  className="w-full h-full object-contain pointer-events-none"
+                  className="relative z-10 w-full h-full object-contain pointer-events-none drop-shadow-2xl"
                   loading={currentIndex === 0 ? "eager" : "lazy"}
                 />
                 {/* gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
               </motion.div>
             </AnimatePresence>
 
             {/* Caption */}
             <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 z-10">
-              <p className="text-white/60 text-xs uppercase tracking-widest font-bold">
+              <p className="text-white text-xs uppercase tracking-widest font-bold bg-black/50 px-3 py-1 rounded-full shadow-lg">
                 {currentIndex + 1} / {images.length}
               </p>
             </div>

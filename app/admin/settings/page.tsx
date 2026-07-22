@@ -11,6 +11,8 @@ const sectionCls = "bg-white p-8 rounded-2xl shadow-sm border border-gray-100 mb
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default async function SettingsPage() {
   const session = await getServerSession(authOptions);
@@ -27,10 +29,14 @@ export default async function SettingsPage() {
   ]);
 
   return (
-    <div className="space-y-10 pb-10">
-      <div>
-        <h1 className="text-3xl font-extrabold text-gray-900">Global Settings</h1>
-        <p className="text-gray-500 mt-1">Manage global theme, animations, SEO, and Hero texts.</p>
+    <div className="space-y-10 p-6 sm:p-10 pt-32 sm:pt-40 pb-10 bg-gray-50 min-h-screen">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-gray-900">Global Settings</h1>
+        </div>
+        <Link href="/admin/dashboard" prefetch={true} className="bg-white hover:bg-gray-100 text-gray-800 px-5 py-2.5 rounded-xl font-bold text-sm transition-colors shadow-sm flex items-center gap-2 border border-gray-200 flex-shrink-0">
+          <ArrowLeft size={16} /> Back to Dashboard
+        </Link>
       </div>
 
       {/* Hero & Site Texts */}
@@ -128,11 +134,37 @@ export default async function SettingsPage() {
               <input type="checkbox" name="enableGlow" defaultChecked={anim?.enableGlow ?? true} className="w-5 h-5 text-orange-600 rounded border-gray-300" />
               <span className="text-sm font-semibold text-gray-700">Warm Glow Effects</span>
             </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" name="enableLeaves" defaultChecked={anim?.enableLeaves ?? false} className="w-5 h-5 text-orange-600 rounded border-gray-300" />
+              <span className="text-sm font-semibold text-gray-700">Falling Sacred Leaves</span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" name="enableSmoke" defaultChecked={anim?.enableSmoke ?? false} className="w-5 h-5 text-orange-600 rounded border-gray-300" />
+              <span className="text-sm font-semibold text-gray-700">Aarti Smoke (Fog)</span>
+            </label>
+            <label className="flex items-center gap-3 cursor-pointer">
+              <input type="checkbox" name="enableSparkles" defaultChecked={anim?.enableSparkles ?? false} className="w-5 h-5 text-orange-600 rounded border-gray-300" />
+              <span className="text-sm font-semibold text-gray-700">Golden Sparkles</span>
+            </label>
           </div>
 
-          <div className="mt-6">
-            <label className="text-xs font-bold text-gray-500 uppercase">Animation Speed Multiplier (0.5x to 2x)</label>
-            <input type="number" step="0.1" name="speedMultiplier" defaultValue={anim?.speedMultiplier || 1.0} className="w-32 p-2 rounded-lg border border-gray-200 text-sm mt-2 block" />
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6 bg-white p-4 rounded-xl border border-gray-100">
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase flex items-center justify-between mb-2">
+                <span>Animation Speed (Slow to Fast)</span>
+                <span className="text-orange-600">{anim?.speedMultiplier || 1.0}x</span>
+              </label>
+              <input type="range" min="0.5" max="2.0" step="0.1" name="speedMultiplier" defaultValue={anim?.speedMultiplier || 1.0} className="w-full accent-orange-600" />
+              <div className="flex justify-between text-xs text-gray-400 mt-1 font-semibold"><span>0.5x (Slow)</span><span>1.0x (Normal)</span><span>2.0x (Fast)</span></div>
+            </div>
+            <div>
+              <label className="text-xs font-bold text-gray-500 uppercase flex items-center justify-between mb-2">
+                <span>Animation Intensity (Amount)</span>
+                <span className="text-orange-600">{anim?.intensityMultiplier || 1.0}x</span>
+              </label>
+              <input type="range" min="0.2" max="3.0" step="0.1" name="intensityMultiplier" defaultValue={anim?.intensityMultiplier || 1.0} className="w-full accent-orange-600" />
+              <div className="flex justify-between text-xs text-gray-400 mt-1 font-semibold"><span>Thoda (Low)</span><span>Normal</span><span>Bahut Jada (High)</span></div>
+            </div>
           </div>
 
           <button type="submit" className={btnCls}>Save Animations</button>

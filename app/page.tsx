@@ -11,6 +11,8 @@ import { prisma } from "@/lib/db";
 import { getPaymentSettings } from "@/lib/payment";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
+export const revalidate = 60;
+
 export default async function Home() {
   const [galleryData, activeBg, site, anim] = await Promise.all([
     prisma.galleryImage.findMany({ orderBy: { createdAt: 'desc' } }).catch(() => []),

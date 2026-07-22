@@ -40,6 +40,15 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
   const enableParticles = animEnabled && (animationSettings?.enableParticles ?? true);
   const enableFlowers = animEnabled && (animationSettings?.enableFlowers ?? true);
   const enableGlow = animEnabled && (animationSettings?.enableGlow ?? true);
+  const enableLeaves = animEnabled && (animationSettings?.enableLeaves ?? false);
+  const enableSmoke = animEnabled && (animationSettings?.enableSmoke ?? false);
+  const enableSparkles = animEnabled && (animationSettings?.enableSparkles ?? false);
+  const intensity = animationSettings?.intensityMultiplier ?? 1.0;
+
+  const numParticles = Math.max(0, Math.round(15 * intensity));
+  const numFlowers = Math.max(0, Math.round(12 * intensity));
+  const numLeaves = Math.max(0, Math.round(15 * intensity));
+  const numSparkles = Math.max(0, Math.round(25 * intensity));
 
   // Max 10px parallax movement
   const backgroundX = useTransform(mouseX, [-1, 1], enableParallax ? [-10, 10] : [0, 0]);
@@ -160,7 +169,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
       {/* 9. Floating dust particles & Glowing particles */}
       {mounted && (
         <div className="absolute inset-0 z-20 pointer-events-none overflow-hidden" aria-hidden="true">
-          {enableParticles && Array.from({ length: 15 }).map((_, i) => (
+          {enableParticles && Array.from({ length: numParticles }).map((_, i) => (
             <motion.div
               key={`dust-${i}`}
               className="absolute rounded-full bg-white shadow-[0_0_8px_2px_rgba(255,220,120,0.6)]"
@@ -186,7 +195,7 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
           ))}
 
           {/* Floating Marigold & Rose Petals */}
-          {enableFlowers && Array.from({ length: 12 }).map((_, i) => {
+          {enableFlowers && Array.from({ length: numFlowers }).map((_, i) => {
             const isMarigold = Math.random() > 0.4;
             const size = Math.random() * 8 + 6;
             return (
@@ -218,6 +227,90 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
               />
             );
           })}
+
+          {/* Falling Sacred Leaves */}
+          {enableLeaves && Array.from({ length: numLeaves }).map((_, i) => {
+            const size = Math.random() * 10 + 10;
+            return (
+              <motion.div
+                key={`leaf-${i}`}
+                className="absolute shadow-sm"
+                style={{
+                  width: size + "px",
+                  height: size * 1.5 + "px",
+                  top: -30,
+                  left: Math.random() * 100 + "%",
+                  background: "linear-gradient(135deg, rgba(34,139,34,0.9), rgba(0,100,0,0.8))",
+                  borderRadius: "50% 0 50% 0",
+                }}
+                animate={animEnabled ? {
+                  y: [0, typeof window !== 'undefined' ? window.innerHeight + 50 : 1000],
+                  x: [0, (Math.random() - 0.5) * 300],
+                  rotate: [0, Math.random() * 360 * (Math.random() > 0.5 ? 1 : -1)],
+                  opacity: [0, 0.9, 0.9, 0]
+                } : {}}
+                transition={{
+                  duration: (Math.random() * 25 + 25) / speed,
+                  repeat: Infinity,
+                  delay: (Math.random() * 40) / speed,
+                  ease: "linear"
+                }}
+              />
+            );
+          })}
+
+          {/* Golden Sparkles */}
+          {enableSparkles && Array.from({ length: numSparkles }).map((_, i) => (
+            <motion.div
+              key={`sparkle-${i}`}
+              className="absolute bg-yellow-200"
+              style={{
+                width: Math.random() * 3 + 2 + "px",
+                height: Math.random() * 3 + 2 + "px",
+                top: Math.random() * 100 + "%",
+                left: Math.random() * 100 + "%",
+                clipPath: "polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)",
+                boxShadow: "0 0 10px 2px rgba(255, 215, 0, 0.8)"
+              }}
+              animate={animEnabled ? {
+                opacity: [0, 1, 0],
+                scale: [0.5, 1.5, 0.5],
+                rotate: [0, 180]
+              } : {}}
+              transition={{
+                duration: (Math.random() * 2 + 1) / speed,
+                repeat: Infinity,
+                delay: (Math.random() * 5) / speed,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
+
+          {/* Aarti Smoke (Fog) */}
+          {enableSmoke && Array.from({ length: Math.max(0, Math.round(5 * intensity)) }).map((_, i) => (
+            <motion.div
+              key={`smoke-${i}`}
+              className="absolute bottom-[0%] rounded-full blur-3xl mix-blend-screen pointer-events-none"
+              style={{
+                width: Math.random() * 300 + 200 + "px",
+                height: Math.random() * 300 + 200 + "px",
+                left: Math.random() * 80 + 10 + "%",
+                background: "radial-gradient(circle, rgba(200, 200, 200, 0.15) 0%, transparent 70%)"
+              }}
+              animate={animEnabled ? {
+                y: [0, Math.random() * -400 - 200],
+                x: [0, (Math.random() - 0.5) * 200],
+                opacity: [0, Math.random() * 0.3 + 0.1, 0],
+                scale: [1, Math.random() * 2 + 1.5]
+              } : {}}
+              transition={{
+                duration: (Math.random() * 20 + 20) / speed,
+                repeat: Infinity,
+                delay: (Math.random() * 15) / speed,
+                ease: "easeInOut"
+              }}
+            />
+          ))}
         </div>
       )}
 

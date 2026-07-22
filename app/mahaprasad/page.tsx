@@ -1,6 +1,6 @@
 import Mahaprasad from "@/components/Mahaprasad";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default function MahaprasadPage() {
   return (

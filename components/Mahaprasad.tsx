@@ -19,7 +19,7 @@ export default async function Mahaprasad() {
     prisma.document.findMany({ where: { type: "MAHAPRASAD" }, orderBy: { createdAt: "desc" } }).catch(() => []),
   ]);
 
-  if (items.length === 0 && documents.length === 0) return null;
+  const hasContent = items.length > 0 || documents.length > 0;
 
   return (
     <section id="mahaprasad" className="py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto relative overflow-hidden scroll-mt-20">
@@ -32,15 +32,17 @@ export default async function Mahaprasad() {
           <Utensils size={16} /> Mahaprasad
         </div>
         
-        <div className="flex items-center gap-3">
-          <a 
-            href="/api/download/mahaprasad"
-            className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-orange-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm"
-          >
-            <Download size={16} />
-            Download CSV
-          </a>
-        </div>
+        {hasContent && (
+          <div className="flex items-center gap-3">
+            <a 
+              href="/api/download/mahaprasad"
+              className="inline-flex items-center gap-2 bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:text-orange-700 px-4 py-2 rounded-xl text-sm font-semibold transition-all shadow-sm"
+            >
+              <Download size={16} />
+              Download CSV
+            </a>
+          </div>
+        )}
       </div>
 
       <div className="text-center mb-2 sm:mb-4 relative">
@@ -52,54 +54,66 @@ export default async function Mahaprasad() {
         </p>
       </div>
 
-      {documents.length > 0 && (
-        <div className="mb-16">
-          <PublicDocumentList documents={documents as any[]} title="Mahaprasad" />
+      {!hasContent ? (
+        <div className="bg-white rounded-2xl shadow-sm border border-orange-100 py-20 text-center mt-8">
+          <div className="text-5xl mb-4">🍛</div>
+          <h3 className="text-lg font-bold text-gray-700 mb-2">No Mahaprasad Details Yet</h3>
+          <p className="text-gray-400 text-sm max-w-xs mx-auto">
+            Mahaprasad schedule and details will be displayed here once uploaded by the admin.
+          </p>
         </div>
-      )}
-
-      <div className="space-y-4">
-        {items.map((item, index) => (
-          <div 
-            key={item.id} 
-            className="group bg-white rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-orange-100 flex flex-col md:flex-row gap-4 md:items-center relative overflow-hidden"
-          >
-            {/* Sr No Tag */}
-            <div className="absolute top-0 left-0 bg-orange-100 text-orange-800 text-[10px] font-black px-2 py-1 rounded-br-lg z-10">
-              #{item.orderIndex || index + 1}
+      ) : (
+        <>
+          {documents.length > 0 && (
+            <div className="mb-16 mt-8">
+              <PublicDocumentList documents={documents as any[]} title="Mahaprasad" />
             </div>
+          )}
 
-            <div className="flex-shrink-0 flex flex-col gap-2 mt-4 md:mt-0">
-              {item.date && (
-                <div className="flex items-center gap-1.5 text-sm font-bold text-orange-700 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100 whitespace-nowrap">
-                  <Calendar size={14} />
-                  {new Date(item.date).toLocaleDateString("en-IN", { dateStyle: "medium" })}
+          <div className="space-y-4 mt-8">
+            {items.map((item, index) => (
+              <div 
+                key={item.id} 
+                className="group bg-white rounded-2xl p-5 md:p-6 shadow-sm hover:shadow-md transition-all duration-300 border border-orange-100 flex flex-col md:flex-row gap-4 md:items-center relative overflow-hidden"
+              >
+                {/* Sr No Tag */}
+                <div className="absolute top-0 left-0 bg-orange-100 text-orange-800 text-[10px] font-black px-2 py-1 rounded-br-lg z-10">
+                  #{item.orderIndex || index + 1}
                 </div>
-              )}
-              {/* @ts-ignore */}
-              {(item.startTime || item.endTime) && (
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 whitespace-nowrap">
-                  <Clock size={14} />
+
+                <div className="flex-shrink-0 flex flex-col gap-2 mt-4 md:mt-0">
+                  {item.date && (
+                    <div className="flex items-center gap-1.5 text-sm font-bold text-orange-700 bg-orange-50 px-3 py-1.5 rounded-lg border border-orange-100 whitespace-nowrap">
+                      <Calendar size={14} />
+                      {new Date(item.date).toLocaleDateString("en-IN", { dateStyle: "medium" })}
+                    </div>
+                  )}
                   {/* @ts-ignore */}
-                  {formatTime12h(item.startTime)} - {formatTime12h(item.endTime)}
+                  {(item.startTime || item.endTime) && (
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-lg border border-blue-100 whitespace-nowrap">
+                      <Clock size={14} />
+                      {/* @ts-ignore */}
+                      {formatTime12h(item.startTime)} - {formatTime12h(item.endTime)}
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-            
-            <div className="flex-1 min-w-0 md:ml-4">
-              <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-700 transition-colors">
-                {item.name}
-              </h3>
-              
-              {item.description && (
-                <p className="text-gray-500 text-sm mt-1 leading-relaxed">
-                  {item.description}
-                </p>
-              )}
-            </div>
+                
+                <div className="flex-1 min-w-0 md:ml-4">
+                  <h3 className="text-xl font-bold text-gray-900 group-hover:text-orange-700 transition-colors">
+                    {item.name}
+                  </h3>
+                  
+                  {item.description && (
+                    <p className="text-gray-500 text-sm mt-1 leading-relaxed">
+                      {item.description}
+                    </p>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
+        </>
+      )}
     </section>
   );
 }

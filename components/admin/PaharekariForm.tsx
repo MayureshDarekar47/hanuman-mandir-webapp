@@ -44,12 +44,14 @@ const downloadCSV = (items: PaharekariItemType[]) => {
 export default function PaharekariForm({ items }: { items: PaharekariItemType[] }) {
   const [loading, setLoading] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+
+  const displayedItems = showAll ? items : items.slice(0, 2);
 
   return (
     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
       {/* Header row */}
       <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
-        <h2 className="text-xl font-bold text-gray-900">Paharekari Duty List</h2>
         <div className="flex gap-2 flex-wrap">
           <button
             onClick={() => items.length > 0 ? downloadCSV(items) : undefined}
@@ -131,10 +133,8 @@ export default function PaharekariForm({ items }: { items: PaharekariItemType[] 
 
       {/* Items List */}
       <div className="space-y-3">
-        {items.length === 0 ? (
-          <p className="text-gray-400 text-sm italic">No Paharekari records added yet.</p>
-        ) : (
-          items.map((item) => (
+        {items.length === 0 ? null : (
+          displayedItems.map((item) => (
             <div
               key={item.id}
               className="flex justify-between items-center p-4 bg-orange-50/50 border border-orange-100 rounded-xl"
@@ -169,6 +169,18 @@ export default function PaharekariForm({ items }: { items: PaharekariItemType[] 
           ))
         )}
       </div>
+
+      {items.length > 2 && (
+        <div className="flex justify-end mt-4">
+          <button
+            type="button"
+            onClick={() => setShowAll(!showAll)}
+            className="text-sm font-bold text-white bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 shadow-md hover:shadow-lg transition-all active:scale-95 px-6 py-2.5 rounded-full"
+          >
+            {showAll ? "Show Less" : "Show More"}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

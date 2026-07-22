@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60;
 
 export default async function AccountsPage() {
   const [donors, expenses, balanceEntries] = await Promise.all([
