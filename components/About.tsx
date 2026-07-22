@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const info = [
   { label: "Temple Name", value: "Hanuman Mandir Darekarwadi" },
-  { label: "Village", value: "Bhangadewadi,Dhawalpuri" },
+  { label: "Village", value: "Bhangadewadi,\nDhawalpuri" },
   { label: "Taluka", value: "Parner" },
   { label: "District", value: "Ahilyanagar" },
   { label: "State", value: "Maharashtra" },
@@ -44,7 +44,7 @@ export default function About({ imageUrl }: { imageUrl?: string }) {
                 className="bg-orange-50 border border-orange-100 rounded-2xl p-3 sm:p-4"
               >
                 <p className="text-xs text-orange-500 font-semibold uppercase tracking-wider mb-1">{item.label}</p>
-                <p className="font-bold text-gray-900 text-sm sm:text-base">{item.value}</p>
+                <p className="font-bold text-gray-900 text-sm sm:text-base whitespace-pre-line">{item.value}</p>
               </motion.div>
             ))}
           </aside>
