@@ -27,8 +27,14 @@ export default function Navbar() {
     return href;
   };
 
+  const isAdmin = pathname.startsWith("/admin");
+
   return (
-    <nav className="fixed top-2 sm:top-4 left-1/2 -translate-x-1/2 w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] max-w-6xl z-50 bg-white/90 backdrop-blur-md border border-orange-200 shadow-lg rounded-full">
+    <nav className={`fixed top-2 sm:top-4 z-50 bg-white/90 backdrop-blur-md border border-orange-200 shadow-lg rounded-full transition-all duration-300 ${
+      isAdmin
+        ? "left-[1rem] md:left-[272px] w-[calc(100%-2rem)] md:w-[calc(100%-288px)] max-w-7xl" // Stay to the right of the sidebar on md+ screens
+        : "left-1/2 -translate-x-1/2 w-[calc(100%-1rem)] sm:w-[calc(100%-2rem)] max-w-6xl"
+    }`}>
       <div className="px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-14 sm:h-16">
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group flex-shrink-0">

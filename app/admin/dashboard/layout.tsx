@@ -88,9 +88,9 @@ export default async function AdminLayout({ children }: { children: ReactNode })
         <div className="hidden md:block w-64 flex-shrink-0" />
 
         {/* Desktop sidebar (fixed) */}
-        <aside className="hidden md:flex fixed top-[64px] sm:top-[80px] w-64 bg-white border-r border-gray-100 shadow-sm p-5 flex-col justify-between h-[calc(100vh-64px)] sm:h-[calc(100vh-80px)] overflow-y-auto z-40">
-          {/* Top: logo */}
-          <div>
+        <aside className="hidden md:flex fixed top-0 w-64 bg-white border-r border-gray-100 shadow-sm flex-col justify-between h-screen z-[60]">
+          {/* Top: logo (Fixed) */}
+          <div className="p-5 pb-0 shrink-0">
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-600 to-amber-500 flex items-center justify-center text-white font-black text-lg">ॐ</div>
               <div>
@@ -98,19 +98,19 @@ export default async function AdminLayout({ children }: { children: ReactNode })
                 <p className="text-xs text-gray-400">Hanuman Mandir</p>
               </div>
             </div>
+          </div>
 
-            {/* Main nav */}
-            <nav className="flex flex-col gap-1 mb-4">
+          {/* Main nav (Scrollable) */}
+          <div className="flex-1 overflow-y-auto px-5 pb-5">
+            <nav className="flex flex-col gap-1">
               {mainNavItems.map(item => (
                 <NavLink key={item.href} {...item} />
               ))}
             </nav>
-
-
           </div>
 
-          {/* Bottom: Settings + Sign out */}
-          <div className="border-t border-gray-100 pt-4 space-y-1">
+          {/* Bottom: Settings + Sign out (Fixed) */}
+          <div className="p-5 border-t border-gray-100 shrink-0 space-y-1 bg-white">
             {bottomNavItems.map(item => (
               <NavLink key={item.href} {...item} />
             ))}

@@ -11,7 +11,7 @@ import { prisma } from "@/lib/db";
 import { getPaymentSettings } from "@/lib/payment";
 import { SpeedInsights } from '@vercel/speed-insights/next';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 
 export default async function Home() {
   const [galleryData, activeBg, site, anim] = await Promise.all([
