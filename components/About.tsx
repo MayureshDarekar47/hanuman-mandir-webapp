@@ -13,7 +13,7 @@ const info = [
 
 export default function About({ imageUrl }: { imageUrl?: string }) {
   return (
-    <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="about" aria-label="About the Temple">
+    <section className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="about" aria-label="About the Temple">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-12 items-center">
         {/* Text side */}
         <motion.article
@@ -66,7 +66,7 @@ export default function About({ imageUrl }: { imageUrl?: string }) {
               <img
                 src={imageUrl}
                 alt="Hanuman Mandir Darekarwadi Temple View"
-                className="w-full h-full object-contain hover:scale-105 transition-transform duration-700"
+                className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
                 loading="lazy"
               />
             ) : (
@@ -76,7 +76,7 @@ export default function About({ imageUrl }: { imageUrl?: string }) {
                 alt="Hanuman Mandir Darekarwadi Temple View"
                 fill
                 sizes="(max-width: 768px) 100vw, 50vw"
-                className="object-contain hover:scale-105 transition-transform duration-700"
+                className="object-cover hover:scale-105 transition-transform duration-700"
                 placeholder="blur"
                 blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
               />

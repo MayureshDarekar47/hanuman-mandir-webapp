@@ -26,17 +26,17 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
 
   return (
     <section
-      className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full overflow-x-hidden sm:overflow-visible"
+      className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full overflow-x-hidden sm:overflow-visible"
       id="gallery"
       aria-label="Photo Gallery"
     >
-      <header className="text-center mb-2 sm:mb-12">
+      <header className="text-center mb-2 sm:mb-4">
         <h2 className="text-3xl md:text-5xl font-bold mb-4">Temple Photos</h2>
       </header>
 
       {images.length === 0 ? (
         /* Empty state */
-        <div className="w-full rounded-3xl border-2 border-dashed border-orange-200 bg-orange-50/50 flex flex-col items-center justify-center gap-4 text-gray-400 py-16 sm:py-20">
+        <div className="w-full rounded-3xl border-2 border-dashed border-orange-200 bg-orange-50/50 flex flex-col items-center justify-center gap-4 text-gray-400 py-16 sm:py-4">
           <ImageOff size={56} className="text-orange-200" aria-hidden="true" />
           <p className="font-medium text-lg">No photos uploaded yet.</p>
           <p className="text-sm text-gray-400">Visit the admin dashboard to upload temple photos.</p>

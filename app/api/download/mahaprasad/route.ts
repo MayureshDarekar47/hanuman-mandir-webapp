@@ -22,7 +22,7 @@ export async function GET() {
     }));
 
     const ws = XLSX.utils.json_to_sheet(data);
-    const csvData = XLSX.utils.sheet_to_csv(ws);
+    const csvData = "\uFEFF" + XLSX.utils.sheet_to_csv(ws);
 
     return new NextResponse(csvData, {
       headers: {

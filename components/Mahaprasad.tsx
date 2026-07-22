@@ -43,7 +43,7 @@ export default async function Mahaprasad() {
         </div>
       </div>
 
-      <div className="text-center mb-2 sm:mb-12 relative">
+      <div className="text-center mb-2 sm:mb-4 relative">
         <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight">
           Today's <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">Bhojan</span>
         </h2>

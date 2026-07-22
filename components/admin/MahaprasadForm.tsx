@@ -39,7 +39,7 @@ export default function MahaprasadForm({ items }: { items: MahaprasadItemType[] 
       const end = item.endTime || "";
       return `${name},${desc},${date},${start},${end}`;
     });
-    const csv = [header, ...rows].join("\n");
+    const csv = "\uFEFF" + [header, ...rows].join("\n");
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");

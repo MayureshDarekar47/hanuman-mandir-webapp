@@ -9,8 +9,8 @@ export default async function Aarti() {
 
   if (tracks.length === 0) {
     return (
-      <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto" id="aarti" aria-label="Aarti and Audio">
-        <header className="text-center mb-2 sm:mb-12">
+      <section className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto" id="aarti" aria-label="Aarti and Audio">
+        <header className="text-center mb-2 sm:mb-4">
           {/* Removed superheader */}
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900">Aarti & Bhajans</h2>
         </header>

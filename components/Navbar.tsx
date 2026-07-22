@@ -2,17 +2,17 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Info, Image as ImageIcon, Clock, Music, Calendar, Utensils, ShieldCheck, FileText } from "lucide-react";
 
 const navLinks = [
-  { href: "/#about", label: "About" },
-  { href: "/#gallery", label: "Gallery" },
-  { href: "/#timings", label: "Timings" },
-  { href: "/#aarti", label: "Aarti" },
-  { href: "/#events", label: "Events" },
-  { href: "/mahaprasad", label: "Mahaprasad" },
-  { href: "/paharekari", label: "Paharekari" },
-  { href: "/accounts", label: "Accounts" },
+  { href: "/#about", label: "About", icon: Info },
+  { href: "/#gallery", label: "Gallery", icon: ImageIcon },
+  { href: "/#timings", label: "Timings", icon: Clock },
+  { href: "/#aarti", label: "Aarti", icon: Music },
+  { href: "/#events", label: "Events", icon: Calendar },
+  { href: "/mahaprasad", label: "Mahaprasad", icon: Utensils },
+  { href: "/paharekari", label: "Paharekari", icon: ShieldCheck },
+  { href: "/accounts", label: "Accounts", icon: FileText },
 ];
 
 export default function Navbar() {
@@ -65,24 +65,42 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {isOpen && (
-        <div className="lg:hidden bg-white border-t border-orange-100 shadow-xl absolute top-[60px] sm:top-[72px] left-0 w-full py-4 px-6 flex flex-col gap-1 rounded-b-3xl">
-          {navLinks.map(l => (
+        <div className="lg:hidden bg-white/95 backdrop-blur-2xl border border-orange-200/60 shadow-[0_20px_40px_rgb(0,0,0,0.12)] absolute top-[60px] sm:top-[72px] left-0 w-full py-4 px-6 flex flex-col gap-0 rounded-3xl mt-2 overflow-hidden">
+          
+          {/* Subtle Background Animation */}
+          <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+            <div className="absolute -top-10 -right-10 w-40 h-40 bg-orange-400 rounded-full mix-blend-multiply filter blur-3xl opacity-[0.15] animate-pulse"></div>
+            <div className="absolute top-20 -left-10 w-32 h-32 bg-amber-400 rounded-full mix-blend-multiply filter blur-2xl opacity-[0.15] animate-pulse" style={{ animationDelay: '1.5s' }}></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 border-[40px] border-orange-300 rounded-full opacity-[0.05] animate-[spin_20s_linear_infinite] border-dashed"></div>
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl text-orange-500 opacity-[0.03] select-none font-black flex items-center justify-center">ॐ</div>
+          </div>
+
+          <div className="relative z-10 flex flex-col gap-0">
+            {navLinks.map((l) => {
+              const Icon = l.icon;
+              return (
+                <Link
+                   key={l.href}
+                   href={getLinkHref(l.href)}
+                   onClick={() => setIsOpen(false)}
+                   className="flex items-center gap-3 py-1.5 px-3 text-gray-800 hover:text-orange-600 hover:bg-orange-50/80 rounded-xl font-semibold text-[14px] transition-colors"
+                >
+                  <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-500 border border-orange-100">
+                    <Icon size={16} />
+                  </div>
+                  {l.label}
+                </Link>
+              );
+            })}
+            <div className="w-full h-[1px] bg-gray-100 my-2"></div>
             <Link
-              key={l.href}
-              href={getLinkHref(l.href)}
+              href={getLinkHref("/#donation")}
               onClick={() => setIsOpen(false)}
-              className="py-3 px-4 text-gray-700 hover:text-orange-700 hover:bg-orange-50 rounded-xl font-medium text-sm transition-all"
+              className="bg-gradient-to-r from-orange-600 to-amber-500 text-white flex justify-center items-center py-3 px-4 rounded-xl font-bold text-[15px] shadow-lg shadow-orange-500/25 active:scale-[0.98] transition-all"
             >
-              {l.label}
+              Donate ❤️
             </Link>
-          ))}
-          <Link
-            href={getLinkHref("/#donation")}
-            onClick={() => setIsOpen(false)}
-            className="mt-2 bg-gradient-to-r from-orange-600 to-amber-500 text-white text-center py-3 px-4 rounded-xl font-semibold text-sm"
-          >
-            Donate ❤️
-          </Link>
+          </div>
         </div>
       )}
     </nav>

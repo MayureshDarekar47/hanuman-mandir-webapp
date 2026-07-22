@@ -14,8 +14,8 @@ export default async function Events() {
   }));
 
   return (
-    <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="events" aria-label="Temple Events and Festivals">
-      <header className="text-center mb-2 sm:mb-12">
+    <section className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="events" aria-label="Temple Events and Festivals">
+      <header className="text-center mb-2 sm:mb-4">
         <h2 className="text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-3">
           <CalendarDays className="text-amber-500 flex-shrink-0" size={32} aria-hidden="true" /> Events &amp; Festivals
         </h2>

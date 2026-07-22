@@ -25,7 +25,7 @@ export async function GET() {
       return `${date},${name},${start},${end}`;
     });
 
-    const csv = [header, ...rows].join("\n");
+    const csv = "\uFEFF" + [header, ...rows].join("\n");
     const fileName = `paharekari_${new Date().toISOString().slice(0, 10)}.csv`;
 
     return new NextResponse(csv, {

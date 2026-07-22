@@ -3,6 +3,8 @@ import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Lock, Eye, EyeOff } from "lucide-react";
+import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -33,68 +35,104 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4 pt-20">
-      <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800 p-8">
-        <div className="flex flex-col items-center mb-8">
-          <div className="w-16 h-16 bg-temple-saffron/10 rounded-full flex items-center justify-center mb-4">
-            <Lock className="text-temple-saffron" size={32} />
-          </div>
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Admin Login</h2>
-          <p className="text-gray-500 mt-2 text-center text-sm">Sign in to manage temple data</p>
-        </div>
-
-        {error && (
-          <div className="bg-red-50 text-red-500 p-3 rounded-lg mb-6 text-sm text-center">
-            {error}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-300">Username</label>
-            <input 
-              type="text" 
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-temple-saffron transition-all"
-              placeholder="Enter username"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-2 text-gray-900 dark:text-gray-300">Password</label>
-            <div className="relative">
-              <input 
-                type={showPassword ? "text" : "password"} 
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full p-3 rounded-xl border border-gray-300 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-temple-saffron transition-all pr-12"
-                placeholder="Enter password"
-              />
-              <button 
-                type="button" 
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-          </div>
-
-          <button 
-            type="submit" 
-            disabled={loading}
-            className="w-full py-4 bg-temple-saffron hover:bg-temple-gold text-white font-bold rounded-xl transition-colors shadow-lg disabled:opacity-50"
-          >
-            {loading ? "Authenticating..." : "Login to Dashboard"}
-          </button>
-        </form>
-        <p className="text-xs text-gray-400 text-center mt-6">
-          Default credentials: username <strong>admin</strong>, password <strong>1234</strong>. Change password from the Settings page after login.
-        </p>
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-[#0a0503]">
+      {/* Background with blur */}
+      <div className="absolute inset-0 z-0 opacity-40 mix-blend-overlay">
+        <Image 
+          src="/assets/temple_04.jpg" 
+          alt="Temple Background" 
+          fill 
+          className="object-cover object-center blur-sm" 
+          priority
+        />
       </div>
+      
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 z-0 bg-gradient-to-t from-[#0a0503] via-[#0a0503]/80 to-transparent"></div>
+      <div className="absolute inset-0 z-0 bg-gradient-to-r from-orange-900/20 to-amber-900/20 mix-blend-overlay"></div>
+
+      <motion.div 
+        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="w-full max-w-md z-10 px-4"
+      >
+        <div className="bg-white/10 dark:bg-black/40 backdrop-blur-xl rounded-3xl shadow-[0_8px_32px_rgba(0,0,0,0.5)] border border-white/20 dark:border-white/10 p-8 sm:p-10 relative overflow-hidden">
+          
+          {/* Decorative shine */}
+          <div className="absolute -top-24 -left-24 w-48 h-48 bg-orange-500/30 rounded-full blur-3xl pointer-events-none"></div>
+          <div className="absolute -bottom-24 -right-24 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+          <div className="flex flex-col items-center mb-8 relative z-10">
+            <motion.div 
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
+              className="w-20 h-20 bg-gradient-to-br from-orange-500 to-amber-600 rounded-full flex items-center justify-center mb-5 shadow-[0_0_20px_rgba(249,115,22,0.4)]"
+            >
+              <Lock className="text-white" size={36} />
+            </motion.div>
+            <h2 className="text-3xl font-extrabold text-white tracking-tight">Admin Portal</h2>
+            <p className="text-orange-200/80 mt-2 text-center text-sm font-medium">Secure access to temple management</p>
+          </div>
+
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}
+              className="bg-red-500/20 border border-red-500/50 text-red-200 p-3 rounded-xl mb-6 text-sm text-center backdrop-blur-md"
+            >
+              {error}
+            </motion.div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-orange-50">Username</label>
+              <input
+                type="text"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="w-full p-3.5 rounded-xl border border-white/20 bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all placeholder:text-gray-500"
+                placeholder="Enter admin username"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5 text-orange-50">Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full p-3.5 rounded-xl border border-white/20 bg-black/40 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all pr-12 placeholder:text-gray-500"
+                  placeholder="Enter secure password"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full mt-4 py-4 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-xl transition-all shadow-[0_4px_20px_rgba(249,115,22,0.4)] hover:shadow-[0_4px_25px_rgba(249,115,22,0.6)] disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 active:translate-y-0"
+            >
+              {loading ? "Authenticating..." : "Login to Dashboard"}
+            </button>
+          </form>
+          
+          <p className="text-xs text-white/40 text-center mt-8 relative z-10 font-medium tracking-wide uppercase">
+            Shree Hanuman Mandir Trust
+          </p>
+        </div>
+      </motion.div>
     </div>
   );
 }

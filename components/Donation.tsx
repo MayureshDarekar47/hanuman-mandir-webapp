@@ -29,8 +29,8 @@ export default function Donation({
 
   return (
     <>
-      <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="donation" aria-label="Donation and Seva">
-        <header className="text-center mb-4 sm:mb-12">
+      <section className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="donation" aria-label="Donation and Seva">
+        <header className="text-center mb-4 sm:mb-4">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-3">
             <Heart className="text-orange-500 flex-shrink-0" size={32} aria-hidden="true" /> Donation
           </h2>
