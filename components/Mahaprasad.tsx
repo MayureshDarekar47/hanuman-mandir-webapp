@@ -44,7 +44,7 @@ export default async function Mahaprasad() {
       </div>
 
       <div className="text-center mb-2 sm:mb-12 relative">
-        <h2 className="text-3xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 tracking-tight">
           Today's <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">Bhojan</span>
         </h2>
         <p className="mt-4 text-gray-600 max-w-2xl mx-auto text-lg">

@@ -90,7 +90,7 @@ export default function AartiPlayer({ tracks }: { tracks: Track[] }) {
         {/* Header */}
         <header className="text-center mb-6 sm:mb-2 sm:mb-10">
           
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-gray-900 flex items-center justify-center gap-3">
+          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-3">
             <Music2 className="text-amber-500" size={36} aria-hidden="true" /> Aarti & Bhajans
           </h2>
         </header>

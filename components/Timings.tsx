@@ -8,7 +8,7 @@ export default async function Timings() {
     <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible" id="timings" aria-label="Temple Timings">
       <header className="text-center mb-4 sm:mb-2 sm:mb-12">
 
-        <h2 className="text-2xl sm:text-4xl font-bold text-gray-900">Temple Timings</h2>
+        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 mb-4">Temple Timings</h2>
         <p className="text-gray-500 mt-3 max-w-xl mx-auto"></p>
       </header>
 

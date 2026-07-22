@@ -3,8 +3,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 
 const info = [
-  { label: "Temple Name", value: "Hanuman Mandir" },
-  { label: "Village", value: "Darekarwadi, Dhavalpuri" },
+  { label: "Temple Name", value: "Hanuman Mandir Darekarwadi" },
+  { label: "Village", value: "Bhangadewadi,Dhawalpuri" },
   { label: "Taluka", value: "Parner" },
   { label: "District", value: "Ahilyanagar" },
   { label: "State", value: "Maharashtra" },
@@ -23,7 +23,7 @@ export default function About({ imageUrl }: { imageUrl?: string }) {
           transition={{ duration: 0.7 }}
         >
           <header>
-            
+
             <h2 className="text-2xl sm:text-4xl font-extrabold text-gray-900 mb-4 leading-tight">
               A Sacred Place of<br />
               <span className="text-orange-600">Devotion &amp; Community</span>

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { addMahaprasadItem, deleteMahaprasadItem, deleteAllMahaprasadItems } from "@/app/admin/actions";
-import { Trash2, Plus, AlertTriangle } from "lucide-react";
+import { Trash2, Plus, AlertTriangle, Download } from "lucide-react";
 
 type MahaprasadItemType = {
   id: number;
@@ -28,26 +28,56 @@ export default function MahaprasadForm({ items }: { items: MahaprasadItemType[] 
   const [loading, setLoading] = useState(false);
   const [isDeletingAll, setIsDeletingAll] = useState(false);
 
+  const downloadCSV = () => {
+    if (items.length === 0) return;
+    const header = "Name,Description,Date,Time Start,Time End";
+    const rows = items.map((item) => {
+      const name = `"${item.name.replace(/"/g, '""')}"`;
+      const desc = item.description ? `"${item.description.replace(/"/g, '""')}"` : "";
+      const date = item.date ? new Date(item.date).toLocaleDateString("en-IN") : "";
+      const start = item.startTime || "";
+      const end = item.endTime || "";
+      return `${name},${desc},${date},${start},${end}`;
+    });
+    const csv = [header, ...rows].join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `mahaprasad_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex flex-wrap justify-between items-center gap-3 mb-6">
         <h2 className="text-xl font-bold text-gray-900">Mahaprasad Menu</h2>
-        {items.length > 0 && (
+        <div className="flex gap-2 flex-wrap">
+          <button
+            onClick={downloadCSV}
+            disabled={items.length === 0}
+            className="flex items-center gap-1.5 text-xs font-bold bg-green-50 text-green-700 hover:bg-green-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed border border-green-100"
+          >
+            <Download size={14} />
+            Download CSV
+          </button>
           <button
             onClick={async () => {
+              if (items.length === 0) return;
               if (confirm('Are you absolutely sure you want to delete ALL Mahaprasad items? This cannot be undone.')) {
                 setIsDeletingAll(true);
                 await deleteAllMahaprasadItems();
                 setIsDeletingAll(false);
               }
             }}
-            disabled={isDeletingAll}
-            className="flex items-center gap-1.5 text-xs font-bold bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-50"
+            disabled={isDeletingAll || items.length === 0}
+            className="flex items-center gap-1.5 text-xs font-bold bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed border border-red-100"
           >
             <AlertTriangle size={14} />
             {isDeletingAll ? 'Deleting...' : 'Delete All Items'}
           </button>
-        )}
+        </div>
       </div>
       
       <form 

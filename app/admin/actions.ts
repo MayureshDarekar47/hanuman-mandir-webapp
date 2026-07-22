@@ -838,3 +838,76 @@ export async function deleteAllMahaprasadItems() {
   revalidatePath("/admin/dashboard");
   revalidatePath("/mahaprasad");
 }
+
+async function ensurePaharekariTable() {
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "Paharekari" (
+      "id"        SERIAL        NOT NULL,
+      "date"      TIMESTAMP(3),
+      "name"      TEXT          NOT NULL,
+      "startTime" TEXT,
+      "endTime"   TEXT,
+      "createdAt" TIMESTAMP(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "Paharekari_pkey" PRIMARY KEY ("id")
+    );
+  `);
+}
+
+export async function addPaharekari(formData: FormData) {
+  "use server";
+  const name = formData.get("name") as string;
+  const rawDate = formData.get("date") as string;
+  const startTime = formData.get("startTime") as string;
+  const endTime = formData.get("endTime") as string;
+
+  if (!name) return;
+
+  try {
+    await prisma.paharekari.create({
+      data: {
+        name,
+        date: rawDate ? new Date(rawDate) : null,
+        startTime: startTime || null,
+        endTime: endTime || null,
+      },
+    });
+  } catch (err: any) {
+    // Table might not exist yet — auto-create it and retry once
+    if (err?.code === "P2021") {
+      await ensurePaharekariTable();
+      await prisma.paharekari.create({
+        data: {
+          name,
+          date: rawDate ? new Date(rawDate) : null,
+          startTime: startTime || null,
+          endTime: endTime || null,
+        },
+      });
+    } else {
+      throw err;
+    }
+  }
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/paharekari");
+}
+
+export async function deletePaharekari(id: number) {
+  try {
+    await prisma.paharekari.delete({ where: { id } });
+  } catch (err: any) {
+    if (err?.code !== "P2021") throw err;
+  }
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/paharekari");
+}
+
+export async function deleteAllPaharekari() {
+  try {
+    await prisma.paharekari.deleteMany({});
+  } catch (err: any) {
+    if (err?.code !== "P2021") throw err;
+  }
+  revalidatePath("/admin/dashboard");
+  revalidatePath("/paharekari");
+}
+

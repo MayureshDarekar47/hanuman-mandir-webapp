@@ -212,3 +212,12 @@ model MahaprasadItem {
   orderIndex  Int      @default(0)
   createdAt   DateTime @default(now())
 }
+
+model Paharekari {
+  id          Int      @id @default(autoincrement())
+  date        DateTime?
+  name        String
+  startTime   String?
+  endTime     String?
+  createdAt   DateTime @default(now())
+}

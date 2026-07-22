@@ -64,13 +64,13 @@ export default async function GalleryItemPage({ params }: Props) {
           &larr; Back to Gallery
         </Link>
         <h1 className="text-3xl md:text-5xl font-bold mb-8 text-center">
-          {image.seoTitle || "Temple Darshan"}
+          {image.seoTitle || "Temple Photos"}
         </h1>
         <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl">
-          <Image 
-            src={image.url} 
-            alt={image.altText || "Hanuman Mandir Darshan"} 
-            fill 
+          <Image
+            src={image.url}
+            alt={image.altText || "Hanuman Mandir Darshan"}
+            fill
             className="object-contain bg-black/5"
             sizes="(max-width: 1280px) 100vw, 1280px"
             priority

@@ -16,7 +16,7 @@ export default async function Events() {
   return (
     <section className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="events" aria-label="Temple Events and Festivals">
       <header className="text-center mb-2 sm:mb-12">
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold flex items-center justify-center gap-3">
+        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 flex items-center justify-center gap-3">
           <CalendarDays className="text-amber-500 flex-shrink-0" size={32} aria-hidden="true" /> Events &amp; Festivals
         </h2>
         <p className="text-gray-500 max-w-2xl mx-auto mt-4">
@@ -34,10 +34,10 @@ export default async function Events() {
         <aside className="flex flex-col gap-4" aria-labelledby="upcoming-events-title">
           <h3 id="upcoming-events-title" className="text-xl font-bold text-gray-800">Upcoming Events</h3>
           {events.length > 0 ? (
-            <ul className="flex flex-col gap-4">
+            <ul className="flex overflow-x-auto lg:flex-col gap-4 pb-2 lg:pb-0 snap-x" style={{ scrollbarWidth: 'none' }}>
               {events.slice(0, 5).map(event => (
-                <li key={event.id}>
-                  <article className="flex gap-3 items-center bg-white rounded-xl shadow border border-orange-100 p-2 sm:p-3 hover:-translate-y-1 transition-transform">
+                <li key={event.id} className="min-w-[85vw] sm:min-w-[300px] lg:min-w-0 flex-shrink-0 snap-start">
+                  <article className="flex gap-3 items-center bg-white rounded-xl shadow border border-orange-100 p-3 lg:p-3 hover:-translate-y-1 transition-transform h-full">
                     <div className="flex-shrink-0 bg-orange-600 text-white rounded-lg px-2 py-1 text-center min-w-[48px]" aria-hidden="true">
                       <p className="text-[10px] font-bold uppercase leading-none">{new Date(event.date).toLocaleDateString('en-US', { month: 'short' })}</p>
                       <p className="text-xl font-black leading-tight mt-0.5">{new Date(event.date).getDate()}</p>

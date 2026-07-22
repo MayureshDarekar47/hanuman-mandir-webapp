@@ -17,6 +17,7 @@ import {
   addTiming, deleteTiming,
   addBalanceEntry, deleteBalanceEntry,
 } from "../actions";
+import { addPaharekari, deletePaharekari, deleteAllPaharekari } from "../actions";
 import DonorUploadForm from "@/components/admin/DonorUploadForm";
 import SevaUploadForm from "@/components/admin/SevaUploadForm";
 import MultiAartiUploadForm from "@/components/admin/MultiAartiUploadForm";
@@ -26,13 +27,17 @@ import DocumentList from "@/components/admin/DocumentList";
 import PaymentManager from "@/components/admin/PaymentManager";
 import MahaprasadForm from "@/components/admin/MahaprasadForm";
 import MahaprasadUploadForm from "@/components/admin/MahaprasadUploadForm";
+import PaharekariUploadForm from "@/components/admin/PaharekariUploadForm";
+import PaharekariForm from "@/components/admin/PaharekariForm";
+import CsvDownloadButton from "@/components/admin/CsvDownloadButton";
+import DeleteButton from "@/components/admin/DeleteButton";
 
 const inputCls = "flex-1 min-w-0 p-3 rounded-xl border border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-400 text-sm w-full";
 const btnCls = "bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-xl font-bold text-sm transition-colors shadow-sm whitespace-nowrap";
 const sectionCls = "bg-white p-6 sm:p-8 rounded-2xl shadow-sm border border-gray-100";
 
 export default async function AdminDashboard() {
-  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents, paymentMethods, balanceEntries, mahaprasadItems] = await Promise.all([
+  const [notices, events, expenses, gallery, donors, aartis, heroBackgrounds, guidelines, siteSettings, timings, documents, paymentMethods, balanceEntries, mahaprasadItems, paharekariItems] = await Promise.all([
     prisma.notice.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
     prisma.event.findMany({ orderBy: { date: "asc" } }).catch(() => []),
     prisma.expense.findMany({ orderBy: { date: "desc" } }).catch(() => []),
@@ -47,6 +52,7 @@ export default async function AdminDashboard() {
     prisma.paymentMethod.findMany({ orderBy: { createdAt: "asc" } }).catch(() => []),
     prisma.balanceEntry.findMany({ orderBy: { year: "desc" } }).catch(() => []),
     prisma.mahaprasadItem.findMany({ orderBy: { orderIndex: "asc" } }).catch(() => []),
+    prisma.paharekari.findMany({ orderBy: { createdAt: "desc" } }).catch(() => []),
   ]);
 
   const totalDonated = donors.reduce((s, d) => s + d.amount, 0);
@@ -93,17 +99,28 @@ export default async function AdminDashboard() {
             <h2 className="text-xl font-bold text-gray-900 mb-1">Manage Donors</h2>
             <p className="text-sm text-gray-500">Add donors manually or import from CSV, Excel, or PDF.</p>
           </div>
-          {donors.length > 0 && (
-            <form action={async () => { "use server"; await deleteAllDonors(); }}>
-              <button 
-                type="submit" 
-                className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors border border-red-100 mt-4 sm:mt-0"
-                title="Deletes all donor records permanently"
-              >
-                Delete All Donors
-              </button>
-            </form>
-          )}
+          <div className="flex items-center gap-2 flex-wrap mt-4 sm:mt-0">
+            <CsvDownloadButton
+              filename={`donors_${new Date().toISOString().slice(0, 10)}.csv`}
+              data={donors.map(d => ({
+                Name: d.name,
+                Date: new Date(d.date).toLocaleDateString("en-IN"),
+                "Amount (₹)": d.amount,
+                Note: d.note || "",
+              }))}
+            />
+            {donors.length > 0 && (
+              <form action={async () => { "use server"; await deleteAllDonors(); }}>
+                <button 
+                  type="submit" 
+                  className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors border border-red-100"
+                  title="Deletes all donor records permanently"
+                >
+                  Delete All Donors
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* Manual add */}
@@ -142,9 +159,12 @@ export default async function AdminDashboard() {
                 </div>
                 {d.note && <p className="text-xs text-gray-400 italic">Note: {d.note}</p>}
                 <div className="flex justify-end mt-2 pt-2 border-t border-gray-50">
-                  <form action={async () => { "use server"; await deleteDonor(d.id); }}>
-                    <button type="submit" className="text-red-400 hover:text-red-600 text-xs font-bold px-3 py-1 bg-red-50 hover:bg-red-100 rounded">Delete</button>
-                  </form>
+                  <DeleteButton
+                    action={async () => { "use server"; await deleteDonor(d.id); }}
+                    message={`Delete donor "${d.name}"? This cannot be undone.`}
+                    label="Delete"
+                    className="text-red-400 hover:text-red-600 text-xs font-bold px-3 py-1 bg-red-50 hover:bg-red-100 rounded"
+                  />
                 </div>
               </div>
             )) : (
@@ -172,9 +192,12 @@ export default async function AdminDashboard() {
                     <td className="py-3 pr-4 font-bold text-green-700">₹{d.amount.toLocaleString("en-IN")}</td>
                     <td className="py-3 pr-4 text-gray-400">{d.note || "—"}</td>
                     <td className="py-3 text-right">
-                      <form action={async () => { "use server"; await deleteDonor(d.id); }}>
-                        <button type="submit" className="text-red-400 hover:text-red-600 text-xs font-bold">Delete</button>
-                      </form>
+                      <DeleteButton
+                        action={async () => { "use server"; await deleteDonor(d.id); }}
+                        message={`Delete donor "${d.name}"? This cannot be undone.`}
+                        label="Delete"
+                        className="text-red-400 hover:text-red-600 text-xs font-bold"
+                      />
                     </td>
                   </tr>
                 )) : (
@@ -279,17 +302,29 @@ export default async function AdminDashboard() {
             <h2 className="text-xl font-bold text-gray-900 mb-1">Manage Seva Records (Expenses)</h2>
             <p className="text-sm text-gray-500">Add records manually or import from CSV, Excel, or PDF.</p>
           </div>
-          {expenses.length > 0 && (
-            <form action={async () => { "use server"; await deleteAllExpenses(); }}>
-              <button 
-                type="submit" 
-                className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors border border-red-100 mt-4 sm:mt-0"
-                title="Deletes all expense records permanently"
-              >
-                Delete All Seva Records
-              </button>
-            </form>
-          )}
+          <div className="flex items-center gap-2 flex-wrap mt-4 sm:mt-0">
+            <CsvDownloadButton
+              filename={`seva_records_${new Date().toISOString().slice(0, 10)}.csv`}
+              data={expenses.map(e => ({
+                Date: new Date(e.date).toLocaleDateString("en-IN"),
+                Category: e.category,
+                "Amount (₹)": e.amount,
+                Remark: e.remark || "",
+                "Family Members": e.familyMembers ?? "",
+              }))}
+            />
+            {expenses.length > 0 && (
+              <form action={async () => { "use server"; await deleteAllExpenses(); }}>
+                <button 
+                  type="submit" 
+                  className="bg-red-50 text-red-600 hover:bg-red-100 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors border border-red-100"
+                  title="Deletes all expense records permanently"
+                >
+                  Delete All Seva Records
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* Manual add */}
@@ -327,9 +362,12 @@ export default async function AdminDashboard() {
                 </div>
                 {e.remark && <p className="text-xs text-gray-400 italic">Remark: {e.remark}</p>}
                 <div className="flex justify-end mt-2 pt-2 border-t border-gray-50">
-                  <form action={async () => { "use server"; await deleteExpense(e.id); }}>
-                    <button type="submit" className="text-red-400 hover:text-red-600 text-xs font-bold px-3 py-1 bg-red-50 hover:bg-red-100 rounded">Delete</button>
-                  </form>
+                  <DeleteButton
+                    action={async () => { "use server"; await deleteExpense(e.id); }}
+                    message={`Delete seva record "${e.category}"? This cannot be undone.`}
+                    label="Delete"
+                    className="text-red-400 hover:text-red-600 text-xs font-bold px-3 py-1 bg-red-50 hover:bg-red-100 rounded"
+                  />
                 </div>
               </div>
             )) : (
@@ -357,9 +395,12 @@ export default async function AdminDashboard() {
                     <td className="py-3 pr-4 font-bold text-red-600">₹{e.amount.toLocaleString("en-IN")}</td>
                     <td className="py-3 pr-4 text-gray-400">{e.remark || "—"}</td>
                     <td className="py-3 text-right">
-                      <form action={async () => { "use server"; await deleteExpense(e.id); }}>
-                        <button type="submit" className="text-red-400 hover:text-red-600 text-xs font-bold">Delete</button>
-                      </form>
+                      <DeleteButton
+                        action={async () => { "use server"; await deleteExpense(e.id); }}
+                        message={`Delete seva record "${e.category}"? This cannot be undone.`}
+                        label="Delete"
+                        className="text-red-400 hover:text-red-600 text-xs font-bold"
+                      />
                     </td>
                   </tr>
                 )) : (
@@ -630,6 +671,26 @@ export default async function AdminDashboard() {
             <div className="col-span-full py-6 text-center text-gray-400 text-sm">No hero backgrounds uploaded yet. Default image will be used.</div>
           )}
         </div>
+      </section>
+
+      {/* ── Paharekari ── */}
+      <section className={sectionCls}>
+        <div className="mb-6">
+          <h2 className="text-xl font-bold text-gray-900 mb-1">Manage Paharekari</h2>
+          <p className="text-sm text-gray-500">Add duty schedule manually or import from CSV, Excel, or PDF.</p>
+        </div>
+
+        {/* PaharekariForm — manual add + list */}
+        <PaharekariForm items={paharekariItems as any} />
+
+        {/* Bulk Import */}
+        <div className="mt-6 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Bulk Import Paharekari</h3>
+          <PaharekariUploadForm />
+        </div>
+
+        {/* Uploaded PDFs */}
+        <DocumentList documents={documents as any[]} type="PAHAREKARI" />
       </section>
     </div>
   );

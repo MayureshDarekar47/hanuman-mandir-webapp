@@ -26,15 +26,12 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
 
   return (
     <section
-      className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible"
+      className="py-2 sm:py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full overflow-x-hidden sm:overflow-visible"
       id="gallery"
       aria-label="Photo Gallery"
     >
       <header className="text-center mb-2 sm:mb-12">
-        <h2 className="text-3xl md:text-5xl font-bold mb-4">Temple Darshan</h2>
-        <p className="text-gray-400 max-w-xl mx-auto text-sm">
-          Explore the divine beauty of Hanuman Mandir, Darekarwadi — captured through the lens of our devotees.
-        </p>
+        <h2 className="text-3xl md:text-5xl font-bold mb-4">Temple Photos</h2>
       </header>
 
       {images.length === 0 ? (
@@ -130,11 +127,10 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                     aria-selected={idx === currentIndex}
                     aria-label={`Go to image ${idx + 1}`}
                     onClick={() => goTo(idx)}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      idx === currentIndex
+                    className={`h-2 rounded-full transition-all duration-300 ${idx === currentIndex
                         ? "bg-temple-gold w-6 sm:w-8"
                         : "bg-white/50 hover:bg-white/90 w-2"
-                    }`}
+                      }`}
                   />
                 ))}
               </div>
@@ -156,11 +152,10 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
                   aria-selected={idx === currentIndex}
                   aria-label={`Select image ${idx + 1}`}
                   onClick={() => goTo(idx)}
-                  className={`relative flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 focus:outline-none ${
-                    idx === currentIndex
+                  className={`relative flex-shrink-0 rounded-xl overflow-hidden transition-all duration-300 focus:outline-none ${idx === currentIndex
                       ? "ring-2 ring-temple-gold ring-offset-2 ring-offset-transparent scale-105"
                       : "opacity-50 hover:opacity-100"
-                  }`}
+                    }`}
                   style={{ width: "80px", height: "56px" }}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}

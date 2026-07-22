@@ -270,10 +270,10 @@ export default function Hero({ bgUrl, mobileBgUrl, siteSettings, animationSettin
             transition={{ duration: 1.2 / speed, delay: 0.7 / speed, ease: [0.16, 1, 0.3, 1] }}
             className="mt-8 sm:mt-12 flex flex-col sm:flex-row gap-3 sm:gap-5 items-center justify-center w-[85%] sm:w-full mx-auto"
           >
-            <a href="#about" aria-label="Explore Temple" className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-bold rounded-full shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_35px_rgba(234,88,12,0.5)] hover:-translate-y-1 transition-all duration-300 ring-1 ring-orange-400/50">
+            <a href="#about" aria-label="Explore Temple" className="w-auto px-8 py-3 text-sm font-bold bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white rounded-full shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:shadow-[0_0_35px_rgba(234,88,12,0.5)] hover:-translate-y-1 transition-all duration-300 ring-1 ring-orange-400/50 text-center">
               Explore Temple
             </a>
-            <a href="#donation" aria-label="Donate Now" className="w-full sm:w-auto px-6 sm:px-8 py-3.5 sm:py-4 text-sm sm:text-base bg-black/40 hover:bg-black/60 text-white font-bold rounded-full border border-orange-400/40 shadow-lg backdrop-blur-md hover:-translate-y-1 transition-all duration-300">
+            <a href="#donation" aria-label="Donate Now" className="w-auto px-8 py-3 text-sm font-bold bg-black/40 hover:bg-black/60 text-white rounded-full border border-orange-400/40 shadow-lg backdrop-blur-md hover:-translate-y-1 transition-all duration-300 text-center">
               Donate Now
             </a>
           </motion.div>
