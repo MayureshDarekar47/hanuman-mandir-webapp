@@ -35,6 +35,7 @@ export default function Donation({
   const [donorName, setDonorName] = useState("");
   const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isWaitingForReturn, setIsWaitingForReturn] = useState(false);
   const successRef = useRef<HTMLDivElement>(null);
   const receiptRef = useRef<HTMLDivElement>(null);
 
@@ -50,13 +51,52 @@ export default function Donation({
     return amount ? `${base}&am=${amount}` : base;
   };
 
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && isWaitingForReturn) {
+        setIsWaitingForReturn(false);
+        setHasClickedPay(true);
+        setTimeout(() => {
+          successRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+        }, 400);
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => document.removeEventListener("visibilitychange", handleVisibilityChange);
+  }, [isWaitingForReturn]);
+
   const handlePayClick = () => {
     if (!isWhatsappEnabled) return;
-    setHasClickedPay(true);
-    // Scroll to the waiting confirmation banner
-    setTimeout(() => {
-      successRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }, 400);
+    
+    const isMobile = typeof window !== 'undefined' && (
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) ||
+      window.screen.width <= 768
+    );
+
+    if (isMobile) {
+      setIsWaitingForReturn(true);
+      // Fallback: If visibilitychange doesn't fire (e.g. UPI app not installed), show it after 8 seconds
+      setTimeout(() => {
+        setIsWaitingForReturn((prev) => {
+          if (prev) {
+            setHasClickedPay(true);
+            setTimeout(() => {
+              successRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+            }, 400);
+            return false;
+          }
+          return prev;
+        });
+      }, 15000);
+    } else {
+      setHasClickedPay(true);
+      // Scroll to the waiting confirmation banner
+      setTimeout(() => {
+        successRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 400);
+    }
   };
 
   const handlePaymentConfirm = () => {
