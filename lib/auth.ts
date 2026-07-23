@@ -57,6 +57,8 @@ export const authOptions: NextAuthOptions = {
           if (!isValid) return null;
         }
 
+        if (!user) return null;
+
         return { id: user.id.toString(), name: user.username, isMaster };
       }
     })
