@@ -611,14 +611,32 @@ export default async function AdminDashboard() {
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-gray-900">WhatsApp</h2>
           </div>
-          <div className="flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0 w-max">
-            <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse"></span>
-            Live on Website
-          </div>
+          {siteSettings?.isWhatsappEnabled ? (
+            <div className="flex items-center gap-2 bg-[#25D366]/10 text-[#25D366] px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0 w-max">
+              <span className="w-2 h-2 rounded-full bg-[#25D366] animate-pulse"></span>
+              Live on Website
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 bg-gray-100 text-gray-500 px-3 py-1.5 rounded-full text-xs font-bold flex-shrink-0 w-max">
+              <span className="w-2 h-2 rounded-full bg-gray-400"></span>
+              Disabled
+            </div>
+          )}
         </div>
         <div className="bg-gradient-to-br from-[#25D366]/5 via-white to-emerald-50 rounded-3xl border border-[#25D366]/20 border-l-8 border-l-[#25D366] shadow-sm p-6 sm:p-8">
 
         <form action={updateWhatsappSettings}>
+          <div className="mb-6 flex items-center justify-between p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+            <div>
+              <p className="font-bold text-gray-900">Enable WhatsApp Feature</p>
+              <p className="text-xs text-gray-500">Turn OFF to hide WhatsApp buttons on donation receipt.</p>
+            </div>
+            <label className="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" name="isWhatsappEnabled" className="sr-only peer" defaultChecked={siteSettings?.isWhatsappEnabled ?? true} />
+              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#25D366]/30 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#25D366]"></div>
+            </label>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
 
             {/* WhatsApp Number box */}
@@ -642,8 +660,40 @@ export default async function AdminDashboard() {
               <textarea
                 name="whatsappMessage"
                 defaultValue={siteSettings?.whatsappMessage || "🙏 Jai Hanuman!\n\nI have completed my donation.\nPlease find my payment screenshot attached.\n\nThank you."}
-                rows={5}
+                rows={4}
                 className="w-full p-3.5 rounded-xl border-2 border-gray-200 focus:border-[#25D366] focus:ring-2 focus:ring-[#25D366]/20 focus:outline-none text-sm font-mono transition-all bg-white shadow-sm resize-none"
+              />
+            </div>
+
+            {/* Payment Success Title box */}
+            <div>
+              <p className="text-base font-black text-gray-800 mb-2">✅ Payment Success Title</p>
+              <input
+                name="paymentSuccessTitle"
+                defaultValue={siteSettings?.paymentSuccessTitle || "Was your payment successful?"}
+                placeholder="e.g. Was your payment successful?"
+                className="w-full p-3.5 rounded-xl border-2 border-gray-200 focus:border-[#25D366] focus:ring-2 focus:ring-[#25D366]/20 focus:outline-none text-sm transition-all bg-white shadow-sm"
+              />
+            </div>
+            {/* Payment Success Subtitle box */}
+            <div>
+              <p className="text-base font-black text-gray-800 mb-2">ℹ️ Payment Success Subtitle</p>
+              <textarea
+                name="paymentSuccessSubtitle"
+                defaultValue={siteSettings?.paymentSuccessSubtitle || "🔒 Your donation receipt will be auto-generated & sent to the admin for verification."}
+                rows={2}
+                className="w-full p-3.5 rounded-xl border-2 border-gray-200 focus:border-[#25D366] focus:ring-2 focus:ring-[#25D366]/20 focus:outline-none text-sm transition-all bg-white shadow-sm resize-none"
+              />
+            </div>
+
+            {/* Receipt Warning Text box */}
+            <div className="md:col-span-2">
+              <p className="text-base font-black text-gray-800 mb-2">⚠️ Receipt Warning Text</p>
+              <textarea
+                name="receiptWarningText"
+                defaultValue={siteSettings?.receiptWarningText || "⚠️ Attach your payment screenshot\nWithout it, your payment will not be counted."}
+                rows={2}
+                className="w-full p-3.5 rounded-xl border-2 border-gray-200 focus:border-[#25D366] focus:ring-2 focus:ring-[#25D366]/20 focus:outline-none text-sm transition-all bg-white shadow-sm resize-none"
               />
             </div>
 

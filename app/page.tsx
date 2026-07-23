@@ -42,8 +42,12 @@ export default async function Home() {
         upiId={payment.upiId}
         upiName={payment.upiName}
         upiNote={payment.upiNote}
-        whatsappNumber={site?.whatsappNumber || "919999999999"}
-        whatsappMessage={site?.whatsappMessage || undefined}
+        whatsappNumber={site?.whatsappNumber}
+        whatsappMessage={site?.whatsappMessage}
+        isWhatsappEnabled={site?.isWhatsappEnabled ?? true}
+        paymentSuccessTitle={site?.paymentSuccessTitle}
+        paymentSuccessSubtitle={site?.paymentSuccessSubtitle}
+        receiptWarningText={site?.receiptWarningText}
       />
       <Map />
       <SpeedInsights />

@@ -25,6 +25,12 @@ export default async function DonationPage() {
         upiId={payment.upiId}
         upiName={payment.upiName}
         upiNote={payment.upiNote}
+        whatsappNumber={site?.whatsappNumber}
+        whatsappMessage={site?.whatsappMessage}
+        paymentSuccessTitle={site?.paymentSuccessTitle}
+        paymentSuccessSubtitle={site?.paymentSuccessSubtitle}
+        receiptWarningText={site?.receiptWarningText}
+        isWhatsappEnabled={site?.isWhatsappEnabled ?? true}
       />
     </main>
   );

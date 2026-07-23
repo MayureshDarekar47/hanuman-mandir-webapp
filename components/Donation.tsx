@@ -1,6 +1,7 @@
 "use client";
-import { useState, useRef } from "react";
-import { QrCode, Heart, Shield, FileText, CheckCircle } from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
+import { QrCode, Heart, Shield, FileText, CheckCircle, Camera, Download, Loader2 } from "lucide-react";
+import html2canvas from "html2canvas";
 import Link from "next/link";
 
 
@@ -11,6 +12,10 @@ export default function Donation({
   upiNote,
   whatsappNumber = "919999999999",
   whatsappMessage,
+  paymentSuccessTitle,
+  paymentSuccessSubtitle,
+  receiptWarningText,
+  isWhatsappEnabled = true,
 }: {
   qrUrl?: string | null;
   upiId?: string | null;
@@ -18,16 +23,25 @@ export default function Donation({
   upiNote?: string | null;
   whatsappNumber?: string | null;
   whatsappMessage?: string | null;
+  paymentSuccessTitle?: string | null;
+  paymentSuccessSubtitle?: string | null;
+  receiptWarningText?: string | null;
+  isWhatsappEnabled?: boolean;
 }) {
   const [showModal, setShowModal] = useState(false);
   const [hasClickedPay, setHasClickedPay] = useState(false);
+  const [paymentDone, setPaymentDone] = useState(false);
   const [amount, setAmount] = useState("");
+  const [donorName, setDonorName] = useState("");
+  const [screenshotUrl, setScreenshotUrl] = useState<string | null>(null);
+  const [isCapturing, setIsCapturing] = useState(false);
   const successRef = useRef<HTMLDivElement>(null);
+  const receiptRef = useRef<HTMLDivElement>(null);
 
   const displayName = upiName || "Hanuman Mandir";
   const displayNote = upiNote || "Temple Donation";
-  const waNumber = whatsappNumber || "919999999999";
-  const waMessage = whatsappMessage ||
+  const waNumber = whatsappNumber ?? "919999999999";
+  const waMessage = whatsappMessage ?? 
     "🙏 Jai Hanuman!\n\nI have completed my donation.\nPlease find my payment screenshot attached.\n\nThank you.";
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
@@ -37,11 +51,84 @@ export default function Donation({
   };
 
   const handlePayClick = () => {
+    if (!isWhatsappEnabled) return;
     setHasClickedPay(true);
-    // Smooth scroll to success section after a brief delay
+    // Scroll to the waiting confirmation banner
     setTimeout(() => {
-      successRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+      successRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
     }, 400);
+  };
+
+  const handlePaymentConfirm = () => {
+    setPaymentDone(true);
+  };
+
+  // Auto-capture screenshot when success section appears
+  const captureScreenshot = useCallback(async () => {
+    if (!receiptRef.current || screenshotUrl || isCapturing) return;
+    setIsCapturing(true);
+    try {
+      // Wait for animations to complete
+      await new Promise((r) => setTimeout(r, 800));
+      const canvas = await html2canvas(receiptRef.current, {
+        backgroundColor: "#ffffff",
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        windowWidth: 420,
+      });
+      setScreenshotUrl(canvas.toDataURL("image/png"));
+    } catch (err) {
+      console.error("Screenshot capture failed:", err);
+    } finally {
+      setIsCapturing(false);
+    }
+  }, [screenshotUrl, isCapturing]);
+
+  useEffect(() => {
+    if (paymentDone) {
+      captureScreenshot();
+    }
+  }, [paymentDone, captureScreenshot]);
+
+  // Share screenshot via Web Share API (mobile) or download + WhatsApp (desktop)
+  const handleShare = async () => {
+    if (!screenshotUrl) return;
+    try {
+      const res = await fetch(screenshotUrl);
+      const blob = await res.blob();
+      const file = new File([blob], "donation-receipt.png", { type: "image/png" });
+
+      if (navigator.canShare?.({ files: [file] })) {
+        // Mobile: direct share with image
+        await navigator.share({
+          text: waMessage,
+          files: [file],
+        });
+      } else {
+        // Desktop fallback: download image + open WhatsApp
+        handleDownload();
+        setTimeout(() => {
+          window.open(waLink, "_blank");
+        }, 500);
+      }
+    } catch (err) {
+      // User cancelled share or error — fallback to WhatsApp link
+      if ((err as Error)?.name !== "AbortError") {
+        window.open(waLink, "_blank");
+      }
+    }
+  };
+
+  // Download screenshot
+  const handleDownload = () => {
+    if (!screenshotUrl) return;
+    const link = document.createElement("a");
+    link.href = screenshotUrl;
+    link.download = `donation-receipt-${new Date().toISOString().slice(0, 10)}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   const upiDeepLink = upiId ? buildUpiLink("upi://pay?") : null;
@@ -82,7 +169,6 @@ export default function Donation({
 
                 <ul className="space-y-3 mb-1 sm:mb-8" aria-label="Donation Benefits">
                   {[
-                    { icon: Shield, text: "Secure UPI Transfer" },
                     { icon: FileText, text: "Transparent records published publicly" },
                     { icon: Heart, text: "100% goes to temple maintenance & events" },
                   ].map(({ icon: Icon, text }) => (
@@ -98,12 +184,14 @@ export default function Donation({
                   ))}
                 </ul>
 
-                <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-xl p-4 mb-4 sm:mb-8 flex gap-3 items-start">
-                  <span className="text-lg mt-0.5" aria-hidden="true">📸</span>
-                  <p className="text-sm font-medium text-gray-800 leading-relaxed">
-                    <strong className="text-[#25D366]">Verification Step:</strong> After payment, take a screenshot and click the WhatsApp button to verify your donation.
-                  </p>
-                </div>
+                {isWhatsappEnabled && (
+                  <div className="bg-[#25D366]/10 border border-[#25D366]/20 rounded-xl p-4 mb-4 sm:mb-8 flex gap-3 items-start">
+                    <span className="text-lg mt-0.5" aria-hidden="true">📸</span>
+                    <p className="text-sm font-medium text-gray-800 leading-relaxed">
+                      <strong className="text-[#25D366]">Verification Step:</strong> After payment, take a screenshot and click the WhatsApp button to verify your donation.
+                    </p>
+                  </div>
+                )}
 
                 <Link
                   href="/donors"
@@ -142,6 +230,19 @@ export default function Donation({
                       <p className="text-[10px] sm:text-xs text-gray-400 mb-3 font-mono bg-gray-50 px-2 py-1 sm:px-3 sm:py-1 rounded-md border border-gray-100">
                         {upiId}
                       </p>
+
+                      {/* Name input */}
+                      <div className="w-full mb-3">
+                        <label htmlFor="donor-name" className="sr-only">Your Name</label>
+                        <input
+                          type="text"
+                          id="donor-name"
+                          placeholder="Your Name (Required)"
+                          value={donorName}
+                          onChange={(e) => setDonorName(e.target.value)}
+                          className="block w-full px-4 py-3 border border-orange-300 rounded-xl leading-5 bg-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 sm:text-sm transition-all font-medium"
+                        />
+                      </div>
 
                       {/* Amount input */}
                       <div className="w-full mb-3">
@@ -234,56 +335,165 @@ export default function Donation({
         </div>
 
         {/* ══════════════════════════════════════════════════════
-            ✅  POST-PAYMENT SUCCESS SECTION
-            Shown when user clicks any Pay Now / UPI button
+            ⏳  STEP 1 — Waiting for payment confirmation
+            Shows after Pay button clicked, before user confirms payment done
         ══════════════════════════════════════════════════════ */}
-        {hasClickedPay && (
+        {hasClickedPay && !paymentDone && (
           <div
             ref={successRef}
             className="mt-4 animate-in fade-in slide-in-from-bottom-4 duration-500"
           >
-            {/* Compact success card */}
-            <div className="relative overflow-hidden rounded-2xl border-2 border-green-200 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50">
-              <div className="relative z-10 p-5 sm:p-7 flex flex-col items-center text-center gap-4">
+            <div className="relative overflow-hidden rounded-2xl border-2 border-orange-200 shadow-lg bg-gradient-to-br from-orange-50 to-amber-50 p-5 sm:p-7 flex flex-col items-center text-center gap-5">
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-full bg-orange-100 flex items-center justify-center animate-pulse">
+                <span className="text-3xl">📱</span>
+              </div>
+
+              {/* Text */}
+              <div>
+                <p className="text-xl font-black text-orange-700">
+                  {paymentSuccessTitle ?? "Was your payment successful?"}
+                </p>
+                {isWhatsappEnabled && (
+                  <p className="text-xs text-orange-500 mt-2 font-semibold tracking-wide whitespace-pre-line">
+                    {paymentSuccessSubtitle ?? "🔒 Your donation receipt will be auto-generated & sent to the admin for verification."}
+                  </p>
+                )}
+              </div>
+
+              {/* Yes / No buttons */}
+              <div className="grid grid-cols-2 gap-3 w-full">
+                {/* YES */}
+                <button
+                  onClick={handlePaymentConfirm}
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 active:scale-95 text-white font-black text-lg py-4 px-4 rounded-xl shadow-lg transition-all duration-300"
+                >
+                  <CheckCircle size={22} />
+                  Yes ✅
+                </button>
+
+                {/* NO */}
+                <button
+                  onClick={() => { setHasClickedPay(false); }}
+                  className="flex items-center justify-center gap-2 bg-white hover:bg-red-50 active:scale-95 text-red-500 border-2 border-red-300 font-black text-lg py-4 px-4 rounded-xl shadow-sm transition-all duration-300"
+                >
+                  <span className="text-xl">✗</span>
+                  No ❌
+                </button>
+              </div>
+
+
+            </div>
+          </div>
+        )}
+
+        {/* ══════════════════════════════════════════════════════
+            ✅  STEP 2 — Receipt + Screenshot (after payment confirmed)
+        ══════════════════════════════════════════════════════ */}
+        {paymentDone && (
+          <div className="mt-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+
+            {/* ── Receipt card — this gets captured as screenshot ── */}
+            <div
+              ref={receiptRef}
+              className="relative overflow-hidden rounded-2xl border-2 border-green-200 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50"
+            >
+              <div className="relative z-10 p-5 sm:p-7 flex flex-col items-center text-center gap-3">
+                {/* Temple header */}
+                <div className="w-full border-b border-green-200 pb-3">
+                  <p className="text-xs font-semibold text-green-500 tracking-widest uppercase">Donation Receipt</p>
+                  <p className="text-xl sm:text-2xl font-black text-green-800 mt-1">🙏 {displayName}</p>
+                </div>
 
                 {/* Thank you row */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-3 mt-1">
                   <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-md flex-shrink-0">
                     <CheckCircle size={26} className="text-white" strokeWidth={2.5} />
                   </div>
                   <div className="text-left">
-                    <p className="text-2xl font-black text-green-700 leading-tight">🙏 Thank you!</p>
-                    <p className="text-sm font-medium text-green-600">Thank you for your donation.</p>
+                    <p className="text-2xl font-black text-green-700 leading-tight">Thank you!</p>
+                    {donorName && (
+                      <p className="text-base font-bold text-green-800">🙏 {donorName}</p>
+                    )}
                   </div>
                 </div>
 
+                {/* Details table */}
+                <div className="w-full bg-white/70 rounded-xl p-3 mt-1 border border-green-100">
+                  {donorName && (
+                    <div className="flex justify-between text-sm mb-1.5">
+                      <span className="text-gray-500 font-medium">Donor Name:</span>
+                      <span className="text-green-700 font-bold">{donorName}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-500 font-medium">Amount:</span>
+                    <span className="text-green-700 font-bold">{amount ? `₹${amount}` : "As entered in UPI app"}</span>
+                  </div>
+                  <div className="flex justify-between text-sm mt-1.5">
+                    <span className="text-gray-500 font-medium">Date:</span>
+                    <span className="text-green-700 font-bold">{new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                  </div>
+                  <div className="flex justify-between text-sm mt-1.5">
+                    <span className="text-gray-500 font-medium">UPI ID:</span>
+                    <span className="text-green-700 font-bold font-mono text-xs">{upiId || "—"}</span>
+                  </div>
+                </div>
+
+                {isWhatsappEnabled && (
+                  <p className="text-sm font-bold text-red-500 mt-2 text-center leading-snug whitespace-pre-line">
+                    {receiptWarningText ?? "⚠️ Attach your payment screenshot\nWithout it, your payment will not be counted."}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* ── Actions below receipt (not captured in screenshot) ── */}
+            <div className="mt-4 flex flex-col items-center gap-3">
+
+              {/* Capture status */}
+              {isCapturing && (
+                <div className="flex items-center gap-2 text-sm text-orange-600 font-medium animate-pulse">
+                  <Loader2 size={16} className="animate-spin" />
+                  📸 Watting...
+                </div>
+              )}
 
 
-                {/* WhatsApp Button */}
-                <a
-                  href={waLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  id="whatsapp-donation-btn"
-                  className="group w-full flex items-center justify-center gap-3 bg-[#25D366] hover:bg-[#20c45c] active:scale-95 text-white font-black text-base sm:text-lg py-4 px-6 rounded-xl shadow-[0_6px_20px_rgba(37,211,102,0.35)] hover:shadow-[0_8px_30px_rgba(37,211,102,0.5)] transition-all duration-300"
-                >
-                  <svg viewBox="0 0 24 24" className="w-6 h-6 flex-shrink-0 fill-white" aria-hidden="true">
-                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                  </svg>
-                  Share Payment Screenshot on WhatsApp
-                  <svg className="w-4 h-4 opacity-70 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                  </svg>
-                </a>
+              {/* Buttons: WhatsApp (big) + Download (small) */}
+              <div className="flex gap-3 w-full items-center">
+                {/* WhatsApp Share — big */}
+                {isWhatsappEnabled && (
+                  <button
+                    onClick={handleShare}
+                    disabled={!screenshotUrl}
+                    id="whatsapp-donation-btn"
+                    className={`group flex-1 flex items-center justify-center gap-2 text-white font-black text-base py-4 px-4 rounded-xl transition-all duration-300 ${
+                      screenshotUrl
+                        ? "bg-[#25D366] hover:bg-[#20c45c] active:scale-95 shadow-[0_4px_14px_rgba(37,211,102,0.35)]"
+                        : "bg-gray-300 cursor-not-allowed"
+                    }`}
+                  >
+                    <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0 fill-white" aria-hidden="true">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
+                    </svg>
+                    {screenshotUrl ? "Send via WhatsApp" : "Wait..."}
+                  </button>
+                )}
 
-                {/* Reset link */}
+                {/* Download — small icon button */}
                 <button
-                  onClick={() => { setHasClickedPay(false); setAmount(""); }}
-                  className="text-sm font-medium text-gray-400 hover:text-gray-700 underline underline-offset-4 transition-colors mt-2"
+                  onClick={handleDownload}
+                  disabled={!screenshotUrl}
+                  title="Download Screenshot"
+                  className={`flex items-center justify-center gap-1 font-semibold text-xs py-4 px-4 rounded-xl border-2 transition-all active:scale-95 flex-shrink-0 ${
+                    screenshotUrl
+                      ? "bg-white hover:bg-gray-50 text-gray-600 border-gray-200 shadow-sm"
+                      : "bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed"
+                  }`}
                 >
-                  ← Make another donation
+                  <Download size={18} />
                 </button>
-
               </div>
             </div>
           </div>

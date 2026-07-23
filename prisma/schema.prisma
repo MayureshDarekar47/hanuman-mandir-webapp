@@ -139,6 +139,10 @@ model SiteSettings {
   sevaPdfUrl   String?
   whatsappNumber  String?  @default("919999999999")
   whatsappMessage String?  @default("🙏 Jai Hanuman!\n\nI have completed my donation.\nPlease find my payment screenshot attached.\n\nThank you.")
+  isWhatsappEnabled      Boolean  @default(true)
+  paymentSuccessTitle    String?  @default("Was your payment successful?")
+  paymentSuccessSubtitle String?  @default("🔒 Your donation receipt will be auto-generated & sent to the admin for verification.")
+  receiptWarningText     String?  @default("⚠️ Attach your payment screenshot\nWithout it, your payment will not be counted.")
   updatedAt   DateTime @updatedAt
 }
 

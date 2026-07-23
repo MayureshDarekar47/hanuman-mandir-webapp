@@ -21,13 +21,13 @@ export async function addNotice(formData: FormData) {
       focusKeyword: focusKeyword || null,
     } 
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
 export async function deleteNotice(id: number) {
   await prisma.notice.delete({ where: { id } });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -49,13 +49,13 @@ export async function addEvent(formData: FormData) {
       focusKeyword: focusKeyword || null,
     } 
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
 export async function deleteEvent(id: number) {
   await prisma.event.delete({ where: { id } });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -112,7 +112,7 @@ export async function uploadGalleryImage(formData: FormData) {
     return;
   }
   
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -129,7 +129,7 @@ export async function deleteGalleryImage(id: number, url: string) {
   } catch (e) {
     console.error(e);
   }
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -230,7 +230,7 @@ export async function uploadAarti(formData: FormData) {
     console.error("Failed to upload aarti", e);
     return;
   }
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -247,7 +247,7 @@ export async function deleteAarti(id: number, audioUrl: string) {
   } catch (e) {
     console.error(e);
   }
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -308,7 +308,7 @@ export async function uploadHeroBackground(formData: FormData) {
     return { error: "Failed to process image" };
   }
   
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
   return { success: true };
 }
@@ -319,7 +319,7 @@ export async function setHeroBackgroundActive(id: number) {
     where: { id },
     data: { isActive: true }
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -342,7 +342,7 @@ async function _deleteHeroBgRecord(id: number, url: string, mobileUrl?: string |
 
 export async function deleteHeroBackground(id: number, url: string, mobileUrl?: string | null) {
   await _deleteHeroBgRecord(id, url, mobileUrl);
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -363,17 +363,25 @@ export async function updateSiteSettings(formData: FormData) {
     await prisma.siteSettings.create({ data });
   }
   
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/settings");
 }
 
 export async function updateWhatsappSettings(formData: FormData) {
   const whatsappNumber = (formData.get("whatsappNumber") as string || "").replace(/\D/g, "");
   const whatsappMessage = formData.get("whatsappMessage") as string;
+  const paymentSuccessTitle = formData.get("paymentSuccessTitle") as string;
+  const paymentSuccessSubtitle = formData.get("paymentSuccessSubtitle") as string;
+  const receiptWarningText = formData.get("receiptWarningText") as string;
+  const isWhatsappEnabled = formData.get("isWhatsappEnabled") === "on";
 
   const data = {
-    whatsappNumber: whatsappNumber || null,
-    whatsappMessage: whatsappMessage || null,
+    whatsappNumber: whatsappNumber,
+    whatsappMessage: whatsappMessage,
+    isWhatsappEnabled,
+    paymentSuccessTitle: paymentSuccessTitle,
+    paymentSuccessSubtitle: paymentSuccessSubtitle,
+    receiptWarningText: receiptWarningText,
   };
 
   const existing = await prisma.siteSettings.findFirst();
@@ -383,8 +391,9 @@ export async function updateWhatsappSettings(formData: FormData) {
     await prisma.siteSettings.create({ data });
   }
 
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/settings");
+  revalidatePath("/admin/dashboard");
 }
 
 export async function updateThemeSettings(formData: FormData) {
@@ -428,7 +437,7 @@ export async function updateAnimationSettings(formData: FormData) {
     await prisma.animationSettings.create({ data });
   }
 
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/settings");
 }
 
@@ -523,7 +532,7 @@ export async function uploadQRCode(formData: FormData) {
     return;
   }
 
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -536,13 +545,13 @@ export async function addGuideline(formData: FormData) {
   await prisma.guideline.create({
     data: { text: text.trim(), orderIndex: count },
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
 export async function deleteGuideline(id: number) {
   await prisma.guideline.delete({ where: { id } });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
@@ -592,7 +601,7 @@ export async function uploadAboutImage(formData: FormData) {
     return { error: "Failed to upload image. Check server logs for details." };
   }
   
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
   revalidatePath("/admin/settings");
   return { success: true };
@@ -616,7 +625,7 @@ export async function deleteAboutImage(imageUrl: string) {
   } catch (e) {
     console.error("Delete About Image Error:", e);
   }
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
   revalidatePath("/admin/settings");
 }
@@ -639,7 +648,7 @@ export async function deleteQRCode(qrImageUrl: string) {
   } catch (e) {
     console.error("Delete QR Code Error:", e);
   }
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
   revalidatePath("/admin/settings");
 }
@@ -660,13 +669,13 @@ export async function addTiming(formData: FormData) {
       orderIndex: count 
     },
   });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
 export async function deleteTiming(id: number) {
   await prisma.timing.delete({ where: { id } });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 // ── Document Actions (PDFs) ──────────────────────────────────
@@ -713,7 +722,7 @@ export async function addPaymentMethod(formData: FormData) {
       data: { upiId, payeeName, paymentNote },
     });
     revalidatePath("/admin/dashboard");
-    revalidatePath("/");
+    revalidatePath("/", "layout");
     return { success: true };
   } catch (e: any) {
     if (e.code === 'P2002') return { error: "This UPI ID is already registered." };
@@ -732,7 +741,7 @@ export async function updatePaymentMethod(id: number, formData: FormData) {
       data: { upiId, payeeName, paymentNote },
     });
     revalidatePath("/admin/dashboard");
-    revalidatePath("/");
+    revalidatePath("/", "layout");
     return { success: true };
   } catch (e: any) {
     if (e.code === 'P2002') return { error: "This UPI ID is already registered." };
@@ -753,7 +762,7 @@ export async function deletePaymentMethod(id: number) {
 
   await prisma.paymentMethod.delete({ where: { id } });
   revalidatePath("/admin/payments");
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
 export async function setPaymentMethodActive(id: number) {
@@ -763,7 +772,7 @@ export async function setPaymentMethodActive(id: number) {
     data: { isActive: true },
   });
   revalidatePath("/admin/payments");
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
 export async function uploadPaymentQr(id: number, formData: FormData) {
@@ -798,7 +807,7 @@ export async function uploadPaymentQr(id: number, formData: FormData) {
   });
   
   revalidatePath("/admin/payments");
-  revalidatePath("/");
+  revalidatePath("/", "layout");
 }
 
 // ── Balance Entry Actions ──────────────────────────────────────
@@ -850,20 +859,20 @@ export async function addMahaprasadItem(formData: FormData) {
     }
   });
 
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
 }
 
 export async function deleteMahaprasadItem(id: number) {
   await prisma.mahaprasadItem.delete({ where: { id } });
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
   revalidatePath("/mahaprasad");
 }
 
 export async function deleteAllMahaprasadItems() {
   await prisma.mahaprasadItem.deleteMany({});
-  revalidatePath("/");
+  revalidatePath("/", "layout");
   revalidatePath("/admin/dashboard");
   revalidatePath("/mahaprasad");
 }

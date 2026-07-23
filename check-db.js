@@ -1,13 +1,8 @@
-const { PrismaClient } = require('@prisma/client');
+require("dotenv").config({path: ".env"});
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
-
-async function checkDb() {
-  const siteSettings = await prisma.siteSettings.findFirst();
-  const gallery = await prisma.galleryImage.findMany();
-  console.log("SiteSettings:", siteSettings);
-  console.log("Gallery:", gallery);
+async function main() {
+  const site = await prisma.siteSettings.findFirst();
+  console.log("DB WhatsApp Enabled:", site?.isWhatsappEnabled);
 }
-
-checkDb()
-  .catch(console.error)
-  .finally(() => prisma.$disconnect());
+main().finally(() => prisma.$disconnect());
