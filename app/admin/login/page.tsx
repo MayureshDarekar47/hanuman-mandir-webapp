@@ -13,6 +13,10 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showMasterPrompt, setShowMasterPrompt] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [changeMsg, setChangeMsg] = useState<{type: "error" | "success", text: string} | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,9 +33,38 @@ export default function LoginPage() {
       setError("Invalid username or password");
       setLoading(false);
     } else {
-      router.push("/admin/dashboard");
-      router.refresh();
+      const { getSession } = await import("next-auth/react");
+      const session = await getSession();
+      if ((session?.user as any)?.isMaster) {
+        setShowMasterPrompt(true);
+        setLoading(false);
+      } else {
+        router.push("/admin/dashboard");
+        router.refresh();
+      }
     }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setChangingPassword(true);
+    setChangeMsg(null);
+    try {
+      const { changePasswordWithMaster } = await import("../actions");
+      const result = await changePasswordWithMaster(newPassword);
+      if (result.error) {
+        setChangeMsg({ type: "error", text: result.error });
+      } else if (result.success) {
+        setChangeMsg({ type: "success", text: result.success });
+        setTimeout(() => {
+          router.push("/admin/dashboard");
+          router.refresh();
+        }, 1500);
+      }
+    } catch (err) {
+      setChangeMsg({ type: "error", text: "Something went wrong" });
+    }
+    setChangingPassword(false);
   };
 
   return (
@@ -133,6 +166,67 @@ export default function LoginPage() {
           </p>
         </div>
       </motion.div>
+
+      {/* Master Password Prompt Modal */}
+      {showMasterPrompt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-gray-900 border border-white/10 p-6 sm:p-8 rounded-2xl shadow-2xl w-full max-w-sm relative overflow-hidden"
+          >
+            <h3 className="text-xl font-bold text-white mb-2">Master Login Detected</h3>
+            <p className="text-sm text-gray-300 mb-6">
+              You logged in using the master password. Would you like to change the regular admin password now?
+            </p>
+            
+            {changeMsg && (
+              <div className={`p-3 rounded-xl text-sm font-medium mb-4 ${
+                changeMsg.type === "success"
+                  ? "bg-green-500/20 text-green-300 border border-green-500/30"
+                  : "bg-red-500/20 text-red-300 border border-red-500/30"
+              }`}>
+                {changeMsg.text}
+              </div>
+            )}
+
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              <div>
+                <label className="block text-xs font-medium mb-1.5 text-gray-400 uppercase">New Regular Password</label>
+                <input
+                  type="password"
+                  required
+                  minLength={4}
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  className="w-full p-3 rounded-xl border border-white/10 bg-black/50 text-white focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all placeholder:text-gray-600"
+                  placeholder="Enter new password"
+                />
+              </div>
+              
+              <div className="flex flex-col gap-3 mt-6">
+                <button
+                  type="submit"
+                  disabled={changingPassword}
+                  className="w-full py-3 bg-orange-600 hover:bg-orange-500 text-white font-bold rounded-xl transition-all disabled:opacity-50"
+                >
+                  {changingPassword ? "Updating..." : "Yes, Change Password"}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    router.push("/admin/dashboard");
+                    router.refresh();
+                  }}
+                  className="w-full py-3 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all"
+                >
+                  No, Go to Dashboard
+                </button>
+              </div>
+            </form>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

@@ -949,3 +949,26 @@ export async function deleteAllPaharekari() {
   revalidatePath("/paharekari");
 }
 
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+export async function changePasswordWithMaster(newPassword: string) {
+  const session = await getServerSession(authOptions);
+  if (!session || !(session.user as any).isMaster) {
+    return { error: "Unauthorized. Master session required." };
+  }
+
+  const admin = await prisma.adminUser.findFirst().catch(() => null);
+  if (!admin) return { error: "Admin user not found." };
+
+  if (newPassword.length < 4) return { error: "Password must be at least 4 characters." };
+  
+  const passwordHash = await bcrypt.hash(newPassword, 10);
+  
+  await prisma.adminUser.update({
+    where: { id: admin.id },
+    data: { passwordHash },
+  });
+
+  return { success: "Password updated successfully." };
+}

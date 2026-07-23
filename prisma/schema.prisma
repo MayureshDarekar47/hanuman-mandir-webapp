@@ -142,7 +142,7 @@ model SiteSettings {
   isWhatsappEnabled      Boolean  @default(true)
   paymentSuccessTitle    String?  @default("Was your payment successful?")
   paymentSuccessSubtitle String?  @default("🔒 Your donation receipt will be auto-generated & sent to the admin for verification.")
-  receiptWarningText     String?  @default("⚠️ Attach your payment screenshot\nWithout it, your payment will not be counted.")
+  receiptWarningText     String?  @default("⚠️ Attach your payment screenshot. Without it, your payment will not be counted.")
   updatedAt   DateTime @updatedAt
 }
 

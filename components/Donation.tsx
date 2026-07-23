@@ -42,7 +42,7 @@ export default function Donation({
   const displayName = upiName || "Hanuman Mandir";
   const displayNote = upiNote || "Temple Donation";
   const waNumber = whatsappNumber ?? "919999999999";
-  const waMessage = whatsappMessage ?? 
+  const waMessage = whatsappMessage ??
     "🙏 Jai Hanuman!\n\nI have completed my donation.\nPlease find my payment screenshot attached.\n\nThank you.";
   const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
 
@@ -68,7 +68,7 @@ export default function Donation({
 
   const handlePayClick = () => {
     if (!isWhatsappEnabled) return;
-    
+
     const isMobile = typeof window !== 'undefined' && (
       /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
       (navigator.maxTouchPoints && navigator.maxTouchPoints > 1) ||
@@ -433,57 +433,84 @@ export default function Donation({
         {paymentDone && (
           <div className="mt-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
 
-            {/* ── Receipt card — this gets captured as screenshot ── */}
-            <div
-              ref={receiptRef}
-              className="relative overflow-hidden rounded-2xl border-2 border-green-200 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50"
-            >
-              <div className="relative z-10 p-5 sm:p-7 flex flex-col items-center text-center gap-3">
-                {/* Temple header */}
-                <div className="w-full border-b border-green-200 pb-3">
-                  <p className="text-xs font-semibold text-green-500 tracking-widest uppercase">Donation Receipt</p>
-                  <p className="text-xl sm:text-2xl font-black text-green-800 mt-1">🙏 {displayName}</p>
-                </div>
-
-                {/* Thank you row */}
-                <div className="flex items-center gap-3 mt-1">
-                  <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-md flex-shrink-0">
-                    <CheckCircle size={26} className="text-white" strokeWidth={2.5} />
+            {/* ── Hidden Receipt card — this gets captured as screenshot ── */}
+            <div className="absolute top-0 left-0 -z-10 opacity-0 pointer-events-none" aria-hidden="true">
+              <div
+                ref={receiptRef}
+                className="relative overflow-hidden rounded-2xl border-2 border-green-200 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50 w-[420px]"
+              >
+                <div className="relative z-10 p-5 sm:p-7 flex flex-col items-center text-center gap-3">
+                  {/* Temple header */}
+                  <div className="w-full border-b border-green-200 pb-3">
+                    <p className="text-xs font-semibold text-green-500 tracking-widest uppercase">Donation Receipt</p>
+                    <p className="text-xl sm:text-2xl font-black text-green-800 mt-1">🙏 {displayName}</p>
                   </div>
-                  <div className="text-left">
-                    <p className="text-2xl font-black text-green-700 leading-tight">Thank you!</p>
+
+                  {/* Thank you row */}
+                  <div className="flex items-center gap-3 mt-1">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-md flex-shrink-0">
+                      <CheckCircle size={26} className="text-white" strokeWidth={2.5} />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-2xl font-black text-green-700 leading-tight">Thank you!</p>
+                      {donorName && (
+                        <p className="text-base font-bold text-green-800">🙏 {donorName}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Details table */}
+                  <div className="w-full bg-white/70 rounded-xl p-3 mt-1 border border-green-100">
                     {donorName && (
-                      <p className="text-base font-bold text-green-800">🙏 {donorName}</p>
+                      <div className="flex justify-between text-sm mb-1.5">
+                        <span className="text-gray-500 font-medium">Donor Name:</span>
+                        <span className="text-green-700 font-bold">{donorName}</span>
+                      </div>
                     )}
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-500 font-medium">Amount:</span>
+                      <span className="text-green-700 font-bold">{amount ? `₹${amount}` : "As entered in UPI app"}</span>
+                    </div>
+                    <div className="flex justify-between text-sm mt-1.5">
+                      <span className="text-gray-500 font-medium">Date:</span>
+                      <span className="text-green-700 font-bold">{new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
+                    </div>
+                    <div className="flex justify-between text-sm mt-1.5">
+                      <span className="text-gray-500 font-medium">UPI ID:</span>
+                      <span className="text-green-700 font-bold font-mono text-xs">{upiId || "—"}</span>
+                    </div>
                   </div>
-                </div>
 
-                {/* Details table */}
-                <div className="w-full bg-white/70 rounded-xl p-3 mt-1 border border-green-100">
-                  {donorName && (
-                    <div className="flex justify-between text-sm mb-1.5">
-                      <span className="text-gray-500 font-medium">Donor Name:</span>
-                      <span className="text-green-700 font-bold">{donorName}</span>
+                  {isWhatsappEnabled && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl p-3 sm:p-4 w-full mt-2 shadow-inner flex flex-col justify-center">
+                      <p className="text-base font-extrabold text-red-600 text-left leading-relaxed">
+                        {receiptWarningText ?? "⚠️ Attach your payment screenshot. Without it, your payment will not be counted."}
+                      </p>
                     </div>
                   )}
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-500 font-medium">Amount:</span>
-                    <span className="text-green-700 font-bold">{amount ? `₹${amount}` : "As entered in UPI app"}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* ── Visible Receipt UI — shows only Thank You and Warning ── */}
+            <div className="relative overflow-hidden rounded-2xl border-2 border-green-200 shadow-lg bg-gradient-to-br from-green-50 to-emerald-50">
+              <div className="relative z-10 p-5 sm:p-7 flex flex-col items-center text-center gap-5">
+
+                {/* Thank you row */}
+                <div className="flex flex-col items-center gap-3">
+                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-md">
+                    <CheckCircle size={36} className="text-white" strokeWidth={2.5} />
                   </div>
-                  <div className="flex justify-between text-sm mt-1.5">
-                    <span className="text-gray-500 font-medium">Date:</span>
-                    <span className="text-green-700 font-bold">{new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}</span>
-                  </div>
-                  <div className="flex justify-between text-sm mt-1.5">
-                    <span className="text-gray-500 font-medium">UPI ID:</span>
-                    <span className="text-green-700 font-bold font-mono text-xs">{upiId || "—"}</span>
-                  </div>
+                  <p className="text-3xl font-black text-green-700 leading-tight">Thank you!</p>
                 </div>
 
+                {/* Warning Message */}
                 {isWhatsappEnabled && (
-                  <p className="text-sm font-bold text-red-500 mt-2 text-center leading-snug whitespace-pre-line">
-                    {receiptWarningText ?? "⚠️ Attach your payment screenshot\nWithout it, your payment will not be counted."}
-                  </p>
+                  <div className="bg-red-50 border border-red-200 rounded-2xl p-5 sm:p-6 w-full shadow-inner flex flex-col justify-center">
+                    <p className="text-base md:text-lg font-extrabold text-red-600 text-left leading-relaxed">
+                      {receiptWarningText ?? "⚠️ Please click below to send your payment confirmation via WhatsApp. Without it, your payment will not be counted."}
+                    </p>
+                  </div>
                 )}
               </div>
             </div>
@@ -508,11 +535,10 @@ export default function Donation({
                     onClick={handleShare}
                     disabled={!screenshotUrl}
                     id="whatsapp-donation-btn"
-                    className={`group flex-1 flex items-center justify-center gap-2 text-white font-black text-base py-4 px-4 rounded-xl transition-all duration-300 ${
-                      screenshotUrl
+                    className={`group flex-1 flex items-center justify-center gap-2 text-white font-black text-base py-4 px-4 rounded-xl transition-all duration-300 ${screenshotUrl
                         ? "bg-[#25D366] hover:bg-[#20c45c] active:scale-95 shadow-[0_4px_14px_rgba(37,211,102,0.35)]"
                         : "bg-gray-300 cursor-not-allowed"
-                    }`}
+                      }`}
                   >
                     <svg viewBox="0 0 24 24" className="w-5 h-5 flex-shrink-0 fill-white" aria-hidden="true">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
@@ -526,11 +552,10 @@ export default function Donation({
                   onClick={handleDownload}
                   disabled={!screenshotUrl}
                   title="Download Screenshot"
-                  className={`flex items-center justify-center gap-1 font-semibold text-xs py-4 px-4 rounded-xl border-2 transition-all active:scale-95 flex-shrink-0 ${
-                    screenshotUrl
+                  className={`flex items-center justify-center gap-1 font-semibold text-xs py-4 px-4 rounded-xl border-2 transition-all active:scale-95 flex-shrink-0 ${screenshotUrl
                       ? "bg-white hover:bg-gray-50 text-gray-600 border-gray-200 shadow-sm"
                       : "bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed"
-                  }`}
+                    }`}
                 >
                   <Download size={18} />
                 </button>
