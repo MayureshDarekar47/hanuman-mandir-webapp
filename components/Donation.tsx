@@ -42,9 +42,19 @@ export default function Donation({
   const displayName = upiName || "Hanuman Mandir";
   const displayNote = upiNote || "Temple Donation";
   const waNumber = whatsappNumber ?? "919999999999";
-  const waMessage = whatsappMessage ??
-    "🙏 Jai Hanuman!\n\nI have completed my donation.\nPlease find my payment screenshot attached.\n\nThank you.";
-  const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMessage)}`;
+  const baseWaMessage = whatsappMessage ??
+    "🙏 Jai Hanuman!\n\nI have completed my donation.\n\nThank you.";
+  
+  const donationDetails = `
+--- Donation Details ---
+Donor Name: ${donorName || "Anonymous"}
+Amount: ${amount ? `₹${amount}` : "As entered in UPI app"}
+Date: ${new Date().toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+UPI ID: ${upiId || "—"}
+`;
+
+  const finalWaMessage = `${baseWaMessage}\n${donationDetails}`;
+  const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(finalWaMessage)}`;
 
   const buildUpiLink = (scheme: string) => {
     const base = `${scheme}pa=${encodeURIComponent(upiId!)}&pn=${encodeURIComponent(displayName)}&tn=${encodeURIComponent(displayNote)}&cu=INR`;
@@ -131,32 +141,14 @@ export default function Donation({
     }
   }, [paymentDone, captureScreenshot]);
 
-  // Share screenshot via Web Share API (mobile) or download + WhatsApp (desktop)
+  // Share screenshot by opening WhatsApp directly to the admin's chat with the donation details text
   const handleShare = async () => {
     if (!screenshotUrl) return;
     try {
-      const res = await fetch(screenshotUrl);
-      const blob = await res.blob();
-      const file = new File([blob], "donation-receipt.png", { type: "image/png" });
-
-      if (navigator.canShare?.({ files: [file] })) {
-        // Mobile: direct share with image
-        await navigator.share({
-          text: waMessage,
-          files: [file],
-        });
-      } else {
-        // Desktop fallback: download image + open WhatsApp
-        handleDownload();
-        setTimeout(() => {
-          window.open(waLink, "_blank");
-        }, 500);
-      }
+      // Open WhatsApp directly with the admin's number and pre-filled message containing details
+      window.open(waLink, "_blank");
     } catch (err) {
-      // User cancelled share or error — fallback to WhatsApp link
-      if ((err as Error)?.name !== "AbortError") {
-        window.open(waLink, "_blank");
-      }
+      window.open(waLink, "_blank");
     }
   };
 
@@ -176,7 +168,7 @@ export default function Donation({
   return (
     <>
       <section
-        className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible"
+        className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full max-w-[100vw] overflow-x-hidden sm:overflow-visible"
         id="donation"
         aria-label="Donation and Seva"
       >

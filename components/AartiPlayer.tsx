@@ -83,7 +83,7 @@ export default function AartiPlayer({ tracks }: { tracks: Track[] }) {
   };
 
   return (
-    <section className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-[100vw] overflow-x-hidden sm:overflow-visible w-full" id="aarti" aria-label="Aarti and Bhajans Audio Player">
+    <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-[100vw] overflow-x-hidden sm:overflow-visible w-full" id="aarti" aria-label="Aarti and Bhajans Audio Player">
       <audio ref={audioRef} />
 
       <div className="max-w-2xl mx-auto">

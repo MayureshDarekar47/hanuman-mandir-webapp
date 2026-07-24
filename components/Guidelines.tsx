@@ -5,7 +5,7 @@ export default async function Guidelines() {
   const rules = await prisma.guideline.findMany({ orderBy: { orderIndex: "asc" } }).catch(() => []);
 
   return (
-    <section className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="rules" aria-label="Visitor Guidelines">
+    <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="rules" aria-label="Visitor Guidelines">
       <div className="bg-gradient-to-br from-stone-900 to-stone-800 rounded-3xl overflow-hidden shadow-2xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-0">
           {/* Left header */}

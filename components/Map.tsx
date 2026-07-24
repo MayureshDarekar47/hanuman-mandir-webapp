@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 
 export default function Map() {
   return (
-    <section className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="map" aria-label="Temple Location Map">
+    <section className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto" id="map" aria-label="Temple Location Map">
       <motion.header 
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}

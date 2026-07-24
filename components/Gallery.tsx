@@ -26,7 +26,7 @@ export default function Gallery({ galleryImages }: { galleryImages: string[] }) 
 
   return (
     <section
-      className="py-2 sm:py-4 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full overflow-x-hidden sm:overflow-visible"
+      className="py-8 sm:py-12 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto w-full overflow-x-hidden sm:overflow-visible"
       id="gallery"
       aria-label="Photo Gallery"
     >

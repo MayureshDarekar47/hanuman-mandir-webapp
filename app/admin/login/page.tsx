@@ -118,10 +118,13 @@ export default function LoginPage() {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
+          <form onSubmit={handleSubmit} method="POST" action="#" className="space-y-5 relative z-10">
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-orange-50">Username</label>
+              <label htmlFor="username" className="block text-sm font-medium mb-1.5 text-orange-50">Username</label>
               <input
+                id="username"
+                name="username"
+                autoComplete="username"
                 type="text"
                 required
                 value={username}
@@ -131,9 +134,12 @@ export default function LoginPage() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium mb-1.5 text-orange-50">Password</label>
+              <label htmlFor="password" className="block text-sm font-medium mb-1.5 text-orange-50">Password</label>
               <div className="relative">
                 <input
+                  id="password"
+                  name="password"
+                  autoComplete="current-password"
                   type={showPassword ? "text" : "password"}
                   required
                   value={password}

@@ -93,7 +93,7 @@ export default async function AdminDashboard() {
             color: remainingBalance < 0 ? "bg-red-100 text-red-800" : remainingBalance === 0 ? "bg-gray-50 text-gray-700" : "bg-emerald-50 text-emerald-800",
           },
         ].map(s => (
-          <div key={s.label} className={`${s.color} rounded-2xl p-4 sm:p-5`}>
+          <div key={s.label} className={`${s.color} rounded-2xl p-4 sm:p-5 border-2 border-current`}>
             <p className="text-xs font-bold uppercase tracking-wider opacity-70">{s.label}</p>
             <p className="text-xl sm:text-2xl font-black mt-1 break-words">{s.value}</p>
           </div>
